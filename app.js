@@ -23,22 +23,16 @@ updateClock();
 
 // =========================
 // NY OPEN TIMER (simple daily countdown)
-// Assumes NY open 9:30am ET.
+// NY Open 9:30am ET (lightweight approx DST)
 // =========================
 function updateNYOpen(){
   const el = document.getElementById("nyOpen");
   const sessionEl = document.getElementById("sessionState");
 
   const now = new Date();
-
-  // Create a "today at 9:30 ET" time, then convert by using UTC math.
-  // This avoids needing a full timezone lib.
-  // Approx method: treat ET as UTC-5/UTC-4 depending on DST. We'll keep it simple:
-  // If you want perfect DST handling, we can add luxon, but this works fine most of the year.
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
 
-  // naive ET offset guess:
-  // - If month is Mar-Nov, assume DST (UTC-4). Else (UTC-5). This is not perfect but close.
+  // quick DST-ish estimate (good enough for dashboard)
   const month = now.getMonth(); // 0-11
   const isDstish = month >= 2 && month <= 10;
   const etOffsetHours = isDstish ? -4 : -5;
@@ -49,8 +43,6 @@ function updateNYOpen(){
   open.setHours(9, 30, 0, 0);
 
   let diffMs = open - etNow;
-
-  // If already past open, count to next day's open
   if (diffMs <= 0){
     open.setDate(open.getDate() + 1);
     diffMs = open - etNow;
@@ -70,19 +62,70 @@ setInterval(updateNYOpen, 500);
 updateNYOpen();
 
 // =========================
-// TRADINGVIEW CHARTS (LOCK MNQ, NO APPLE)
+// CENTER HUD (Stark useful data vibe - lightweight)
 // =========================
+const biasEl = document.getElementById("biasVal");
+const vwapEl = document.getElementById("vwapDist");
+const emaEl  = document.getElementById("emaAlign");
+const arcText = document.getElementById("arcText");
+const sysLog  = document.getElementById("sysLog");
 
-const TV_SYMBOL = "CME_MINI:MNQ1!"; // ✅ hard lock to continuous MNQ
+const biasStates = ["BULLISH", "NEUTRAL", "BEARISH"];
+let biasIdx = 1;
+
+function addLog(line){
+  if (!sysLog) return;
+  const d = document.createElement("div");
+  d.className = "log-line";
+  d.textContent = line;
+  sysLog.appendChild(d);
+
+  // keep log from growing forever
+  const maxLines = 9;
+  while (sysLog.children.length > maxLines) sysLog.removeChild(sysLog.firstChild);
+}
+
+function updateCenterHud(){
+  // This is “display” data (no broker/API). Just a useful vibe.
+  // If you later want real values, we can wire to your TradingView webhook/pine alerts.
+
+  // cycle bias every 10s
+  const t = Date.now();
+  if (t % 10000 < 400){
+    biasIdx = (biasIdx + 1) % biasStates.length;
+    biasEl.textContent = biasStates[biasIdx];
+    addLog(`[HUD] Bias set: ${biasStates[biasIdx]}`);
+  }
+
+  // pseudo VWAP distance display
+  const fake = (Math.sin(t / 3000) * 18).toFixed(1);
+  vwapEl.textContent = `${fake > 0 ? "+" : ""}${fake} pts`;
+
+  // EMA align display
+  const align = fake > 6 ? "9>21 UP" : fake < -6 ? "9<21 DOWN" : "MIXED";
+  emaEl.textContent = align;
+
+  // arc status line
+  arcText.textContent = `INITIALIZING • EXECUTION READY • ${biasStates[biasIdx]}`;
+}
+setInterval(updateCenterHud, 250);
+updateCenterHud();
+
+// =========================
+// TRADINGVIEW CHARTS (LOCK MNQ, NO APPLE)
+// FIXES: load timing + retry until tv.js ready
+// =========================
+const TV_SYMBOL = "CME_MINI:MNQ1!"; // ✅ hard lock MNQ continuous
 
 function mountTVChart(containerId, interval){
-  // TradingView widget requires tv.js loaded before this runs.
-  // We call it on window load below.
+  // clear container to avoid duplicate widgets on hot reloads
+  const el = document.getElementById(containerId);
+  if (el) el.innerHTML = "";
 
   new TradingView.widget({
     autosize: true,
     symbol: TV_SYMBOL,
-    interval: interval,              // "1", "5", "15", "60"
+    interval: interval,              // "1", "5", "15"
     timezone: "America/Denver",
     theme: "dark",
     style: "1",
@@ -92,18 +135,32 @@ function mountTVChart(containerId, interval){
     save_image: false,
     hide_top_toolbar: false,
     hide_legend: false,
-    allow_symbol_change: false,      // keep it locked so it never flips to Apple
+    allow_symbol_change: false,      // ✅ prevents drifting to AAPL
     container_id: containerId
   });
 }
 
 function initRightCharts(){
-  // 3 stacked charts on the right
-  mountTVChart("tv_right_1", "1");   // 1m
-  mountTVChart("tv_right_2", "5");   // 5m
-  mountTVChart("tv_right_3", "15");  // 15m
+  mountTVChart("tv_right_1", "1");
+  mountTVChart("tv_right_2", "5");
+  mountTVChart("tv_right_3", "15");
+  addLog("[TV] Charts mounted: MNQ1! (1m/5m/15m)");
+}
+
+// ✅ Retry loader: fixes GitHub Pages timing + prevents fallback
+function waitForTradingViewAndInit(retries = 80){
+  if (window.TradingView && typeof window.TradingView.widget === "function"){
+    initRightCharts();
+    return;
+  }
+  if (retries <= 0){
+    console.error("TradingView failed to load.");
+    addLog("[ERR] TradingView failed to load.");
+    return;
+  }
+  setTimeout(() => waitForTradingViewAndInit(retries - 1), 250);
 }
 
 window.addEventListener("load", () => {
-  initRightCharts();
+  waitForTradingViewAndInit();
 });
