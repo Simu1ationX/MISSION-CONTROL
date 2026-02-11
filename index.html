@@ -1,204 +1,214 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MISSION CONTROL // HOLO</title>
-  <link rel="stylesheet" href="./styles.css?v=HOLO_FINAL1" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <!-- Cinematic background scene -->
-  <div class="bg-scene" aria-hidden="true"></div>
-  <div class="bg-vignette" aria-hidden="true"></div>
-  <div class="bg-noise" aria-hidden="true"></div>
+  <div id="bg"></div>
+  <div id="scanlines" aria-hidden="true"></div>
+  <div id="noise" aria-hidden="true"></div>
 
-  <header class="top-hud">
-    <div class="hud-left">
-      <div class="hud-title">MISSION CONTROL <span class="pill">MAMBA</span></div>
-      <div class="hud-sub">HOLOGRAPHIC INTERFACE • EXECUTION ONLY</div>
+  <header class="topbar holo">
+    <div class="top-left">
+      <div class="brand">
+        <span class="dot"></span>
+        <span class="title">MISSION CONTROL</span>
+        <span class="tag" id="modeTag">HOLO</span>
+      </div>
+      <div class="sub">SYSTEM ONLINE • NO HUNTING • EXECUTE</div>
     </div>
 
-    <div class="hud-center">
+    <div class="top-mid">
       <div class="clock" id="clock">--:--:--</div>
       <div class="date" id="date">---</div>
+      <div class="statusline" id="statusLine">INITIALIZING…</div>
     </div>
 
-    <div class="hud-right">
-      <div class="hud-metric">
-        <div class="metric-label">SYSTEM</div>
-        <div class="metric-value" id="sysState">ONLINE</div>
-      </div>
-      <div class="hud-metric">
-        <div class="metric-label">THEME</div>
-        <div class="metric-value" id="themeState">CYAN</div>
-      </div>
+    <div class="top-right">
+      <button class="pill" id="themeCyan" type="button">CYAN</button>
+      <button class="pill" id="themePurple" type="button">PURPLE</button>
+      <button class="pill" id="themeMamba" type="button">MAMBA</button>
+      <button class="pill danger" id="themeRed" type="button">RED</button>
+      <button class="pill" id="btnFullscreen" type="button">FULLSCREEN</button>
     </div>
   </header>
 
-  <div class="dash-grid">
-
-    <!-- LEFT -->
-    <aside class="left-col">
-      <section class="panel panel-float">
+  <main class="grid">
+    <!-- LEFT COLUMN -->
+    <section class="left">
+      <div class="panel holo">
         <div class="panel-title">MISSION CONTROL</div>
-
-        <div class="chip-row">
-          <button class="chip active" id="btnCyan" type="button">CYAN</button>
-          <button class="chip" id="btnPurple" type="button">PURPLE</button>
-          <button class="chip danger" id="btnMamba" type="button">MAMBA</button>
+        <div class="chips">
+          <button class="chip" id="chipAPlus" type="button">A+ SETUP</button>
+          <button class="chip" id="chipResetSetup" type="button">CLEAR</button>
+          <button class="chip" id="chipWin" type="button">WIN</button>
+          <button class="chip" id="chipLoss" type="button">LOSS</button>
         </div>
 
-        <div class="chip-row">
-          <button class="chip" id="btnQuote" type="button">QUOTE</button>
-          <button class="chip" id="btnMouth" type="button">MOUTH</button>
-          <button class="chip danger" id="btnFlash" type="button">FLASH</button>
-          <button class="chip" id="btnFull" type="button">FULLSCREEN</button>
+        <div class="kv">
+          <div class="k">SYMBOL</div><div class="v">MNQ</div>
+          <div class="k">SYSTEM</div><div class="v">VWAP + 9/21 SNIPER</div>
+          <div class="k">MODE</div><div class="v" id="disciplineMode">DISCIPLINE</div>
         </div>
+      </div>
 
-        <div class="divider"></div>
-
-        <div class="mini-row">
-          <div class="mini-label">SYMBOL</div>
-          <div class="mini-value" id="symbolLabel">MNQ (VISUAL)</div>
-        </div>
-
-        <div class="mini-row">
-          <div class="mini-label">MODE</div>
-          <div class="mini-value">DISCIPLINE</div>
-        </div>
-      </section>
-
-      <section class="panel panel-float">
+      <div class="panel holo">
         <div class="panel-title">DISCIPLINE</div>
-        <ul class="bullets">
-          <li>A+ only</li>
-          <li>No revenge</li>
-          <li>Session gate</li>
-          <li>One clean trade</li>
-          <li>After target: STOP</li>
+        <ul class="rules">
+          <li>A+ setups only</li>
+          <li>No overtrade / no revenge</li>
+          <li>Hydrate • breathe • calm focus</li>
+          <li>One clean trade &gt; ten average</li>
+          <li>When target hits: DONE</li>
         </ul>
-      </section>
+      </div>
 
-      <section class="panel panel-float">
-        <div class="panel-title">RISK</div>
-        <div class="risk-grid">
-          <div class="risk-card">
-            <div class="risk-label">LOSSES</div>
-            <div class="risk-value" id="lossCount">0</div>
+      <div class="panel holo">
+        <div class="panel-title">RULES</div>
+        <ul class="rules">
+          <li>VWAP bias + 9/21 aligned</li>
+          <li>Pullback + reclaim entries only</li>
+          <li>No chase candles</li>
+          <li>Session gate only</li>
+          <li>Hit target = shut it down</li>
+        </ul>
+      </div>
+
+      <div class="panel holo">
+        <div class="panel-title">RISK CONTROL</div>
+        <div class="riskGrid">
+          <div class="riskCard">
+            <div class="rk">DAILY MAX LOSS</div>
+            <div class="rv" id="dailyMaxLoss">$-300</div>
           </div>
-          <div class="risk-card">
-            <div class="risk-label">STATUS</div>
-            <div class="risk-value" id="fireState">STANDBY</div>
+          <div class="riskCard">
+            <div class="rk">DAILY TARGET</div>
+            <div class="rv" id="dailyTarget">$+500</div>
           </div>
-          <div class="risk-card">
-            <div class="risk-label">EXEC</div>
-            <div class="risk-value" id="execStateTop">WAIT</div>
+          <div class="riskCard">
+            <div class="rk">LOSSES</div>
+            <div class="rv" id="lossCount">0</div>
           </div>
-          <div class="risk-card">
-            <div class="risk-label">GATE</div>
-            <div class="risk-value" id="gateStateTop">SESSION</div>
+          <div class="riskCard">
+            <div class="rk">WINS</div>
+            <div class="rv" id="winCount">0</div>
           </div>
         </div>
-      </section>
-    </aside>
 
-    <!-- CENTER -->
-    <main class="mid-col">
-      <section class="panel panel-float holo-panel">
-        <div class="panel-title">HOLO WALL</div>
+        <!-- hidden config drawer -->
+        <details class="drawer">
+          <summary>CONFIG</summary>
+          <div class="drawerBody">
+            <label>Session Gate (local)
+              <input id="sessionStart" type="time" value="07:30" />
+              <input id="sessionEnd" type="time" value="10:30" />
+            </label>
 
-        <div class="ceiling-bars" aria-hidden="true">
-          <div class="bar b1"></div>
-          <div class="bar b2"></div>
-          <div class="bar b3"></div>
-        </div>
+            <label>Daily Max Loss ($)
+              <input id="cfgDailyMaxLoss" type="number" value="-300" />
+            </label>
 
-        <div class="holo-micros" aria-hidden="true">
-          <div class="micro"><div class="micro-title">VOL</div><div class="micro-val" data-live="vol">—</div><div class="spark"></div></div>
-          <div class="micro"><div class="micro-title">FLOW</div><div class="micro-val" data-live="flow">—</div><div class="spark"></div></div>
-          <div class="micro"><div class="micro-title">RANGE</div><div class="micro-val" data-live="range">—</div><div class="spark"></div></div>
-          <div class="micro"><div class="micro-title">HEAT</div><div class="micro-val" data-live="heat">—</div><div class="spark"></div></div>
-        </div>
+            <label>Daily Target ($)
+              <input id="cfgDailyTarget" type="number" value="500" />
+            </label>
 
-        <div class="holo-stage" id="holoStage">
-          <div class="datawall" aria-hidden="true">
-            <div class="grid"></div>
-            <div class="tickerline"></div>
-            <div class="tickerline t2"></div>
-          </div>
+            <label>Stop after N losses
+              <input id="cfgStopAfterLosses" type="number" value="2" />
+            </label>
 
-          <div class="fog" aria-hidden="true"></div>
-          <div class="particles" aria-hidden="true"></div>
-
-          <div class="float-pane p1" aria-hidden="true">
-            <div class="pane-title">ORDER FLOW</div><div class="pane-mini"></div>
-          </div>
-          <div class="float-pane p2" aria-hidden="true">
-            <div class="pane-title">TREND</div><div class="pane-mini"></div>
-          </div>
-          <div class="float-pane p3" aria-hidden="true">
-            <div class="pane-title">VOL CLUSTER</div><div class="pane-mini"></div>
-          </div>
-          <div class="float-pane p4" aria-hidden="true">
-            <div class="pane-title">LEVELS</div>
-            <div class="pane-list">
-              <div class="pane-row"><span>VWAP</span><span class="dim">—</span></div>
-              <div class="pane-row"><span>HOD</span><span class="dim">—</span></div>
-              <div class="pane-row"><span>LOD</span><span class="dim">—</span></div>
+            <div class="drawerBtns">
+              <button class="pill" id="btnSaveCfg" type="button">SAVE</button>
+              <button class="pill danger" id="btnHardReset" type="button">RESET DAY</button>
             </div>
           </div>
+        </details>
+      </div>
+    </section>
 
-          <div class="rings" aria-hidden="true">
-            <div class="ring r1"></div>
-            <div class="ring r2"></div>
-            <div class="ring r3"></div>
-            <div class="ring r4"></div>
+    <!-- CENTER COLUMN -->
+    <section class="center">
+      <div class="panel holo coreWrap">
+        <div class="panel-title">ARC CORE</div>
+
+        <div class="coreStage" id="coreStage">
+          <div class="holoGrid"></div>
+          <div class="mist"></div>
+
+          <div class="coreRing ringA"></div>
+          <div class="coreRing ringB"></div>
+          <div class="coreRing ringC"></div>
+
+          <div class="coreLogo">
+            <img src="assets/mamba.webp" alt="Mamba Logo" />
           </div>
 
-          <!-- YOUR LOGO -->
-          <div class="logo-orbit" aria-hidden="true">
-            <div class="logo-halo"></div>
-            <img class="mamba-logo" src="./assets/mamba.webp" alt="" />
+          <div class="coreReadout">
+            <div class="big" id="readiness">INITIALIZING</div>
+            <div class="small" id="readinessDetail">Boot sequence…</div>
           </div>
-
-          <div class="callout left" aria-hidden="true">
-            <div class="clabel">EXECUTION</div>
-            <div class="cval" id="execState">WAIT</div>
-          </div>
-          <div class="callout right" aria-hidden="true">
-            <div class="clabel">GATE</div>
-            <div class="cval" id="gateState">SESSION</div>
-          </div>
-
-          <div class="core-status" id="coreStatus">SYSTEM READY</div>
         </div>
-      </section>
 
-      <section class="panel panel-float">
+        <div class="centerFooter">
+          <div class="footerChip" id="sessionState">SESSION: --</div>
+          <div class="footerChip" id="biasState">BIAS: --</div>
+          <div class="footerChip" id="lockState">LOCK: --</div>
+        </div>
+      </div>
+
+      <div class="panel holo">
         <div class="panel-title">SYSTEM LOG</div>
-        <div class="log" id="sysLog">
-          <div class="log-line">[OK] Assets detected: room.jpg + mamba.webp</div>
-          <div class="log-line">[OK] HOLO_FINAL1 loaded</div>
-          <div class="log-line">[INFO] Next phase: embed TradingView charts (MNQ)</div>
+        <div class="log" id="log"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <section class="right">
+      <div class="panel holo">
+        <div class="panel-title">SYSTEM METRICS</div>
+
+        <div class="metricStack">
+          <div class="metric">
+            <div class="mk">SESSION GATE</div>
+            <div class="mv" id="metricSession">--</div>
+          </div>
+          <div class="metric">
+            <div class="mk">SETUP STATE</div>
+            <div class="mv" id="metricSetup">--</div>
+          </div>
+          <div class="metric">
+            <div class="mk">RISK STATE</div>
+            <div class="mv" id="metricRisk">--</div>
+          </div>
+          <div class="metric">
+            <div class="mk">EXECUTION</div>
+            <div class="mv" id="metricExec">--</div>
+          </div>
         </div>
-      </section>
-    </main>
 
-    <!-- RIGHT -->
-    <aside class="right-col">
-      <section class="panel panel-float">
-        <div class="panel-title">MARKET VISION</div>
-        <div class="chart-stack">
-          <div class="chart-slot">CHART SLOT 1</div>
-          <div class="chart-slot">CHART SLOT 2</div>
-          <div class="chart-slot">CHART SLOT 3</div>
+        <div class="quickToggles">
+          <button class="pill" id="biasBull" type="button">BIAS: BULL</button>
+          <button class="pill" id="biasBear" type="button">BIAS: BEAR</button>
+          <button class="pill" id="biasNeutral" type="button">BIAS: NEUTRAL</button>
         </div>
-      </section>
-    </aside>
 
-  </div>
+        <div class="hint">
+          Hotkeys: <b>A</b>=A+ • <b>W</b>=Win • <b>L</b>=Loss • <b>R</b>=Reset Setup • <b>F</b>=Fullscreen
+        </div>
+      </div>
 
-  <script src="./app.js?v=HOLO_FINAL1"></script>
+      <div class="panel holo">
+        <div class="panel-title">HOLO ROOM</div>
+        <div class="imgPane">
+          <img src="assets/room.jpg" alt="Inspo Room" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
