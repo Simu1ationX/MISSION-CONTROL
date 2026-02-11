@@ -3,88 +3,117 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MISSION CONTROL — MNQ1!</title>
+  <title>MISSION CONTROL — CME_MINI:MNQ1!</title>
 
   <!-- FONT -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- TradingView widget library -->
+  <script src="https://s3.tradingview.com/tv.js" defer></script>
 
   <style>
     :root{
+      /* Base */
       --bg:#0b0f14;
       --panel:#0f1722;
       --panel2:#0c131d;
       --text:#e6f1ff;
       --muted:#9fb3c8;
 
+      /* Neon default (blue) */
       --accent:#00d0ff;
       --accent2:#00a8ff;
       --glow:rgba(0,208,255,.55);
 
+      /* War room red */
       --red:#ff2a2a;
       --red2:#ff0000;
       --redglow:rgba(255,42,42,.55);
 
-      --radius:16px;
-      --radius2:14px;
+      /* Mamba purple (your Kobe snake vibe) */
+      --purple:#7b2cff;
+      --purple2:#a86bff;
+      --purpleGlow:rgba(123,44,255,.60);
 
+      --radius:16px;
       --stroke:2px;
+
       --shadow:0 0 18px var(--glow), 0 0 45px rgba(0,208,255,.12);
       --shadowRed:0 0 22px var(--redglow), 0 0 55px rgba(255,42,42,.14);
+      --shadowPurple:0 0 22px var(--purpleGlow), 0 0 60px rgba(123,44,255,.16);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      background: radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.10), transparent 55%),
-                  radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.08), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.10), transparent 55%),
+        radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.08), transparent 60%),
+        var(--bg);
       color:var(--text);
       font-family:"Orbitron", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       overflow-x:hidden;
     }
 
-    /* ===== Modes ===== */
+    /* ===== Auto Session Modes ===== */
     body.mode-blue{
       --accent:#00d0ff;
       --accent2:#00a8ff;
       --glow:rgba(0,208,255,.55);
       --shadow:0 0 18px var(--glow), 0 0 45px rgba(0,208,255,.12);
-      background: radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.10), transparent 55%),
-                  radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.08), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.10), transparent 55%),
+        radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.08), transparent 60%),
+        var(--bg);
     }
     body.mode-preopen{
       --accent:var(--red);
       --accent2:var(--red2);
       --glow:rgba(255,42,42,.55);
       --shadow: var(--shadowRed);
-      background: radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.12), transparent 55%),
-                  radial-gradient(900px 600px at 10% 85%, rgba(255,42,42,.08), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.12), transparent 55%),
+        radial-gradient(900px 600px at 10% 85%, rgba(255,42,42,.08), transparent 60%),
+        var(--bg);
     }
     body.mode-mamba{
       --accent:var(--red);
       --accent2:var(--red2);
       --glow:rgba(255,42,42,.60);
       --shadow: var(--shadowRed);
-      background: radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.14), transparent 55%),
-                  radial-gradient(900px 600px at 10% 85%, rgba(255,42,42,.10), transparent 60%),
-                  #000;
+      background:
+        radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.14), transparent 55%),
+        radial-gradient(900px 600px at 10% 85%, rgba(255,42,42,.10), transparent 60%),
+        #000;
     }
     body.mode-post{
       --accent:#00d0ff;
       --accent2:#00a8ff;
       --glow:rgba(0,208,255,.45);
       --shadow:0 0 14px var(--glow), 0 0 35px rgba(0,208,255,.10);
-      background: radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.08), transparent 55%),
-                  radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.06), transparent 60%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.08), transparent 55%),
+        radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.06), transparent 60%),
+        var(--bg);
     }
 
-    .wrap{max-width: 1600px; margin: 18px auto 28px; padding: 0 18px;}
+    /* ===== Manual Purple Mode ===== */
+    body.mode-purple{
+      --accent:var(--purple);
+      --accent2:var(--purple2);
+      --glow:var(--purpleGlow);
+      --shadow: var(--shadowPurple);
+      background:
+        radial-gradient(1200px 700px at 55% 10%, rgba(123,44,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 15% 90%, rgba(123,44,255,.12), transparent 60%),
+        #05040a;
+    }
+
+    /* ===== Frame ===== */
+    .wrap{max-width:1600px;margin:18px auto 28px;padding:0 18px}
     .frame{
       border: var(--stroke) solid rgba(255,255,255,.08);
       border-radius: 22px;
@@ -97,11 +126,10 @@
       content:"";
       position:absolute;
       inset:10px;
-      border-radius: 16px;
+      border-radius:16px;
       border: var(--stroke) solid rgba(255,255,255,.04);
       pointer-events:none;
     }
-
     .neon-bar{
       position:absolute;
       top: 110px;
@@ -114,14 +142,14 @@
     .neon-bar.left{left: 12px}
     .neon-bar.right{right: 12px}
 
+    /* ===== Header ===== */
     .top{
       display:grid;
-      grid-template-columns: 340px 1fr 360px;
+      grid-template-columns: 360px 1fr 380px;
       gap: 12px;
       align-items: stretch;
       margin-bottom: 12px;
     }
-
     .panel{
       background: linear-gradient(180deg, rgba(15,23,34,.82), rgba(10,16,24,.78));
       border-radius: var(--radius);
@@ -138,21 +166,42 @@
       border: 1px solid rgba(255,255,255,.05);
       pointer-events:none;
     }
-
-    .panel-head{padding: 14px 16px;}
-    .title-small{font-size: 11px; letter-spacing: 2.5px; color: rgba(255,255,255,.70); text-transform: uppercase;}
-    .title{margin-top: 6px; font-size: 22px; letter-spacing: 1.2px; font-weight: 800;}
-    .subtitle{margin-top: 8px; display:flex; gap:10px; align-items:center; color: var(--muted); font-size: 12px; letter-spacing: 1.2px;}
-    .dot{width:10px;height:10px;border-radius:99px; background: var(--accent); box-shadow: 0 0 12px var(--accent);}
+    .panel-head{padding:14px 16px}
+    .title-small{
+      font-size:11px;
+      letter-spacing:2.5px;
+      color:rgba(255,255,255,.70);
+      text-transform:uppercase;
+    }
+    .title{
+      margin-top:6px;
+      font-size:22px;
+      letter-spacing:1.2px;
+      font-weight:900;
+    }
+    .subtitle{
+      margin-top:8px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:1.2px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:99px;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
     .chip{
       margin-left:auto;
       padding:6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.25);
-      font-size: 11px;
-      letter-spacing: 1.2px;
-      color: rgba(255,255,255,.82);
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.25);
+      font-size:11px;
+      letter-spacing:1.2px;
+      color:rgba(255,255,255,.82);
       display:flex;
       gap:8px;
       align-items:center;
@@ -170,16 +219,18 @@
       font-size: 11px;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      transition: transform .12s ease, border-color .12s ease;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
     }
     .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.18)}
     .btn:active{transform: translateY(0px)}
     .btn.red{border-color: rgba(255,42,42,.35)}
-    .btn.red:hover{border-color: rgba(255,42,42,.55)}
     .btn.blue{border-color: rgba(0,208,255,.35)}
-    .btn.blue:hover{border-color: rgba(0,208,255,.55)}
-    .btn.warn{border-color: rgba(255,185,0,.35)}
-    .btn.warn:hover{border-color: rgba(255,185,0,.55)}
+    .btn.purple{border-color: rgba(123,44,255,.45)}
+    .btn.purple:hover{border-color: rgba(123,44,255,.70); box-shadow:0 0 18px rgba(123,44,255,.16)}
+    .btn.small{padding:7px 9px; font-size:10px}
 
     .clock{
       display:flex;
@@ -188,32 +239,96 @@
       align-items:center;
       text-align:center;
       padding: 10px 10px;
-      min-height: 110px;
+      min-height: 118px;
     }
-    .clock .time{font-size: 44px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 18px rgba(255,255,255,.10);}
-    .clock .date{margin-top: 8px; font-size: 12px; letter-spacing: 2.2px; color: rgba(255,255,255,.75); text-transform: uppercase;}
-    .mamba-quote{margin-top: 10px; font-size: 12px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; text-shadow: 0 0 14px rgba(255,255,255,.08);}
+    .clock .time{
+      font-size: 46px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 0 0 18px rgba(255,255,255,.10);
+    }
+    .clock .date{
+      margin-top: 8px;
+      font-size: 12px;
+      letter-spacing: 2.2px;
+      color: rgba(255,255,255,.75);
+      text-transform: uppercase;
+    }
+    .mamba-quote{
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      text-shadow: 0 0 16px rgba(255,255,255,.08);
+      min-height: 18px;
+    }
 
     .rightTop{
       display:flex;
       flex-direction:column;
       justify-content:space-between;
       padding: 12px 12px;
-      min-height: 110px;
+      min-height: 118px;
+      gap:10px;
     }
-    .rightTop .row{display:flex; gap:10px; align-items:center; justify-content:space-between;}
-    .countLabel{font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.72);}
-    .openTime{font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,.82);}
-    .countdown{display:flex; align-items:baseline; justify-content:flex-end; gap:10px; padding-bottom: 6px;}
-    .countdown .digits{font-size: 34px; font-weight: 800; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 18px var(--glow);}
-    .countdown small{font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.65); text-transform: uppercase;}
-    .hint{font-size: 10px; letter-spacing: 1.6px; color: rgba(255,255,255,.55);}
-
+    .rightTop .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .countLabel{
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+    }
+    .openTime{
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.82);
+    }
+    .countdown{
+      display:flex;
+      align-items:baseline;
+      justify-content:flex-end;
+      gap:10px;
+      padding-bottom: 6px;
+    }
+    .countdown .digits{
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 0 0 18px var(--glow);
+    }
+    .countdown small{
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.65);
+      text-transform: uppercase;
+    }
+    .hint{
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      color: rgba(255,255,255,.55);
+    }
     .pulse{animation: pulse 1s infinite;}
     @keyframes pulse{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
 
-    .main{display:grid; grid-template-columns: 2.05fr 1fr; gap: 12px; margin-bottom: 12px;}
-    .stack{display:grid; grid-template-rows: 1fr 1fr; gap: 12px;}
+    /* ===== Main Grid ===== */
+    .main{
+      display:grid;
+      grid-template-columns: 2.05fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .stack{
+      display:grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+    }
 
     .panel-titlebar{
       display:flex;
@@ -236,12 +351,38 @@
     }
     .tag.accent{border-color: rgba(0,208,255,.35); color: rgba(0,208,255,.95); box-shadow: 0 0 12px rgba(0,208,255,.18);}
     .tag.red{border-color: rgba(255,42,42,.35); color: rgba(255,42,42,.95); box-shadow: 0 0 12px rgba(255,42,42,.18);}
+    .tag.purple{border-color: rgba(123,44,255,.42); color: rgba(168,107,255,.95); box-shadow: 0 0 12px rgba(123,44,255,.18);}
 
     .tv{width:100%; height: 520px;}
     .tv.small{height: 250px;}
-    .tvWrap{padding: 0; overflow:hidden;}
+    .tvWrap{padding:0; overflow:hidden; position:relative;}
 
-    .bottom{display:grid; grid-template-columns: 1.05fr 1.35fr 1.6fr; gap: 12px; margin-bottom: 12px;}
+    .fallback{
+      position:absolute; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.35);
+    }
+    .fallback.on{display:flex;}
+    .fallback .box{
+      max-width: 520px;
+      text-align:center;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.45);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+    }
+    .fallback .box .h{letter-spacing:2px;font-size:12px;text-transform:uppercase;color:rgba(255,255,255,.86)}
+    .fallback .box .p{margin-top:10px;font-size:11px;letter-spacing:1.4px;color:rgba(255,255,255,.62);line-height:1.5}
+
+    /* ===== Bottom panels ===== */
+    .bottom{
+      display:grid;
+      grid-template-columns: 1.05fr 1.35fr 1.6fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
     .list{padding: 12px 14px 14px;}
     .list .item{
       display:flex;
@@ -288,7 +429,15 @@
     .card .v{margin-top: 8px; font-size: 14px; letter-spacing: 1.6px; color: rgba(255,255,255,.88);}
     .card .v b{color: var(--accent)}
 
-    .status{display:flex; justify-content:center; align-items:center; gap: 14px; padding: 16px;}
+    /* ===== Footer Status ===== */
+    .status{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap: 14px;
+      padding: 16px;
+      position:relative;
+    }
     .statusBox{
       min-width: 380px;
       text-align:center;
@@ -298,10 +447,112 @@
       background: rgba(0,0,0,.28);
       box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 0 25px rgba(0,0,0,.35);
     }
-    .statusBox .big{font-size: 18px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,.90);}
-    .statusBox .small{margin-top: 8px; font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.62); text-transform: uppercase;}
+    .statusBox .big{
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.90);
+    }
+    .statusBox .small{
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.62);
+      text-transform: uppercase;
+    }
 
-    .musicDock{margin-top: 12px; display:none;}
+    /* ===== Motivation Corner ===== */
+    .motivation{
+      position:absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 220px;
+      height: 220px;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.28);
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .motivation img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter: contrast(1.06) saturate(1.05);
+    }
+    .motivation .empty{
+      padding: 12px;
+      text-align:center;
+      font-size:10px;
+      letter-spacing:1.8px;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.55);
+      line-height:1.5;
+    }
+
+    /* ===== START OVERLAY (TV-friendly) ===== */
+    .startOverlay{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:
+        radial-gradient(900px 600px at 50% 20%, rgba(123,44,255,.18), transparent 60%),
+        rgba(0,0,0,.78);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+    .startCard{
+      width:min(760px, 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(15,23,34,.92), rgba(0,0,0,.78));
+      box-shadow: var(--shadowPurple), 0 40px 120px rgba(0,0,0,.70);
+      padding: 18px;
+      text-align:center;
+    }
+    .startCard .h{
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+    }
+    .startCard .t{
+      margin-top: 10px;
+      font-size: 28px;
+      letter-spacing: 2px;
+      font-weight: 900;
+      color: rgba(255,255,255,.92);
+    }
+    .startCard .p{
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: 1.6px;
+      color: rgba(255,255,255,.62);
+      line-height: 1.55;
+    }
+    .startActions{
+      margin-top: 14px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .startNote{
+      margin-top: 10px;
+      font-size: 10px;
+      letter-spacing: 1.4px;
+      color: rgba(255,255,255,.55);
+      text-transform: uppercase;
+      line-height:1.45;
+    }
+
+    /* ===== Music dock ===== */
+    .musicDock{margin-top:10px; display:none;}
     .musicDock.on{display:block}
     .musicDock iframe{
       width:100%;
@@ -312,18 +563,18 @@
       box-shadow: var(--shadow);
     }
 
-    /* Settings modal */
+    /* ===== Settings Modal ===== */
     .modalBack{
       position:fixed; inset:0; display:none;
       background: rgba(0,0,0,.55);
       backdrop-filter: blur(4px);
-      z-index: 9999;
+      z-index: 10000;
       align-items:center; justify-content:center;
       padding: 18px;
     }
     .modalBack.on{display:flex;}
     .modal{
-      width:min(720px, 100%);
+      width:min(820px, 100%);
       border-radius: 18px;
       border: 1px solid rgba(255,255,255,.10);
       background: linear-gradient(180deg, rgba(15,23,34,.92), rgba(10,16,24,.90));
@@ -339,8 +590,11 @@
       background: rgba(0,0,0,.25);
       padding: 10px;
     }
-    .field label{display:block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.65);}
-    .field input{
+    .field label{
+      display:block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.65);
+    }
+    .field input, .field select{
       margin-top: 8px;
       width:100%;
       padding: 10px 10px;
@@ -352,9 +606,16 @@
       letter-spacing: 1.4px;
       outline:none;
     }
-    .modalBottom{display:flex; gap:10px; justify-content:flex-end; padding: 10px 6px 6px;}
-    .tinyHelp{padding: 0 6px 10px; font-size: 10px; letter-spacing: 1.4px; color: rgba(255,255,255,.55);}
+    .field input[type="file"]{
+      padding: 8px;
+      letter-spacing: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      font-size: 12px;
+    }
+    .modalBottom{display:flex; gap:10px; justify-content:flex-end; padding: 10px 6px 6px; flex-wrap:wrap;}
+    .tinyHelp{padding: 0 6px 10px; font-size: 10px; letter-spacing: 1.4px; color: rgba(255,255,255,.55); line-height:1.55;}
 
+    /* Mobile fallback */
     @media (max-width: 1100px){
       .top{grid-template-columns: 1fr}
       .main{grid-template-columns: 1fr}
@@ -363,15 +624,35 @@
       .tv{height: 420px}
       .tv.small{height: 220px}
       .neon-bar{display:none}
-      .formGrid{grid-template-columns: 1fr;}
+      .motivation{position:static; width:100%; height:180px; margin-top:10px;}
+      .formGrid{grid-template-columns: 1fr}
     }
   </style>
-
-  <!-- TradingView widget library -->
-  <script src="https://s3.tradingview.com/tv.js" defer></script>
 </head>
 
 <body class="mode-blue">
+  <!-- START OVERLAY -->
+  <div class="startOverlay" id="startOverlay">
+    <div class="startCard">
+      <div class="h">NEON ELITE • WAR ROOM TACTICAL</div>
+      <div class="t">ENTER MAMBA MODE</div>
+      <div class="p">
+        TVs usually block autoplay + fullscreen until one button press. This start button unlocks it.
+        Charts load immediately after.
+      </div>
+
+      <div class="startActions">
+        <button class="btn purple" id="startBtn">START (FULLSCREEN + CHARTS)</button>
+        <button class="btn" id="startNoFsBtn">START (NO FULLSCREEN)</button>
+        <button class="btn blue small" id="openTVBtn">OPEN TRADINGVIEW</button>
+      </div>
+
+      <div class="startNote">
+        Shortcuts: M = Mamba • U = Purple • K = Quotes • P = Music • S = Settings • F = Fullscreen
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
     <div class="frame">
       <div class="neon-bar left"></div>
@@ -386,15 +667,16 @@
             <div class="subtitle">
               <span class="dot" id="statusDot"></span>
               <span id="modeLabel">OFFLINE</span>
-              <span class="chip"><span>SYMBOL</span> <b id="symLabel">MNQ1!</b></span>
+              <span class="chip"><span>SYMBOL</span> <b id="symLabel">CME_MINI:MNQ1!</b></span>
             </div>
 
             <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-              <button class="btn red" id="mambaToggle">MAMBA MODE (M)</button>
-              <button class="btn warn" id="lockToggle">LOCK: OFF (L)</button>
+              <button class="btn red" id="mambaToggle">MAMBA (M)</button>
+              <button class="btn purple" id="purpleToggle">PURPLE (U)</button>
               <button class="btn blue" id="musicToggle">MUSIC: OFF (P)</button>
-              <button class="btn" id="kobeToggle">KOBE: ON (K)</button>
+              <button class="btn" id="kobeToggle">QUOTES: ON (K)</button>
               <button class="btn" id="settingsBtn">SETTINGS (S)</button>
+              <button class="btn" id="fsBtn">FULLSCREEN (F)</button>
             </div>
           </div>
         </div>
@@ -435,6 +717,7 @@
 
       <!-- MAIN (Charts) -->
       <div class="main">
+        <!-- LEFT BIG (5m) -->
         <div class="panel tvWrap">
           <div class="panel-titlebar">
             <div class="left">
@@ -444,8 +727,18 @@
             <div class="tag" id="focusTag">FOCUS</div>
           </div>
           <div id="tv_5m" class="tv"></div>
+
+          <div class="fallback" id="fb5m">
+            <div class="box">
+              <div class="h">Widget blocked on this device</div>
+              <div class="p">
+                TVs sometimes block embedded widgets. Use “OPEN TRADINGVIEW” (start screen) if needed.
+              </div>
+            </div>
+          </div>
         </div>
 
+        <!-- RIGHT STACK (1H + 4H) -->
         <div class="stack">
           <div class="panel tvWrap">
             <div class="panel-titlebar">
@@ -456,6 +749,13 @@
               <div class="tag" id="rtBadge">ALIGN</div>
             </div>
             <div id="tv_1h" class="tv small"></div>
+
+            <div class="fallback" id="fb1h">
+              <div class="box">
+                <div class="h">Widget blocked</div>
+                <div class="p">Open TradingView directly if needed.</div>
+              </div>
+            </div>
           </div>
 
           <div class="panel tvWrap">
@@ -467,6 +767,13 @@
               <div class="tag" id="rbBadge">BIAS</div>
             </div>
             <div id="tv_4h" class="tv small"></div>
+
+            <div class="fallback" id="fb4h">
+              <div class="box">
+                <div class="h">Widget blocked</div>
+                <div class="p">Open TradingView directly if needed.</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -492,7 +799,7 @@
           </div>
           <div class="rules">
             <div class="headerLine">
-              <div class="title-small">SESSION: 07:30–10:30 MT</div>
+              <div class="title-small" id="sessionLabel">SESSION: 07:30–10:30 MT</div>
               <div class="tag" id="ruleState">STANDBY</div>
             </div>
             <ul id="rulesList">
@@ -514,26 +821,26 @@
             <div class="riskGrid">
               <div class="card">
                 <div class="k">Daily max loss</div>
-                <div class="v">$ <b id="dailyMaxLoss">—</b></div>
+                <div class="v">$ <b id="dailyMaxLoss">TBD</b></div>
               </div>
               <div class="card">
                 <div class="k">Daily target</div>
-                <div class="v">$ <b id="dailyTarget">—</b></div>
+                <div class="v">$ <b id="dailyTarget">TBD</b></div>
               </div>
               <div class="card">
                 <div class="k">Weekly target</div>
-                <div class="v">$ <b id="weeklyTarget">—</b></div>
+                <div class="v">$ <b id="weeklyTarget">TBD</b></div>
               </div>
               <div class="card">
                 <div class="k">Position limits</div>
-                <div class="v"><b id="posLimits">—</b></div>
+                <div class="v"><b id="posLimits">TBD</b></div>
               </div>
             </div>
 
             <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
               <div class="tag" id="buildTag">MODEL: SNIPER v3</div>
               <div class="tag" id="gateTag">GATE: 07:30–10:30</div>
-              <div class="tag" id="brokerTag">INSTRUMENT: MNQ1!</div>
+              <div class="tag" id="brokerTag">INSTRUMENT: CME_MINI:MNQ1!</div>
             </div>
           </div>
         </div>
@@ -544,6 +851,11 @@
         <div class="statusBox">
           <div class="big" id="statusBig">STANDBY</div>
           <div class="small" id="statusSmall">Dashboard wakes at 06:30 • Red at 07:15 • Execute 07:30–10:30</div>
+        </div>
+
+        <div class="motivation" id="motivationBox" title="Motivation">
+          <img id="motivationImg" alt="Motivation" />
+          <div class="empty" id="motivationEmpty">ADD MOTIVATION<br/>IN SETTINGS</div>
         </div>
       </div>
 
@@ -560,49 +872,89 @@
 
       <div class="formGrid">
         <div class="field">
-          <label>Symbol</label>
-          <input id="f_symbol" placeholder="MNQ1!" />
+          <label>TradingView Symbol (fixes Apple fallback)</label>
+          <input id="f_symbol" placeholder="CME_MINI:MNQ1!" />
         </div>
+
         <div class="field">
-          <label>Model Label</label>
-          <input id="f_model" placeholder="SNIPER v3" />
+          <label>Timezone</label>
+          <select id="f_tz">
+            <option value="America/Denver">America/Denver (MT)</option>
+            <option value="America/New_York">America/New_York (ET)</option>
+            <option value="America/Chicago">America/Chicago (CT)</option>
+            <option value="America/Los_Angeles">America/Los_Angeles (PT)</option>
+          </select>
         </div>
+
+        <div class="field">
+          <label>Session Start (HH:MM)</label>
+          <input id="f_start" placeholder="07:30" />
+        </div>
+
+        <div class="field">
+          <label>Session End (HH:MM)</label>
+          <input id="f_end" placeholder="10:30" />
+        </div>
+
+        <div class="field">
+          <label>Preopen Minutes (red begins)</label>
+          <input id="f_pre" placeholder="15" />
+        </div>
+
+        <div class="field">
+          <label>Quotes speed (seconds)</label>
+          <input id="f_qsec" placeholder="8" />
+        </div>
+
         <div class="field">
           <label>Daily Max Loss</label>
           <input id="f_dml" placeholder="e.g. 500" />
         </div>
+
         <div class="field">
           <label>Daily Target</label>
           <input id="f_dt" placeholder="e.g. 500" />
         </div>
+
         <div class="field">
           <label>Weekly Target</label>
           <input id="f_wt" placeholder="e.g. 2500" />
         </div>
+
         <div class="field">
           <label>Position Limits</label>
           <input id="f_pl" placeholder="e.g. 2 max / 1 runner" />
         </div>
+
         <div class="field">
-          <label>Session Start (HH:MM, MT)</label>
-          <input id="f_start" placeholder="07:30" />
+          <label>Model Label</label>
+          <input id="f_model" placeholder="SNIPER v3" />
         </div>
-        <div class="field">
-          <label>Session End (HH:MM, MT)</label>
-          <input id="f_end" placeholder="10:30" />
-        </div>
-        <div class="field">
-          <label>Preopen Minutes</label>
-          <input id="f_pre" placeholder="15" />
-        </div>
+
         <div class="field">
           <label>Spotify Embed URL</label>
           <input id="f_spotify" placeholder="https://open.spotify.com/embed/playlist/..." />
         </div>
+
+        <div class="field">
+          <label>Motivation image (upload)</label>
+          <input id="f_img" type="file" accept="image/*" />
+        </div>
+
+        <div class="field">
+          <label>Motivation image (URL)</label>
+          <input id="f_imgurl" placeholder="https://..." />
+        </div>
+
+        <div class="field" style="grid-column:1/-1;">
+          <label>Quick Open URL (TradingView chart)</label>
+          <input id="f_openurl" placeholder="https://www.tradingview.com/chart/?symbol=CME_MINI%3AMNQ1!&interval=5" />
+        </div>
       </div>
 
       <div class="tinyHelp">
-        Saves locally on this device (localStorage). Shortcuts: M mamba • L lock • P music • K quotes • S settings.
+        Saves locally on this device. On TVs, “open automatically” is limited by browser rules —
+        the START overlay is the reliable unlock for fullscreen + launching TradingView.
       </div>
 
       <div class="modalBottom">
@@ -614,65 +966,91 @@
 
   <script>
     /* =========================
-      CONFIG (default)
+      DEFAULTS + STORAGE
     ========================== */
-    const DEFAULTS = {
-      symbol: "MNQ1!",
-      timezone: "America/Denver",
+    const STORAGE_KEY = "mission_control_settings_v4";
 
+    const DEFAULTS = {
+      symbol: "CME_MINI:MNQ1!",           // IMPORTANT: prevents Apple fallback
+      timezone: "America/Denver",
       sessionStart: "07:30",
       sessionEnd: "10:30",
       preopenMinutes: 15,
-
+      quoteSeconds: 8,
       tvTheme: "dark",
       allowSymbolChange: false,
-
+      modelLabel: "SNIPER v3",
       risk: {
         dailyMaxLoss: "TBD",
         dailyTarget: "TBD",
         weeklyTarget: "TBD",
-        posLimits: "TBD",
+        posLimits: "TBD"
       },
-
-      modelLabel: "SNIPER v3",
       spotifyUrl: "PLAYLIST_URL",
-
-      quotes: [
-        "THE JOB'S NOT FINISHED.",
-        "LOCK IN.",
-        "DISCIPLINE OVER EMOTION.",
-        "CONTROL THE PROCESS.",
-        "ONE GOOD TRADE.",
-        "NO HUNTING."
-      ]
+      quickOpenUrl: "https://www.tradingview.com/chart/?symbol=CME_MINI%3AMNQ1!&interval=5",
+      motivationDataUrl: "",
+      motivationUrl: ""
     };
 
-    const STORAGE_KEY = "mission_control_settings_v2";
+    // Big quote banks
+    const QUOTES_MAMBA = [
+      "THE JOB'S NOT FINISHED.",
+      "LOCK IN.",
+      "DISCIPLINE OVER EMOTION.",
+      "EXECUTE THE PLAN.",
+      "NO HUNTING.",
+      "ONE CLEAN TRADE.",
+      "PROCESS OVER P&L.",
+      "WAIT FOR CONFIRMATION.",
+      "BREATHE. THEN STRIKE.",
+      "DON'T CHASE. LET IT COME.",
+      "CAPTURE — DON'T SUPPRESS.",
+      "CONTROL THE PROCESS.",
+      "YOU DON'T GET TIRED. YOU GET BETTER.",
+      "PRESSURE IS A PRIVILEGE.",
+      "DETAILS WIN DAYS.",
+      "IF IT'S NOT A+, IT'S A NO.",
+      "CONSISTENCY IS THE FLEX.",
+      "SAME RULES. SAME EXECUTION.",
+      "NO REVENGE. NO IMPULSE.",
+      "CALM HANDS. SHARP MIND."
+    ];
+
+    const QUOTES_PURPLE = [
+      "BLACK MAMBA ENERGY.",
+      "SILENT WORK. LOUD RESULTS.",
+      "STAY DANGEROUS.",
+      "CALM MIND. SHARP EDGE.",
+      "CONTROL THE TEMPO.",
+      "BE UNBOTHERED.",
+      "FOCUS IS A WEAPON.",
+      "EXECUTION > INTENTION.",
+      "HUNT ONLY WHAT YOU SEE.",
+      "RUTHLESS DISCIPLINE."
+    ];
+
+    function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
 
     function loadSettings(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return structuredClone(DEFAULTS);
+        if(!raw) return deepClone(DEFAULTS);
         const parsed = JSON.parse(raw);
-        return {
-          ...structuredClone(DEFAULTS),
-          ...parsed,
-          risk: { ...structuredClone(DEFAULTS.risk), ...(parsed.risk || {}) },
-          quotes: Array.isArray(parsed.quotes) && parsed.quotes.length ? parsed.quotes : structuredClone(DEFAULTS.quotes),
-        };
+        const merged = deepClone(DEFAULTS);
+        Object.assign(merged, parsed || {});
+        merged.risk = Object.assign(deepClone(DEFAULTS.risk), parsed?.risk || {});
+        return merged;
       }catch(e){
-        return structuredClone(DEFAULTS);
+        return deepClone(DEFAULTS);
       }
     }
 
-    function saveSettings(s){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-    }
+    function saveSettings(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
 
     let CONFIG = loadSettings();
 
     /* =========================
-      HELPERS
+      DOM HELPERS
     ========================== */
     const $ = (id)=>document.getElementById(id);
     const two = (n)=>String(n).padStart(2,"0");
@@ -685,7 +1063,14 @@
       return {h, mi};
     }
 
-    // Get timezone offset (minutes) for a given date in a timezone
+    function formatHMS(ms){
+      const s = Math.max(0, Math.floor(ms/1000));
+      const hh = Math.floor(s/3600);
+      const mm = Math.floor((s%3600)/60);
+      const ss = s%60;
+      return `${two(hh)}:${two(mm)}:${two(ss)}`;
+    }
+
     function tzOffsetMinutes(date, timeZone){
       const dtf = new Intl.DateTimeFormat("en-US", {
         timeZone,
@@ -698,11 +1083,8 @@
       return (asUTC - date.getTime()) / 60000;
     }
 
-    // Build a Date that corresponds to timezone "wall clock" time for the same calendar day in that timezone
     function makeTZWallClockDate(y, mo, d, h, mi, s, timeZone){
-      // Start with UTC guess
       const guess = new Date(Date.UTC(y, mo-1, d, h, mi, s));
-      // Correct by timezone offset at that moment
       const off = tzOffsetMinutes(guess, timeZone);
       return new Date(guess.getTime() - off*60000);
     }
@@ -714,15 +1096,12 @@
       return {y, mo, d};
     }
 
-    function formatHMS(ms){
-      const s = Math.max(0, Math.floor(ms/1000));
-      const hh = Math.floor(s/3600);
-      const mm = Math.floor((s%3600)/60);
-      const ss = s%60;
-      return `${two(hh)}:${two(mm)}:${two(ss)}`;
+    function isWeekendInTZ(date, timeZone){
+      const wd = new Intl.DateTimeFormat("en-US", { timeZone, weekday:"short" }).format(date);
+      return wd === "Sat" || wd === "Sun";
     }
 
-    function mtNowParts(){
+    function nowParts(){
       const now = new Date();
       const dtf = new Intl.DateTimeFormat("en-US", {
         timeZone: CONFIG.timezone,
@@ -741,40 +1120,6 @@
       }, {});
     }
 
-    function isWeekendInTZ(date, timeZone){
-      const wd = new Intl.DateTimeFormat("en-US", { timeZone, weekday:"short" }).format(date);
-      return wd === "Sat" || wd === "Sun";
-    }
-
-    function nextTradingOpen(now){
-      const st = parseHHMM(CONFIG.sessionStart) || {h:7, mi:30};
-      const en = parseHHMM(CONFIG.sessionEnd) || {h:10, mi:30};
-      const {y, mo, d} = tzTodayYMD(CONFIG.timezone);
-
-      let open = makeTZWallClockDate(y, mo, d, st.h, st.mi, 0, CONFIG.timezone);
-      let end  = makeTZWallClockDate(y, mo, d, en.h, en.mi, 0, CONFIG.timezone);
-
-      // If today is weekend OR we're past end OR we're past open and want next-day open
-      const needNextDay = (now >= open); // once open hits, we count toward next open
-      if(isWeekendInTZ(now, CONFIG.timezone) || needNextDay){
-        // move forward day-by-day until it's a weekday, then set open time
-        let tmp = new Date(now.getTime());
-        for(let i=0;i<10;i++){
-          tmp = new Date(tmp.getTime() + 24*3600*1000);
-          if(!isWeekendInTZ(tmp, CONFIG.timezone)){
-            const t = tzTodayYMD(CONFIG.timezoneFromDate ? CONFIG.timezone : CONFIG.timezone); // no-op, keep simple
-            // get YMD for tmp in timezone:
-            const dtf = new Intl.DateTimeFormat("en-CA", { timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit" });
-            const [yy, mm, dd] = dtf.format(tmp).split("-").map(Number);
-            open = makeTZWallClockDate(yy, mm, dd, st.h, st.mi, 0, CONFIG.timezone);
-            end  = makeTZWallClockDate(yy, mm, dd, en.h, en.mi, 0, CONFIG.timezone);
-            break;
-          }
-        }
-      }
-      return {open, end};
-    }
-
     function computeSessionState(){
       const now = new Date();
       const st = parseHHMM(CONFIG.sessionStart) || {h:7, mi:30};
@@ -785,35 +1130,33 @@
       const preopen = new Date(open.getTime() - (Number(CONFIG.preopenMinutes)||15)*60*1000);
       const end = makeTZWallClockDate(y, mo, d, en.h, en.mi, 0, CONFIG.timezone);
 
-      // Weekends: treat as "post" / closed
       if(isWeekendInTZ(now, CONFIG.timezone)){
         return {mode:"post", label:"WEEKEND", tag:"CLOSED", statusBig:"MARKET CLOSED", phase:"weekend", open, end, preopen};
       }
-
       if(now < preopen) return {mode:"blue", label:"OFFLINE", tag:"STANDBY", statusBig:"STANDBY", phase:"offline", open, end, preopen};
       if(now >= preopen && now < open) return {mode:"preopen", label:"PRE-OPEN", tag:"ARMED", statusBig:"ARMED", phase:"preopen", open, end, preopen};
       if(now >= open && now < end) return {mode:"mamba", label:"LIVE", tag:"EXECUTE", statusBig:"SESSION LIVE", phase:"live", open, end, preopen};
       return {mode:"post", label:"POST-SESSION", tag:"CLOSED", statusBig:"SESSION CLOSED", phase:"post", open, end, preopen};
     }
 
-    /* =========================
-      UI FILL (risk/model labels)
-    ========================== */
-    function paintStaticLabels(){
-      $("symLabel").textContent = CONFIG.symbol;
-      $("brokerTag").textContent = `INSTRUMENT: ${CONFIG.symbol}`;
-      $("buildTag").textContent = `MODEL: ${CONFIG.modelLabel}`;
-      $("gateTag").textContent = `GATE: ${CONFIG.sessionStart}–${CONFIG.sessionEnd}`;
-      $("openTimeLabel").textContent = `${CONFIG.sessionStart} MT`;
+    function nextTradingOpen(now){
+      const st = parseHHMM(CONFIG.sessionStart) || {h:7, mi:30};
+      const {y, mo, d} = tzTodayYMD(CONFIG.timezone);
+      let open = makeTZWallClockDate(y, mo, d, st.h, st.mi, 0, CONFIG.timezone);
 
-      $("dailyMaxLoss").textContent = CONFIG.risk.dailyMaxLoss || "—";
-      $("dailyTarget").textContent = CONFIG.risk.dailyTarget || "—";
-      $("weeklyTarget").textContent = CONFIG.risk.weeklyTarget || "—";
-      $("posLimits").textContent = CONFIG.risk.posLimits || "—";
-
-      // Spotify
-      $("spotifyFrame").src = CONFIG.spotifyUrl || "PLAYLIST_URL";
-      $("hintLine").textContent = `Red begins at ${calcPreopenLabel()} • Session gate ${CONFIG.sessionStart}–${CONFIG.sessionEnd} MT`;
+      if(now >= open || isWeekendInTZ(now, CONFIG.timezone)){
+        let tmp = new Date(now.getTime());
+        for(let i=0;i<10;i++){
+          tmp = new Date(tmp.getTime() + 24*3600*1000);
+          if(!isWeekendInTZ(tmp, CONFIG.timezone)){
+            const dtf = new Intl.DateTimeFormat("en-CA", { timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit" });
+            const [yy, mm, dd] = dtf.format(tmp).split("-").map(Number);
+            open = makeTZWallClockDate(yy, mm, dd, st.h, st.mi, 0, CONFIG.timezone);
+            break;
+          }
+        }
+      }
+      return open;
     }
 
     function calcPreopenLabel(){
@@ -821,56 +1164,43 @@
       const mins = Number(CONFIG.preopenMinutes)||15;
       let total = st.h*60 + st.mi - mins;
       if(total < 0) total += 24*60;
-      const hh = Math.floor(total/60);
-      const mm = total%60;
-      return `${two(hh)}:${two(mm)} MT`;
+      return `${two(Math.floor(total/60))}:${two(total%60)} ${CONFIG.timezone.includes("Denver") ? "MT" : ""}`.trim();
     }
 
-    /* =========================
-      CLOCK + COUNTDOWN
-    ========================== */
-    function updateClockAndCountdown(){
-      const parts = mtNowParts();
-      const timeStr = `${parts.hour}:${parts.minute}:${parts.second} ${parts.dayPeriod}`;
-      const dateStr = `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year}`;
-      $("nowTime").textContent = timeStr;
-      $("nowDate").textContent = dateStr;
+    function paintStaticLabels(){
+      $("symLabel").textContent = CONFIG.symbol;
+      $("brokerTag").textContent = `INSTRUMENT: ${CONFIG.symbol}`;
+      $("buildTag").textContent = `MODEL: ${CONFIG.modelLabel}`;
+      $("gateTag").textContent = `GATE: ${CONFIG.sessionStart}–${CONFIG.sessionEnd}`;
+      $("openTimeLabel").textContent = `${CONFIG.sessionStart} ${CONFIG.timezone.includes("Denver") ? "MT" : ""}`.trim();
+      $("sessionLabel").textContent = `SESSION: ${CONFIG.sessionStart}–${CONFIG.sessionEnd} ${CONFIG.timezone.includes("Denver") ? "MT" : ""}`.trim();
+      $("hintLine").textContent = `Red begins at ${calcPreopenLabel()} • Session gate ${CONFIG.sessionStart}–${CONFIG.sessionEnd} ${CONFIG.timezone.includes("Denver") ? "MT" : ""}`.trim();
 
-      const now = new Date();
-      const state = computeSessionState();
+      $("dailyMaxLoss").textContent = CONFIG.risk.dailyMaxLoss || "—";
+      $("dailyTarget").textContent = CONFIG.risk.dailyTarget || "—";
+      $("weeklyTarget").textContent = CONFIG.risk.weeklyTarget || "—";
+      $("posLimits").textContent = CONFIG.risk.posLimits || "—";
 
-      if(state.phase === "live"){
-        $("countLabelSmall").textContent = "MARKET OPEN";
-        $("countdownDigits").textContent = "LIVE";
-        $("countdownDigits").classList.remove("pulse");
-        return;
-      }
+      $("spotifyFrame").src = CONFIG.spotifyUrl || "PLAYLIST_URL";
 
-      // Count to next open (skip weekends)
-      const nx = nextTradingOpen(now);
-      const ms = nx.open.getTime() - now.getTime();
-      $("countdownDigits").textContent = formatHMS(ms);
-
-      // Pulse if within preopen window for TODAY (only if we're in preopen)
-      if(state.phase === "preopen"){
-        $("countdownDigits").classList.add("pulse");
-        $("countLabelSmall").textContent = "OPENS IN";
-      } else if(state.phase === "post" || state.phase === "weekend"){
-        $("countdownDigits").classList.remove("pulse");
-        $("countLabelSmall").textContent = "NEXT OPEN";
+      const url = CONFIG.motivationDataUrl || CONFIG.motivationUrl || "";
+      if(url){
+        $("motivationImg").src = url;
+        $("motivationImg").style.display = "block";
+        $("motivationEmpty").style.display = "none";
       } else {
-        $("countdownDigits").classList.remove("pulse");
-        $("countLabelSmall").textContent = "OPENS IN";
+        $("motivationImg").style.display = "none";
+        $("motivationEmpty").style.display = "block";
       }
     }
 
-    /* =========================
-      MODE / BADGES
-    ========================== */
-    function applyMode(){
-      const st = computeSessionState();
+    let purpleMode = false;
 
-      document.body.classList.remove("mode-blue","mode-preopen","mode-mamba","mode-post");
+    function applyMode(){
+      if(purpleMode) return;
+
+      const st = computeSessionState();
+      document.body.classList.remove("mode-blue","mode-preopen","mode-mamba","mode-post","mode-purple");
       document.body.classList.add(`mode-${st.mode}`);
 
       $("modeLabel").textContent = st.label;
@@ -902,15 +1232,62 @@
       }
     }
 
+    function updateClockAndCountdown(){
+      const parts = nowParts();
+      $("nowTime").textContent = `${parts.hour}:${parts.minute}:${parts.second} ${parts.dayPeriod}`;
+      $("nowDate").textContent = `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year}`;
+
+      const now = new Date();
+      const st = computeSessionState();
+
+      if(st.phase === "live"){
+        $("countLabelSmall").textContent = "MARKET OPEN";
+        $("countdownDigits").textContent = "LIVE";
+        $("countdownDigits").classList.remove("pulse");
+        return;
+      }
+
+      const open = nextTradingOpen(now);
+      const ms = open.getTime() - now.getTime();
+      $("countdownDigits").textContent = formatHMS(ms);
+
+      const preopenMs = (Number(CONFIG.preopenMinutes)||15)*60*1000;
+      if(ms > 0 && ms <= preopenMs && st.phase !== "post" && st.phase !== "weekend"){
+        $("countdownDigits").classList.add("pulse");
+      } else {
+        $("countdownDigits").classList.remove("pulse");
+      }
+
+      if(st.phase === "preopen"){
+        $("countLabelSmall").textContent = "OPENS IN";
+      } else if(st.phase === "post" || st.phase === "weekend"){
+        $("countLabelSmall").textContent = "NEXT OPEN";
+      } else {
+        $("countLabelSmall").textContent = "OPENS IN";
+      }
+    }
+
     /* =========================
       QUOTES
     ========================== */
-    let quoteOn = true;
-    let quoteIdx = 0;
-    function rotateQuote(){
-      if(!quoteOn) return;
-      quoteIdx = (quoteIdx + 1) % CONFIG.quotes.length;
-      $("quoteLine").textContent = CONFIG.quotes[quoteIdx];
+    let quotesOn = true;
+    let quoteTimer = null;
+
+    function currentQuoteBank(){
+      return purpleMode ? QUOTES_PURPLE : QUOTES_MAMBA;
+    }
+
+    function pickQuote(){
+      const bank = currentQuoteBank();
+      const q = bank[Math.floor(Math.random() * bank.length)];
+      $("quoteLine").textContent = q;
+    }
+
+    function startQuoteRotation(){
+      if(quoteTimer) clearInterval(quoteTimer);
+      pickQuote();
+      const sec = Math.max(3, Math.min(60, Number(CONFIG.quoteSeconds) || 8));
+      quoteTimer = setInterval(()=>{ if(quotesOn) pickQuote(); }, sec * 1000);
     }
 
     /* =========================
@@ -924,37 +1301,25 @@
     }
 
     /* =========================
-      MANUAL MAMBA + LOCK
+      FULLSCREEN + START OVERLAY
     ========================== */
-    let manualMamba = false;
-    let manualLock = false;
-
-    function setLock(on){
-      manualLock = on;
-      $("lockToggle").textContent = `LOCK: ${manualLock ? "ON" : "OFF"} (L)`;
-      // quick visual accent for lock button
-      $("lockToggle").classList.toggle("red", manualLock);
+    async function requestFs(){
+      try{
+        const el = document.documentElement;
+        if(el.requestFullscreen) await el.requestFullscreen();
+        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      }catch(e){}
     }
-
-    function toggleMamba(){
-      manualMamba = !manualMamba;
-      if(manualMamba){
-        document.body.classList.remove("mode-blue","mode-preopen","mode-post");
-        document.body.classList.add("mode-mamba");
-        $("modeLabel").textContent = "MANUAL";
-        $("sessionTag").textContent = "EXECUTE";
-        $("ruleState").textContent = "EXECUTE";
-        $("statusBig").textContent = "MANUAL MAMBA";
-        $("statusSmall").textContent = "Manual override: lock in • follow rules";
-      } else {
-        applyMode();
-      }
-    }
+    function hideStartOverlay(){ $("startOverlay").style.display = "none"; }
 
     /* =========================
-      TradingView Widgets
+      TRADINGVIEW WIDGETS
+      Fixes Apple fallback by using CME_MINI:MNQ1!
     ========================== */
+    let widgetsMounted = false;
+
     function mountTVCharts(){
+      if(widgetsMounted) return;
       if(typeof TradingView === "undefined" || !TradingView.widget) return;
 
       const base = {
@@ -966,16 +1331,49 @@
         locale: "en",
         enable_publishing: false,
         allow_symbol_change: CONFIG.allowSymbolChange,
-        hide_legend: false,
         hide_side_toolbar: true,
         hide_top_toolbar: true,
         withdateranges: true,
-        save_image: false,
+        save_image: false
       };
 
-      new TradingView.widget({ ...base, interval: "5",   container_id: "tv_5m" });
-      new TradingView.widget({ ...base, interval: "60",  container_id: "tv_1h" });
-      new TradingView.widget({ ...base, interval: "240", container_id: "tv_4h" });
+      try{
+        new TradingView.widget({ ...base, interval: "5",   container_id: "tv_5m" });
+        new TradingView.widget({ ...base, interval: "60",  container_id: "tv_1h" });
+        new TradingView.widget({ ...base, interval: "240", container_id: "tv_4h" });
+        widgetsMounted = true;
+
+        setTimeout(()=>{
+          const has5 = $("tv_5m").querySelector("iframe");
+          const has1 = $("tv_1h").querySelector("iframe");
+          const has4 = $("tv_4h").querySelector("iframe");
+          if(!has5) $("fb5m").classList.add("on");
+          if(!has1) $("fb1h").classList.add("on");
+          if(!has4) $("fb4h").classList.add("on");
+        }, 2500);
+
+      }catch(e){
+        $("fb5m").classList.add("on");
+        $("fb1h").classList.add("on");
+        $("fb4h").classList.add("on");
+      }
+    }
+
+    function waitForTV(){
+      if(typeof TradingView !== "undefined" && TradingView.widget){
+        mountTVCharts();
+      } else {
+        setTimeout(waitForTV, 120);
+      }
+    }
+
+    /* =========================
+      QUICK OPEN
+    ========================== */
+    function openTradingView(){
+      const url = (CONFIG.quickOpenUrl || DEFAULTS.quickOpenUrl).trim();
+      const w = window.open(url, "_blank");
+      if(!w) window.location.href = url;
     }
 
     /* =========================
@@ -983,29 +1381,35 @@
     ========================== */
     function openSettings(){
       $("modalBack").classList.add("on");
-      // fill fields
+
       $("f_symbol").value = CONFIG.symbol || "";
-      $("f_model").value = CONFIG.modelLabel || "";
+      $("f_tz").value = CONFIG.timezone || "America/Denver";
+      $("f_start").value = CONFIG.sessionStart || "";
+      $("f_end").value = CONFIG.sessionEnd || "";
+      $("f_pre").value = String(CONFIG.preopenMinutes ?? 15);
+      $("f_qsec").value = String(CONFIG.quoteSeconds ?? 8);
+
       $("f_dml").value = CONFIG.risk.dailyMaxLoss || "";
       $("f_dt").value  = CONFIG.risk.dailyTarget || "";
       $("f_wt").value  = CONFIG.risk.weeklyTarget || "";
       $("f_pl").value  = CONFIG.risk.posLimits || "";
-      $("f_start").value = CONFIG.sessionStart || "";
-      $("f_end").value   = CONFIG.sessionEnd || "";
-      $("f_pre").value   = String(CONFIG.preopenMinutes ?? 15);
+
+      $("f_model").value = CONFIG.modelLabel || "";
       $("f_spotify").value = CONFIG.spotifyUrl || "";
+      $("f_imgurl").value = CONFIG.motivationUrl || "";
+      $("f_openurl").value = CONFIG.quickOpenUrl || "";
+
       $("f_symbol").focus();
     }
     function closeSettings(){ $("modalBack").classList.remove("on"); }
 
     function applySavedForm(){
-      const s = structuredClone(CONFIG);
-      s.symbol = ($("f_symbol").value || DEFAULTS.symbol).trim();
-      s.modelLabel = ($("f_model").value || DEFAULTS.modelLabel).trim();
-      s.risk.dailyMaxLoss = ($("f_dml").value || DEFAULTS.risk.dailyMaxLoss).trim();
-      s.risk.dailyTarget  = ($("f_dt").value  || DEFAULTS.risk.dailyTarget).trim();
-      s.risk.weeklyTarget = ($("f_wt").value  || DEFAULTS.risk.weeklyTarget).trim();
-      s.risk.posLimits    = ($("f_pl").value  || DEFAULTS.risk.posLimits).trim();
+      const s = deepClone(CONFIG);
+
+      const sym = ($("f_symbol").value || DEFAULTS.symbol).trim();
+      s.symbol = sym || DEFAULTS.symbol;
+
+      s.timezone = ($("f_tz").value || DEFAULTS.timezone).trim();
 
       const st = ($("f_start").value || DEFAULTS.sessionStart).trim();
       const en = ($("f_end").value   || DEFAULTS.sessionEnd).trim();
@@ -1015,104 +1419,176 @@
       const pre = Number(($("f_pre").value || DEFAULTS.preopenMinutes));
       s.preopenMinutes = Number.isFinite(pre) ? Math.max(0, Math.min(180, pre)) : DEFAULTS.preopenMinutes;
 
-      const spot = ($("f_spotify").value || DEFAULTS.spotifyUrl).trim();
-      s.spotifyUrl = spot || DEFAULTS.spotifyUrl;
+      const qsec = Number(($("f_qsec").value || DEFAULTS.quoteSeconds));
+      s.quoteSeconds = Number.isFinite(qsec) ? Math.max(3, Math.min(60, qsec)) : DEFAULTS.quoteSeconds;
 
-      // Save + apply
+      s.risk.dailyMaxLoss = ($("f_dml").value || DEFAULTS.risk.dailyMaxLoss).trim();
+      s.risk.dailyTarget  = ($("f_dt").value  || DEFAULTS.risk.dailyTarget).trim();
+      s.risk.weeklyTarget = ($("f_wt").value  || DEFAULTS.risk.weeklyTarget).trim();
+      s.risk.posLimits    = ($("f_pl").value  || DEFAULTS.risk.posLimits).trim();
+
+      s.modelLabel = ($("f_model").value || DEFAULTS.modelLabel).trim();
+
+      s.spotifyUrl = ($("f_spotify").value || DEFAULTS.spotifyUrl).trim() || DEFAULTS.spotifyUrl;
+      s.motivationUrl = ($("f_imgurl").value || "").trim();
+      s.quickOpenUrl = ($("f_openurl").value || DEFAULTS.quickOpenUrl).trim() || DEFAULTS.quickOpenUrl;
+
       CONFIG = s;
       saveSettings(CONFIG);
-      paintStaticLabels();
 
-      // NOTE: TradingView widgets won’t refresh symbol without remounting. Easiest: reload page.
-      // We keep it simple: if symbol changed, prompt user to refresh.
+      paintStaticLabels();
+      startQuoteRotation();
       closeSettings();
-      if(CONFIG.symbol !== (loadSettings().symbol)){
-        // do nothing; kept for clarity
-      }
+
+      // If you changed symbol/timezone and want widgets to update instantly,
+      // refresh the page after saving.
     }
 
     function resetAll(){
       localStorage.removeItem(STORAGE_KEY);
-      CONFIG = structuredClone(DEFAULTS);
+      CONFIG = deepClone(DEFAULTS);
       saveSettings(CONFIG);
-      paintStaticLabels();
-      closeSettings();
       location.reload();
     }
 
+    async function handleMotivationFile(file){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        CONFIG.motivationDataUrl = String(reader.result || "");
+        saveSettings(CONFIG);
+        paintStaticLabels();
+      };
+      reader.readAsDataURL(file);
+    }
+
     /* =========================
-      INIT
+      TOGGLES
+    ========================== */
+    function setPurple(on){
+      purpleMode = on;
+      document.body.classList.remove("mode-blue","mode-preopen","mode-mamba","mode-post","mode-purple");
+      if(purpleMode){
+        document.body.classList.add("mode-purple");
+        $("modeLabel").textContent = "PURPLE";
+        $("sessionTag").textContent = "LOCKED";
+        $("ruleState").textContent = "LOCKED";
+        $("statusBig").textContent = "BLACK MAMBA";
+        $("statusSmall").textContent = "PURPLE MODE: calm focus • sharp edge • no noise";
+        ["leftTag2","rulesBadge","threatBadge","riskBadge","focusTag","rtBadge","rbBadge"].forEach(id=>{
+          $(id).className = "tag purple";
+        });
+      } else {
+        applyMode();
+      }
+
+      const accent = getComputedStyle(document.body).getPropertyValue("--accent").trim();
+      $("statusDot").style.background = accent;
+      $("statusDot").style.boxShadow = `0 0 12px ${accent}`;
+
+      startQuoteRotation();
+    }
+
+    function toggleMamba(){
+      setPurple(false);
+      document.body.classList.remove("mode-blue","mode-preopen","mode-post","mode-purple");
+      document.body.classList.add("mode-mamba");
+
+      $("modeLabel").textContent = "MANUAL";
+      $("sessionTag").textContent = "EXECUTE";
+      $("ruleState").textContent = "EXECUTE";
+      $("statusBig").textContent = "MANUAL MAMBA";
+      $("statusSmall").textContent = "Manual override: lock in • follow rules • no hunting";
+
+      ["leftTag2","rulesBadge","threatBadge","riskBadge","focusTag","rtBadge","rbBadge"].forEach(id=>{
+        $(id).className = "tag red";
+      });
+
+      const accent = getComputedStyle(document.body).getPropertyValue("--accent").trim();
+      $("statusDot").style.background = accent;
+      $("statusDot").style.boxShadow = `0 0 12px ${accent}`;
+
+      startQuoteRotation();
+    }
+
+    /* =========================
+      INIT + EVENTS
     ========================== */
     function tick(){
       updateClockAndCountdown();
-      if(!manualLock){
-        if(!manualMamba) applyMode();
-      } else {
-        // lock on: keep manual state if mamba enabled, otherwise keep current body mode
-        if(manualMamba){
-          // keep forced mamba
-        } else {
-          // lock without manual mamba: freeze the current auto mode visually
-        }
-      }
+      applyMode();
     }
 
-    // Buttons
-    $("mambaToggle").addEventListener("click", toggleMamba);
-    $("musicToggle").addEventListener("click", ()=>setMusic(!musicOn));
-    $("kobeToggle").addEventListener("click", ()=>{
-      quoteOn = !quoteOn;
-      $("kobeToggle").textContent = `KOBE: ${quoteOn ? "ON" : "OFF"} (K)`;
-      $("quoteLine").style.display = quoteOn ? "block" : "none";
+    $("startBtn").addEventListener("click", async ()=>{
+      hideStartOverlay();
+      await requestFs();
+      waitForTV();
+      tick();
     });
-    $("lockToggle").addEventListener("click", ()=>setLock(!manualLock));
+
+    $("startNoFsBtn").addEventListener("click", ()=>{
+      hideStartOverlay();
+      waitForTV();
+      tick();
+    });
+
+    $("openTVBtn").addEventListener("click", openTradingView);
+
+    $("mambaToggle").addEventListener("click", toggleMamba);
+    $("purpleToggle").addEventListener("click", ()=>setPurple(!purpleMode));
+    $("kobeToggle").addEventListener("click", ()=>{
+      quotesOn = !quotesOn;
+      $("kobeToggle").textContent = `QUOTES: ${quotesOn ? "ON" : "OFF"} (K)`;
+      $("quoteLine").style.display = quotesOn ? "block" : "none";
+      if(quotesOn) pickQuote();
+    });
+
+    $("musicToggle").addEventListener("click", ()=>setMusic(!musicOn));
     $("settingsBtn").addEventListener("click", openSettings);
+    $("fsBtn").addEventListener("click", requestFs);
+
     $("closeSettings").addEventListener("click", closeSettings);
     $("modalBack").addEventListener("click", (e)=>{ if(e.target === $("modalBack")) closeSettings(); });
     $("saveSettings").addEventListener("click", applySavedForm);
     $("resetSettings").addEventListener("click", resetAll);
 
+    $("f_img").addEventListener("change", (e)=>{
+      const file = e.target.files && e.target.files[0];
+      handleMotivationFile(file);
+    });
+
     // Keyboard shortcuts
     window.addEventListener("keydown", (e)=>{
       if(e.repeat) return;
-      const key = (e.key || "").toLowerCase();
-      if(key === "m") toggleMamba();
-      if(key === "l") setLock(!manualLock);
-      if(key === "p") setMusic(!musicOn);
-      if(key === "k"){
-        quoteOn = !quoteOn;
-        $("kobeToggle").textContent = `KOBE: ${quoteOn ? "ON" : "OFF"} (K)`;
-        $("quoteLine").style.display = quoteOn ? "block" : "none";
+      const k = (e.key || "").toLowerCase();
+      if(k === "m") toggleMamba();
+      if(k === "u") setPurple(!purpleMode);
+      if(k === "k"){
+        quotesOn = !quotesOn;
+        $("kobeToggle").textContent = `QUOTES: ${quotesOn ? "ON" : "OFF"} (K)`;
+        $("quoteLine").style.display = quotesOn ? "block" : "none";
+        if(quotesOn) pickQuote();
       }
-      if(key === "s"){
-        const isOpen = $("modalBack").classList.contains("on");
-        isOpen ? closeSettings() : openSettings();
-      }
-      if(key === "escape") closeSettings();
+      if(k === "p") setMusic(!musicOn);
+      if(k === "s") openSettings();
+      if(k === "f") requestFs();
+      if(k === "escape") closeSettings();
     });
 
-    // Start
+    // Boot
     paintStaticLabels();
+    startQuoteRotation();
     tick();
     setInterval(tick, 1000);
-    setInterval(rotateQuote, 12000);
 
-    // Mount TradingView after tv.js is ready
-    function waitForTV(){
-      if(typeof TradingView !== "undefined" && TradingView.widget){
-        mountTVCharts();
-      } else {
-        setTimeout(waitForTV, 150);
-      }
+    // Quote rotation start
+    function pickQuote(){
+      const bank = purpleMode ? QUOTES_PURPLE : QUOTES_MAMBA;
+      const q = bank[Math.floor(Math.random() * bank.length)];
+      $("quoteLine").textContent = q;
     }
-    waitForTV();
-  </script>
+    startQuoteRotation();
 
-  <!--
-    QUICK SETUP NOTES
-    1) SPOTIFY: Open settings (S) and paste your Spotify embed URL.
-    2) INDICATORS: TV widgets may not show your custom indicators. For exact layouts, use a saved TradingView layout embed/iframe.
-    3) TIME GATES (MT): Offline -> Preopen -> Live -> Post (weekends closed).
-  -->
+  </script>
 </body>
 </html>
