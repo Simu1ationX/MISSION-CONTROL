@@ -4,6 +4,7 @@ function updateClock(){
   const now = new Date();
   document.getElementById("clock").textContent =
     `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+
   document.getElementById("date").textContent = now.toLocaleDateString(undefined, {
     weekday:"long", year:"numeric", month:"long", day:"numeric"
   });
@@ -24,6 +25,7 @@ function setActive(btn){
 
 function setTheme(mode){
   const r = document.documentElement;
+
   if(mode === "PURPLE"){
     r.style.setProperty("--accent","rgba(170,120,255,0.92)");
     r.style.setProperty("--accentSoft","rgba(170,120,255,0.18)");
@@ -37,7 +39,7 @@ function setTheme(mode){
   }else{
     r.style.setProperty("--accent","rgba(0,255,220,0.92)");
     r.style.setProperty("--accentSoft","rgba(0,255,220,0.18)");
-    r.style.setProperty("--stroke","rgba(80,255,240,0.20)");
+    r.style.setProperty("--stroke","rgba(80,255,240,0.22)");
     themeState.textContent = "CYAN";
   }
 }
@@ -52,16 +54,16 @@ document.getElementById("btnFull").addEventListener("click", () => {
   else document.exitFullscreen?.();
 });
 
-// Make the holo stage respond slightly to mouse (depth/parallax)
+// Parallax tilt for holo stage
 const stage = document.getElementById("holoStage");
 let raf = null;
 
 function onMove(e){
   if(!stage) return;
   const rect = stage.getBoundingClientRect();
-  const x = (e.clientX - rect.left) / rect.width;   // 0..1
-  const y = (e.clientY - rect.top) / rect.height;   // 0..1
-  const rx = (0.5 - y) * 6; // tilt
+  const x = (e.clientX - rect.left) / rect.width;
+  const y = (e.clientY - rect.top) / rect.height;
+  const rx = (0.5 - y) * 6;
   const ry = (x - 0.5) * 8;
 
   if(raf) cancelAnimationFrame(raf);
@@ -69,10 +71,9 @@ function onMove(e){
     stage.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
   });
 }
-
 window.addEventListener("mousemove", onMove);
 
-// Micro panel live numbers (adds “alive” feel like inspo)
+// Alive numbers + “fire when ready” vibe (simulated for now)
 function rnd(min, max){ return Math.random() * (max - min) + min; }
 
 function tickMicros(){
@@ -86,21 +87,25 @@ function tickMicros(){
     el.textContent = v;
   });
 
-  // animate center state text a little
   const core = document.getElementById("coreStatus");
   const exec = document.getElementById("execState");
   const gate = document.getElementById("gateState");
+  const execTop = document.getElementById("execStateTop");
+  const gateTop = document.getElementById("gateStateTop");
+  const fire = document.getElementById("fireState");
 
-  const states = ["SYSTEM READY", "CALIBRATING", "TRACKING", "LOCKED"];
-  core.textContent = states[Math.floor(rnd(0, states.length))];
-
-  exec.textContent = Math.random() > 0.7 ? "ARMED" : "WAIT";
+  const armed = Math.random() > 0.80;
+  core.textContent = armed ? "TRACKING SIGNAL" : "SYSTEM READY";
+  exec.textContent = armed ? "ARMED" : "WAIT";
   gate.textContent = "SESSION";
+  execTop.textContent = exec.textContent;
+  gateTop.textContent = gate.textContent;
+  fire.textContent = armed ? "FIRE WHEN READY" : "STANDBY";
 }
 setInterval(tickMicros, 900);
 tickMicros();
 
-// Optional: theme by time (kept subtle)
+// Default theme by time
 (function themeByTime(){
   const h = new Date().getHours();
   if(h < 7 || h >= 17){ setTheme("PURPLE"); setActive(btnPurple); }
