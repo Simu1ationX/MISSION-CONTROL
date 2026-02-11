@@ -4,9 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MISSION CONTROL // HOLO</title>
-  <link rel="stylesheet" href="./styles.css?v=HOLO2" />
+  <link rel="stylesheet" href="./styles.css?v=HOLO_FINAL1" />
 </head>
+
 <body>
+  <!-- Cinematic background scene -->
+  <div class="bg-scene" aria-hidden="true"></div>
+  <div class="bg-vignette" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
 
   <header class="top-hud">
     <div class="hud-left">
@@ -79,14 +84,6 @@
         <div class="panel-title">RISK</div>
         <div class="risk-grid">
           <div class="risk-card">
-            <div class="risk-label">MAX LOSS</div>
-            <div class="risk-value">$—</div>
-          </div>
-          <div class="risk-card">
-            <div class="risk-label">TARGET</div>
-            <div class="risk-value">$—</div>
-          </div>
-          <div class="risk-card">
             <div class="risk-label">LOSSES</div>
             <div class="risk-value" id="lossCount">0</div>
           </div>
@@ -94,79 +91,54 @@
             <div class="risk-label">STATUS</div>
             <div class="risk-value" id="fireState">STANDBY</div>
           </div>
+          <div class="risk-card">
+            <div class="risk-label">EXEC</div>
+            <div class="risk-value" id="execStateTop">WAIT</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-label">GATE</div>
+            <div class="risk-value" id="gateStateTop">SESSION</div>
+          </div>
         </div>
       </section>
     </aside>
 
-    <!-- CENTER HOLO WALL -->
+    <!-- CENTER -->
     <main class="mid-col">
       <section class="panel panel-float holo-panel">
         <div class="panel-title">HOLO WALL</div>
 
-        <!-- ceiling light bars (inspo #1) -->
         <div class="ceiling-bars" aria-hidden="true">
           <div class="bar b1"></div>
           <div class="bar b2"></div>
           <div class="bar b3"></div>
         </div>
 
-        <!-- micro top panes -->
         <div class="holo-micros" aria-hidden="true">
-          <div class="micro">
-            <div class="micro-title">VOL</div>
-            <div class="micro-val" data-live="vol">—</div>
-            <div class="spark"></div>
-          </div>
-          <div class="micro">
-            <div class="micro-title">FLOW</div>
-            <div class="micro-val" data-live="flow">—</div>
-            <div class="spark"></div>
-          </div>
-          <div class="micro">
-            <div class="micro-title">RANGE</div>
-            <div class="micro-val" data-live="range">—</div>
-            <div class="spark"></div>
-          </div>
-          <div class="micro">
-            <div class="micro-title">HEAT</div>
-            <div class="micro-val" data-live="heat">—</div>
-            <div class="spark"></div>
-          </div>
+          <div class="micro"><div class="micro-title">VOL</div><div class="micro-val" data-live="vol">—</div><div class="spark"></div></div>
+          <div class="micro"><div class="micro-title">FLOW</div><div class="micro-val" data-live="flow">—</div><div class="spark"></div></div>
+          <div class="micro"><div class="micro-title">RANGE</div><div class="micro-val" data-live="range">—</div><div class="spark"></div></div>
+          <div class="micro"><div class="micro-title">HEAT</div><div class="micro-val" data-live="heat">—</div><div class="spark"></div></div>
         </div>
 
-        <!-- main hologram stage -->
         <div class="holo-stage" id="holoStage">
-          <!-- background data wall -->
           <div class="datawall" aria-hidden="true">
-            <div class="map"></div>
+            <div class="grid"></div>
             <div class="tickerline"></div>
             <div class="tickerline t2"></div>
           </div>
 
-          <!-- fog + particles -->
           <div class="fog" aria-hidden="true"></div>
           <div class="particles" aria-hidden="true"></div>
 
-          <!-- rings -->
-          <div class="rings" aria-hidden="true">
-            <div class="ring r1"></div>
-            <div class="ring r2"></div>
-            <div class="ring r3"></div>
-            <div class="ring r4"></div>
-          </div>
-
-          <!-- floating holo panes (inspo #2/#5) -->
           <div class="float-pane p1" aria-hidden="true">
-            <div class="pane-title">ORDER FLOW</div>
-            <div class="pane-mini"></div>
+            <div class="pane-title">ORDER FLOW</div><div class="pane-mini"></div>
           </div>
           <div class="float-pane p2" aria-hidden="true">
-            <div class="pane-title">TREND</div>
-            <div class="pane-mini"></div>
+            <div class="pane-title">TREND</div><div class="pane-mini"></div>
           </div>
           <div class="float-pane p3" aria-hidden="true">
-            <div class="pane-title">VOL CLUSTER</div>
-            <div class="pane-mini"></div>
+            <div class="pane-title">VOL CLUSTER</div><div class="pane-mini"></div>
           </div>
           <div class="float-pane p4" aria-hidden="true">
             <div class="pane-title">LEVELS</div>
@@ -177,10 +149,17 @@
             </div>
           </div>
 
-          <!-- center emblem (placeholder; we’ll swap to your purple logo art later) -->
-          <div class="core-emblem" aria-hidden="true">
-            <div class="emblem-glow"></div>
-            <div class="emblem-mark">M</div>
+          <div class="rings" aria-hidden="true">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+          </div>
+
+          <!-- YOUR LOGO -->
+          <div class="logo-orbit" aria-hidden="true">
+            <div class="logo-halo"></div>
+            <img class="mamba-logo" src="./assets/mamba.webp" alt="" />
           </div>
 
           <div class="callout left" aria-hidden="true">
@@ -199,14 +178,14 @@
       <section class="panel panel-float">
         <div class="panel-title">SYSTEM LOG</div>
         <div class="log" id="sysLog">
-          <div class="log-line">[OK] HOLO2 loaded</div>
-          <div class="log-line">[OK] Depth + fog + panes online</div>
-          <div class="log-line">[INFO] Charts disabled (layout phase)</div>
+          <div class="log-line">[OK] Assets detected: room.jpg + mamba.webp</div>
+          <div class="log-line">[OK] HOLO_FINAL1 loaded</div>
+          <div class="log-line">[INFO] Next phase: embed TradingView charts (MNQ)</div>
         </div>
       </section>
     </main>
 
-    <!-- RIGHT: CHART STACK SLOTS -->
+    <!-- RIGHT -->
     <aside class="right-col">
       <section class="panel panel-float">
         <div class="panel-title">MARKET VISION</div>
@@ -220,6 +199,6 @@
 
   </div>
 
-  <script src="./app.js?v=HOLO2"></script>
+  <script src="./app.js?v=HOLO_FINAL1"></script>
 </body>
 </html>
