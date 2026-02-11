@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MISSION CONTROL // MAMBA</title>
-  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- Cache-bust so GitHub Pages doesn’t serve old files -->
+  <link rel="stylesheet" href="./styles.css?v=FINAL5" />
 </head>
 
 <body>
@@ -26,8 +28,8 @@
         <div class="metric-value" id="nyOpen">--:--:--</div>
       </div>
       <div class="hud-metric">
-        <div class="metric-label">SESSION</div>
-        <div class="metric-value" id="sessionState">STANDBY</div>
+        <div class="metric-label">THEME</div>
+        <div class="metric-value" id="themeState">CYAN</div>
       </div>
     </div>
   </header>
@@ -37,7 +39,6 @@
 
     <!-- LEFT COLUMN -->
     <aside class="left-col">
-
       <section class="panel panel-float">
         <div class="panel-title">MISSION CONTROL</div>
 
@@ -48,17 +49,17 @@
         </div>
 
         <div class="chip-row">
-          <button class="chip" type="button">QUOTE: ON</button>
-          <button class="chip" type="button">MOUTH: ON</button>
-          <button class="chip danger" type="button">FLASH: ON</button>
-          <button class="chip" type="button">FULLSCREEN</button>
+          <button class="chip" type="button" id="btnQuote">QUOTE: ON</button>
+          <button class="chip" type="button" id="btnMouth">MOUTH: ON</button>
+          <button class="chip danger" type="button" id="btnFlash">FLASH: ON</button>
+          <button class="chip" type="button" id="btnFull">FULLSCREEN</button>
         </div>
 
         <div class="divider"></div>
 
         <div class="mini-row">
           <div class="mini-label">SYMBOL</div>
-          <div class="mini-value">CME_MINI:MNQ1!</div>
+          <div class="mini-value" id="symbolLabel">CME_MINI:MNQ1!</div>
         </div>
 
         <div class="mini-row">
@@ -110,16 +111,14 @@
           </div>
         </div>
       </section>
-
     </aside>
 
     <!-- MIDDLE COLUMN -->
     <main class="mid-col">
-
       <section class="panel panel-float arc-panel">
-        <div class="panel-title">ARC CORE</div>
+        <div class="panel-title">CORE</div>
 
-        <!-- NEW: Stark HUD overlay (useful center content) -->
+        <!-- Stark HUD (center useful) -->
         <div class="mid-hud">
           <div class="hudbox">
             <div class="hlabel">BIAS</div>
@@ -139,29 +138,91 @@
           </div>
         </div>
 
-        <!-- Arc Reactor -->
-        <div class="arc-wrap" aria-hidden="true">
-          <div class="arc-ring arc-ring-1"></div>
-          <div class="arc-ring arc-ring-2"></div>
-          <div class="arc-ring arc-ring-3"></div>
-          <div class="arc-center"></div>
-          <div class="arc-text" id="arcText">INITIALIZING • EXECUTION READY</div>
+        <!-- Center: Purple Mamba emblem + Stark rings -->
+        <div class="core-stage">
+          <div class="jarvis-rings">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+          </div>
+
+          <!-- Inline SVG emblem (purple) -->
+          <div class="mamba-emblem" aria-hidden="true">
+            <svg viewBox="0 0 600 600" width="520" height="520">
+              <defs>
+                <radialGradient id="g1" cx="50%" cy="50%" r="60%">
+                  <stop offset="0%" stop-color="rgba(170,120,255,0.95)"/>
+                  <stop offset="45%" stop-color="rgba(120,60,220,0.75)"/>
+                  <stop offset="100%" stop-color="rgba(25,10,45,0.15)"/>
+                </radialGradient>
+                <linearGradient id="g2" x1="0" x2="1">
+                  <stop offset="0%" stop-color="rgba(210,170,255,0.95)"/>
+                  <stop offset="55%" stop-color="rgba(140,80,240,0.80)"/>
+                  <stop offset="100%" stop-color="rgba(60,20,120,0.70)"/>
+                </linearGradient>
+                <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="6" result="b"/>
+                  <feColorMatrix in="b" type="matrix"
+                    values="1 0 0 0 0.55
+                            0 1 0 0 0.15
+                            0 0 1 0 0.95
+                            0 0 0 1 0" result="c"/>
+                  <feMerge>
+                    <feMergeNode in="c"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- soft core -->
+              <circle cx="300" cy="300" r="180" fill="url(#g1)" opacity="0.45"/>
+
+              <!-- emblem (stylized “Mamba spear”) -->
+              <path filter="url(#glow)"
+                d="M300 95
+                   L390 170
+                   L350 505
+                   L300 540
+                   L250 505
+                   L210 170
+                   Z"
+                fill="url(#g2)" opacity="0.95"/>
+
+              <!-- wings -->
+              <path filter="url(#glow)"
+                d="M300 170 L500 250 L430 285 L330 230 Z"
+                fill="url(#g2)" opacity="0.85"/>
+              <path filter="url(#glow)"
+                d="M300 170 L100 250 L170 285 L270 230 Z"
+                fill="url(#g2)" opacity="0.85"/>
+
+              <!-- snake hint line -->
+              <path
+                d="M330 140
+                   C360 160, 360 185, 335 205
+                   C310 225, 300 250, 320 280
+                   C345 320, 340 350, 310 375
+                   C275 405, 280 435, 315 465"
+                fill="none" stroke="rgba(230,210,255,0.55)" stroke-width="10"
+                stroke-linecap="round" opacity="0.65"/>
+            </svg>
+          </div>
+
+          <div class="core-status" id="arcText">INITIALIZING • EXECUTION READY</div>
         </div>
       </section>
 
       <section class="panel panel-float">
         <div class="panel-title">SYSTEM LOG</div>
         <div class="log" id="sysLog">
-          <div class="log-line">[OK] Visual HUD loaded</div>
-          <div class="log-line">[OK] Right-side chart stack ready</div>
-          <div class="log-line">[OK] Symbol locked: CME_MINI:MNQ1!</div>
-          <div class="log-line">[INFO] Mamba protocol standing by</div>
+          <div class="log-line">[OK] Boot complete</div>
+          <div class="log-line">[OK] Input online</div>
+          <div class="log-line">[OK] Charts: MNQ locked</div>
         </div>
       </section>
-
     </main>
 
-    <!-- RIGHT COLUMN: 3 STACKED CHARTS -->
+    <!-- RIGHT COLUMN -->
     <aside class="right-col">
       <section class="panel panel-float right-stack">
         <div class="panel-title">MARKET VISION</div>
@@ -176,8 +237,10 @@
 
   </div>
 
-  <!-- IMPORTANT: tv.js exactly ONCE -->
+  <!-- TradingView EXACTLY ONCE -->
   <script src="https://s3.tradingview.com/tv.js"></script>
-  <script src="./app.js"></script>
+
+  <!-- Cache-bust JS too -->
+  <script src="./app.js?v=FINAL5"></script>
 </body>
 </html>
