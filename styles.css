@@ -1,26 +1,49 @@
 :root{
   --bg0:#050a10;
   --bg1:#07121b;
+
+  /* Theme vars (JS will swap these) */
+  --accent: rgba(0,255,220,0.90);   /* cyan */
+  --accentSoft: rgba(0,255,220,0.18);
+  --stroke: rgba(80,255,240,0.20);
+
   --panel: rgba(10, 25, 35, 0.55);
-  --stroke: rgba(80, 255, 240, 0.20);
-  --glow: rgba(0, 255, 220, 0.18);
-  --glow2: rgba(0, 255, 220, 0.08);
   --text: rgba(220, 255, 250, 0.92);
   --muted: rgba(220, 255, 250, 0.65);
   --danger: rgba(255, 60, 60, 0.85);
 }
 
 *{ box-sizing: border-box; }
+
 html,body{ height:100%; }
 body{
   margin:0;
   background:
     radial-gradient(1200px 600px at 50% 40%, rgba(0,255,220,0.08), transparent 55%),
-    radial-gradient(900px 500px at 70% 20%, rgba(255,60,60,0.06), transparent 60%),
+    radial-gradient(900px 500px at 70% 20%, rgba(170,120,255,0.06), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
   overflow: hidden;
+}
+
+/* ✅ CLICK GUARANTEE:
+   No full-screen overlays. No pseudo-elements on panels. */
+.panel::before,
+.panel::after,
+.right-stack::before,
+.right-stack::after,
+.chart-panel::before,
+.chart-panel::after{
+  display: none !important;
+}
+
+button, a, iframe, .chart-panel, .chip{
+  pointer-events: auto !important;
+}
+
+.top-hud, .dash-grid, .panel, .left-col, .mid-col, .right-col{
+  pointer-events: auto !important;
 }
 
 /* TOP HUD */
@@ -36,7 +59,7 @@ body{
 }
 
 .hud-title{
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 14px;
@@ -49,7 +72,7 @@ body{
   border: 1px solid rgba(255,60,60,0.35);
   box-shadow: 0 0 18px rgba(255,60,60,0.12);
   color: rgba(255,220,220,0.95);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 11px;
 }
 .hud-sub{
@@ -96,14 +119,14 @@ body{
 }
 .metric-value{
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 900;
   margin-top: 4px;
 }
 
-/* GRID (Right column widened) */
+/* GRID (WIDER RIGHT) */
 .dash-grid{
   display:grid;
-  grid-template-columns: 320px 1fr 620px; /* ✅ charts wider */
+  grid-template-columns: 320px 1fr 680px; /* ✅ charts wider */
   gap: 12px;
   height: calc(100vh - 70px);
   padding: 12px;
@@ -124,46 +147,22 @@ body{
   background: var(--panel);
   backdrop-filter: blur(12px);
   box-shadow:
-    0 0 18px rgba(0,255,220,0.10),
-    inset 0 0 25px rgba(0,255,220,0.06);
+    0 0 18px rgba(0,0,0,0.25),
+    inset 0 0 24px rgba(0,0,0,0.20);
   overflow: hidden;
 }
 
-/* ✅ CRITICAL: overlays must never block clicks */
-.panel::after{
-  pointer-events: none !important;
-}
-
-/* floating */
 .panel-float{
-  transform: translateZ(0);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 .panel-float:hover{
   transform: translateY(-2px);
   border-color: rgba(80,255,240,0.28);
   box-shadow:
-    0 0 28px rgba(0,255,220,0.16),
-    inset 0 0 28px rgba(0,255,220,0.08);
+    0 0 26px var(--accentSoft),
+    inset 0 0 26px rgba(0,0,0,0.20);
 }
 
-/* subtle scanlines (visual only, never blocks clicks) */
-.panel::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: repeating-linear-gradient(
-    to bottom,
-    rgba(0,255,220,0.04),
-    rgba(0,255,220,0.04) 1px,
-    rgba(0,0,0,0) 3px,
-    rgba(0,0,0,0) 7px
-  );
-  opacity: 0.08;
-  mix-blend-mode: screen;
-}
-
-/* Titles */
 .panel-title{
   padding: 10px 12px;
   font-weight: 900;
@@ -173,6 +172,7 @@ body{
   border-bottom: 1px solid rgba(80,255,240,0.12);
 }
 
+/* chips */
 .chip-row{
   display:flex;
   flex-wrap: wrap;
@@ -192,7 +192,7 @@ body{
   user-select: none;
 }
 .chip.active{
-  box-shadow: 0 0 18px rgba(0,255,220,0.12);
+  box-shadow: 0 0 18px var(--accentSoft);
   border-color: rgba(80,255,240,0.28);
 }
 .chip.danger{
@@ -219,13 +219,13 @@ body{
   text-transform: uppercase;
 }
 .mini-value{
-  font-weight: 800;
+  font-weight: 900;
 }
 
+/* lists */
 .bullets{
   margin: 0;
   padding: 10px 18px 14px 28px;
-  color: var(--text);
 }
 .bullets li{
   margin: 8px 0;
@@ -257,23 +257,19 @@ body{
   font-size: 14px;
 }
 
-/* center arc panel */
-.arc-panel{
-  flex: 1 1 auto;
-  min-height: 0;
-}
+/* MID */
+.arc-panel{ flex: 1 1 auto; min-height: 0; }
 
-/* ✅ NEW: mid HUD overlay */
 .mid-hud{
   position:absolute;
   top: 56px;
   left: 14px;
   right: 14px;
   display:grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   z-index: 3;
-  pointer-events: none; /* HUD is display-only */
+  pointer-events: none; /* display only */
 }
 
 .hudbox{
@@ -281,29 +277,25 @@ body{
   border-radius: 12px;
   border: 1px solid rgba(80,255,240,0.18);
   background: rgba(5,10,16,0.22);
-  box-shadow: inset 0 0 18px rgba(0,255,220,0.06);
+  box-shadow: inset 0 0 18px rgba(0,0,0,0.30);
 }
-
 .hudbox.danger{
   border-color: rgba(255,60,60,0.28);
-  box-shadow: inset 0 0 18px rgba(255,60,60,0.08);
 }
-
 .hlabel{
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-
 .hval{
   margin-top: 6px;
   font-weight: 900;
   letter-spacing: 0.08em;
 }
 
-/* arc reactor */
-.arc-wrap{
+/* Center stage */
+.core-stage{
   position: relative;
   height: calc(100% - 44px);
   display:flex;
@@ -311,47 +303,50 @@ body{
   justify-content:center;
 }
 
-.arc-ring{
+/* Stark rings */
+.jarvis-rings{
   position:absolute;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  border: 2px solid rgba(0,255,220,0.12);
-  box-shadow: 0 0 40px rgba(0,255,220,0.12);
-  filter: drop-shadow(0 0 18px rgba(0,255,220,0.12));
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
 }
-
-.arc-ring-1{ animation: spin 14s linear infinite; }
-.arc-ring-2{ width: 420px; height: 420px; border-style: dashed; opacity: 0.55; animation: spin 11s linear infinite reverse; }
-.arc-ring-3{ width: 320px; height: 320px; opacity: 0.45; animation: spin 18s linear infinite; }
-
-.arc-center{
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(0,255,220,0.55), rgba(0,255,220,0.08));
-  border: 1px solid rgba(80,255,240,0.28);
-  box-shadow:
-    0 0 40px rgba(0,255,220,0.22),
-    inset 0 0 20px rgba(0,255,220,0.18);
-}
-
-.arc-text{
+.ring{
   position:absolute;
-  bottom: 18px;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(220,255,250,0.72);
-  font-size: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(80,255,240,0.12);
+  box-shadow: 0 0 30px var(--accentSoft);
+  filter: drop-shadow(0 0 18px var(--accentSoft));
+  opacity: 0.65;
 }
+.r1{ width: 680px; height: 680px; animation: spin 18s linear infinite; }
+.r2{ width: 560px; height: 560px; border-style: dashed; opacity: 0.45; animation: spin 14s linear infinite reverse; }
+.r3{ width: 420px; height: 420px; opacity: 0.35; animation: spin 22s linear infinite; }
 
 @keyframes spin{
   from{ transform: rotate(0deg); }
   to{ transform: rotate(360deg); }
 }
 
-/* log */
+.mamba-emblem{
+  position: relative;
+  transform: translateZ(0);
+  filter: drop-shadow(0 0 30px rgba(170,120,255,0.22));
+  pointer-events:none;
+}
+
+.core-status{
+  position:absolute;
+  bottom: 14px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(220,255,250,0.78);
+  font-size: 12px;
+}
+
+/* Log */
 .log{
   padding: 10px 12px 14px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -359,17 +354,9 @@ body{
   color: rgba(220,255,250,0.72);
   line-height: 1.55;
 }
-.log-line{ margin: 6px 0; }
 
-/* RIGHT CHART STACK */
-.right-stack{
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-/* IMPORTANT: Don't use scanline overlay on chart stack (iframes) */
-.right-stack::after{ display:none !important; }
-
+/* RIGHT STACK */
+.right-stack{ flex: 1 1 auto; min-height: 0; }
 .chart-stack{
   height: calc(100% - 44px);
   display:grid;
@@ -378,22 +365,17 @@ body{
   padding: 10px 12px 14px;
   min-height: 0;
 }
-
 .chart-panel{
   min-height: 0;
   border-radius: 10px;
   border: 1px solid rgba(80,255,240,0.16);
   background: rgba(5,10,16,0.25);
-  box-shadow: inset 0 0 22px rgba(0,255,220,0.06);
+  box-shadow: inset 0 0 22px rgba(0,0,0,0.25);
   overflow:hidden;
   position: relative;
-  z-index: 2;
 }
 
-/* IMPORTANT: no overlays on chart panels */
-.chart-panel::after{ display:none !important; }
-
-/* TradingView iframes */
+/* TradingView iframe sizing */
 .chart-panel > div,
 .chart-panel iframe{
   width:100% !important;
@@ -403,11 +385,9 @@ body{
 /* Responsive */
 @media (max-width: 1200px){
   body{ overflow:auto; }
-  .dash-grid{
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-  .mid-hud{
-    grid-template-columns: 1fr 1fr;
-  }
+  .dash-grid{ grid-template-columns: 1fr; height: auto; }
+  .mid-hud{ grid-template-columns: 1fr 1fr; }
+  .r1{ width: 520px; height: 520px; }
+  .r2{ width: 420px; height: 420px; }
+  .r3{ width: 320px; height: 320px; }
 }
