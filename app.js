@@ -5,36 +5,27 @@ function pad2(n){ return String(n).padStart(2, "0"); }
 
 function updateClock(){
   const now = new Date();
-  const h = pad2(now.getHours());
-  const m = pad2(now.getMinutes());
-  const s = pad2(now.getSeconds());
-  document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+  document.getElementById("clock").textContent =
+    `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
 
-  const dateStr = now.toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric"
+  document.getElementById("date").textContent = now.toLocaleDateString(undefined, {
+    weekday: "long", year: "numeric", month: "long", day: "numeric"
   });
-  document.getElementById("date").textContent = dateStr;
 }
 setInterval(updateClock, 250);
 updateClock();
 
 // =========================
-// NY OPEN TIMER (simple daily countdown)
-// NY Open 9:30am ET (lightweight approx DST)
+// NY OPEN TIMER (9:30 ET, lightweight DST-ish)
 // =========================
 function updateNYOpen(){
   const el = document.getElementById("nyOpen");
-  const sessionEl = document.getElementById("sessionState");
 
   const now = new Date();
   const utc = now.getTime() + now.getTimezoneOffset() * 60000;
 
-  // quick DST-ish estimate (good enough for dashboard)
-  const month = now.getMonth(); // 0-11
-  const isDstish = month >= 2 && month <= 10;
+  const month = now.getMonth();
+  const isDstish = month >= 2 && month <= 10;     // simple
   const etOffsetHours = isDstish ? -4 : -5;
 
   const etNow = new Date(utc + etOffsetHours * 3600000);
@@ -46,9 +37,6 @@ function updateNYOpen(){
   if (diffMs <= 0){
     open.setDate(open.getDate() + 1);
     diffMs = open - etNow;
-    sessionEl.textContent = "OPEN";
-  } else {
-    sessionEl.textContent = "COUNTDOWN";
   }
 
   const totalSec = Math.floor(diffMs / 1000);
@@ -62,7 +50,40 @@ setInterval(updateNYOpen, 500);
 updateNYOpen();
 
 // =========================
-// CENTER HUD (Stark useful data vibe - lightweight)
+// THEME SCHEDULER (CYAN ↔ PURPLE by time)
+// - You said colors change at certain times.
+// =========================
+function setTheme(mode){
+  const root = document.documentElement;
+  const themeState = document.getElementById("themeState");
+
+  if (mode === "PURPLE"){
+    root.style.setProperty("--accent", "rgba(170,120,255,0.92)");
+    root.style.setProperty("--accentSoft", "rgba(170,120,255,0.18)");
+    root.style.setProperty("--stroke", "rgba(180,130,255,0.22)");
+    themeState.textContent = "PURPLE";
+  } else {
+    root.style.setProperty("--accent", "rgba(0,255,220,0.90)");
+    root.style.setProperty("--accentSoft", "rgba(0,255,220,0.18)");
+    root.style.setProperty("--stroke", "rgba(80,255,240,0.20)");
+    themeState.textContent = "CYAN";
+  }
+}
+
+function themeByLocalTime(){
+  const h = new Date().getHours();
+  // Example schedule:
+  // 00:00–06:59 PURPLE (focus/night)
+  // 07:00–16:59 CYAN (day/session)
+  // 17:00–23:59 PURPLE (wind-down)
+  if (h < 7 || h >= 17) setTheme("PURPLE");
+  else setTheme("CYAN");
+}
+setInterval(themeByLocalTime, 30_000);
+themeByLocalTime();
+
+// =========================
+// CENTER HUD (simple “useful vibe” placeholder)
 // =========================
 const biasEl = document.getElementById("biasVal");
 const vwapEl = document.getElementById("vwapDist");
@@ -70,62 +91,55 @@ const emaEl  = document.getElementById("emaAlign");
 const arcText = document.getElementById("arcText");
 const sysLog  = document.getElementById("sysLog");
 
-const biasStates = ["BULLISH", "NEUTRAL", "BEARISH"];
-let biasIdx = 1;
-
 function addLog(line){
-  if (!sysLog) return;
   const d = document.createElement("div");
   d.className = "log-line";
   d.textContent = line;
   sysLog.appendChild(d);
-
-  // keep log from growing forever
-  const maxLines = 9;
-  while (sysLog.children.length > maxLines) sysLog.removeChild(sysLog.firstChild);
+  while (sysLog.children.length > 10) sysLog.removeChild(sysLog.firstChild);
 }
 
-function updateCenterHud(){
-  // This is “display” data (no broker/API). Just a useful vibe.
-  // If you later want real values, we can wire to your TradingView webhook/pine alerts.
+const biasStates = ["BULLISH", "NEUTRAL", "BEARISH"];
+let biasIdx = 1;
 
-  // cycle bias every 10s
+function updateCenterHud(){
   const t = Date.now();
-  if (t % 10000 < 400){
+
+  if (t % 10000 < 250){
     biasIdx = (biasIdx + 1) % biasStates.length;
     biasEl.textContent = biasStates[biasIdx];
-    addLog(`[HUD] Bias set: ${biasStates[biasIdx]}`);
+    addLog(`[HUD] Bias: ${biasStates[biasIdx]}`);
   }
 
-  // pseudo VWAP distance display
   const fake = (Math.sin(t / 3000) * 18).toFixed(1);
   vwapEl.textContent = `${fake > 0 ? "+" : ""}${fake} pts`;
 
-  // EMA align display
   const align = fake > 6 ? "9>21 UP" : fake < -6 ? "9<21 DOWN" : "MIXED";
   emaEl.textContent = align;
 
-  // arc status line
-  arcText.textContent = `INITIALIZING • EXECUTION READY • ${biasStates[biasIdx]}`;
+  arcText.textContent = `EXECUTION READY • ${biasStates[biasIdx]}`;
 }
 setInterval(updateCenterHud, 250);
 updateCenterHud();
 
 // =========================
-// TRADINGVIEW CHARTS (LOCK MNQ, NO APPLE)
-// FIXES: load timing + retry until tv.js ready
+// TRADINGVIEW (FORCE MNQ — NO APPLE)
 // =========================
-const TV_SYMBOL = "CME_MINI:MNQ1!"; // ✅ hard lock MNQ continuous
+const TV_SYMBOL = "CME_MINI:MNQ1!";  // ✅ hard lock
+const TV_TF = ["1", "5", "15"];      // 1m, 5m, 15m
 
 function mountTVChart(containerId, interval){
-  // clear container to avoid duplicate widgets on hot reloads
   const el = document.getElementById(containerId);
-  if (el) el.innerHTML = "";
+  if (!el) return;
+
+  // Hard reset container to avoid ghosts/duplicates
+  el.innerHTML = "";
+  el.style.pointerEvents = "auto";
 
   new TradingView.widget({
     autosize: true,
     symbol: TV_SYMBOL,
-    interval: interval,              // "1", "5", "15"
+    interval,
     timezone: "America/Denver",
     theme: "dark",
     style: "1",
@@ -135,32 +149,44 @@ function mountTVChart(containerId, interval){
     save_image: false,
     hide_top_toolbar: false,
     hide_legend: false,
-    allow_symbol_change: false,      // ✅ prevents drifting to AAPL
+    allow_symbol_change: false, // ✅ prevents drifting to AAPL
     container_id: containerId
   });
 }
 
-function initRightCharts(){
-  mountTVChart("tv_right_1", "1");
-  mountTVChart("tv_right_2", "5");
-  mountTVChart("tv_right_3", "15");
-  addLog("[TV] Charts mounted: MNQ1! (1m/5m/15m)");
+function initCharts(){
+  mountTVChart("tv_right_1", TV_TF[0]);
+  mountTVChart("tv_right_2", TV_TF[1]);
+  mountTVChart("tv_right_3", TV_TF[2]);
+  addLog(`[TV] Mounted ${TV_SYMBOL} (1m/5m/15m)`);
 }
 
-// ✅ Retry loader: fixes GitHub Pages timing + prevents fallback
-function waitForTradingViewAndInit(retries = 80){
+// Wait until tv.js is truly ready, then mount.
+// If tv.js fails, you’ll see it in console/log.
+function waitForTV(retries = 120){
   if (window.TradingView && typeof window.TradingView.widget === "function"){
-    initRightCharts();
+    initCharts();
     return;
   }
   if (retries <= 0){
-    console.error("TradingView failed to load.");
     addLog("[ERR] TradingView failed to load.");
+    console.error("TradingView failed to load.");
     return;
   }
-  setTimeout(() => waitForTradingViewAndInit(retries - 1), 250);
+  setTimeout(() => waitForTV(retries - 1), 250);
 }
 
 window.addEventListener("load", () => {
-  waitForTradingViewAndInit();
+  // Safety: make sure clicks are enabled (some browsers cache weird)
+  document.body.style.pointerEvents = "auto";
+  waitForTV();
+});
+
+// Optional: fullscreen button
+document.addEventListener("click", (e) => {
+  const t = e.target;
+  if (t && t.id === "btnFull"){
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
 });
