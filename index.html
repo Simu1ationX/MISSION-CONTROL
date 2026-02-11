@@ -2,730 +2,815 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mission Control</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MISSION CONTROL</title>
+
+  <!-- Optional: sleek font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#05070a;
-      --panel:#0b0f16;
-      --text:#e9eef7;
-      --muted:#9aa7bd;
+      --bg:#070a10;
+      --panel:#0b111b;
+      --panel2:#070c14;
 
-      /* Mode accents (will be overwritten by JS) */
-      --accent:#00b7ff;     /* electric blue */
-      --accent2:#00ffd5;    /* cyan */
-      --danger:#ff2e2e;     /* tactical red */
-      --glow: rgba(0,183,255,.35);
-      --border: rgba(0,183,255,.35);
+      --text:#e9f4ff;
+      --muted:rgba(233,244,255,.62);
+
+      --blue:#10d7ff;
+      --blue2:#00b8ff;
+
+      --red:#ff2a2a;
+      --red2:#ff4b4b;
+
+      --line:rgba(255,255,255,.08);
+      --shadow:rgba(0,0,0,.6);
+
+      --radius:14px;
+      --radius2:18px;
+
+      --glow: var(--blue);
+      --glowSoft: rgba(16,215,255,.18);
+
+      --rail: rgba(16,215,255,.65);
+      --railSoft: rgba(16,215,255,.12);
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
-    body{overflow:hidden}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Rajdhani", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 420px at 50% 0%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(900px 500px at 20% 20%, rgba(16,215,255,.06), transparent 60%),
+        radial-gradient(900px 500px at 80% 25%, rgba(255,42,42,.06), transparent 65%),
+        linear-gradient(180deg,#05070c 0%, #070a10 50%, #05070c 100%);
+      overflow:hidden;
+    }
+
+    /* Global neon frame */
+    .frame{
+      position:fixed;
+      inset:18px;
+      border-radius:22px;
+      pointer-events:none;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.06) inset,
+        0 0 0 2px var(--railSoft) inset,
+        0 0 40px rgba(0,0,0,.6);
+    }
+    .railL,.railR{
+      position:fixed;
+      top:80px; bottom:80px;
+      width:4px;
+      border-radius:6px;
+      background: linear-gradient(180deg, transparent, var(--rail), transparent);
+      filter: drop-shadow(0 0 14px var(--glow));
+      opacity:.9;
+    }
+    .railL{left:28px}
+    .railR{right:28px}
 
     .wrap{
+      height:100%;
+      padding:18px 22px 22px 22px;
       display:grid;
-      grid-template-rows: 22vh 33vh 45vh; /* top / middle / charts */
-      height:100vh;
-      gap:12px;
-      padding:12px;
+      grid-template-rows: 110px 1fr 68px;
+      gap:14px;
     }
 
-    .panel{
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border:1px solid var(--border);
-      border-radius:14px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,.02) inset, 0 0 28px rgba(0,0,0,.55);
-      overflow:hidden;
-      position:relative;
-    }
-
-    /* Neon edge glow */
-    .panel:before{
-      content:"";
-      position:absolute; inset:-2px;
-      border-radius:16px;
-      pointer-events:none;
-      box-shadow: 0 0 32px var(--glow);
-      opacity:.65;
-    }
-
-    /* Header (Top) */
+    /* Top bar */
     .top{
       display:grid;
-      grid-template-columns: 1.2fr 1.6fr 1.2fr;
-      gap:12px;
-      padding:14px;
+      grid-template-columns: 420px 1fr 380px;
+      gap:14px;
+      align-items:stretch;
     }
-
-    .brand{
-      padding:16px;
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%), var(--panel);
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,.02) inset,
+        0 0 0 2px var(--glowSoft) inset,
+        0 16px 40px rgba(0,0,0,.45);
+      position:relative;
+      overflow:hidden;
+    }
+    .panel::after{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius:inherit;
+      pointer-events:none;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    .panel.neon{
+      border-color: rgba(255,255,255,.08);
+      box-shadow:
+        0 0 0 2px var(--glowSoft) inset,
+        0 0 30px rgba(0,0,0,.35),
+        0 0 18px rgba(255,255,255,.04);
+    }
+    .panelHeader{
       display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:6px;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding:14px 16px 10px 16px;
     }
-    .brand .tag{
+    .brand .small{
+      font-size:14px;
+      letter-spacing:.14em;
       color:var(--muted);
-      letter-spacing:.12em;
       text-transform:uppercase;
-      font-weight:700;
-      font-size:12px;
     }
     .brand .title{
-      font-size:26px;
-      font-weight:800;
-      letter-spacing:.02em;
-      line-height:1.05;
+      font-size:28px;
+      letter-spacing:.08em;
+      font-weight:700;
+      margin-top:2px;
     }
-    .brand .mode{
-      margin-top:8px;
+    .badge{
       display:inline-flex;
       align-items:center;
-      gap:10px;
-      font-weight:700;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
       color:var(--muted);
     }
     .dot{
-      width:10px; height:10px; border-radius:50%;
-      background:var(--accent);
-      box-shadow:0 0 12px var(--accent);
+      width:8px;height:8px;border-radius:99px;
+      background: var(--glow);
+      box-shadow:0 0 16px var(--glow);
     }
 
-    .clock{
-      padding:16px;
+    .clockBox{
       display:flex;
-      flex-direction:column;
-      justify-content:center;
       align-items:center;
-      text-align:center;
-      gap:10px;
-    }
-    .clock .time{
-      font-size:64px;
-      font-weight:900;
-      letter-spacing:.02em;
-      text-shadow: 0 0 18px var(--glow);
-    }
-    .clock .date{
-      color:var(--muted);
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:.06em;
-      text-transform:uppercase;
-    }
-
-    .countdown{
-      padding:16px;
-      display:flex;
-      flex-direction:column;
       justify-content:center;
-      align-items:flex-end;
-      text-align:right;
-      gap:10px;
+      flex-direction:column;
+      height:100%;
+      gap:2px;
     }
-    .countdown .label{
+    .clock{
+      font-size:54px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-shadow: 0 0 18px rgba(255,255,255,.06);
+      line-height:1;
+    }
+    .date{
       color:var(--muted);
-      font-weight:800;
       letter-spacing:.12em;
       text-transform:uppercase;
-      font-size:12px;
-    }
-    .countdown .to{
-      font-size:22px;
-      font-weight:900;
-      color:var(--text);
-    }
-    .countdown .timer{
-      font-size:44px;
-      font-weight:950;
-      letter-spacing:.04em;
-      color:var(--accent);
-      text-shadow: 0 0 18px var(--glow);
-    }
-    .countdown .hint{
-      color:var(--muted);
-      font-weight:700;
-      font-size:12px;
+      font-size:14px;
     }
 
-    /* Middle row */
-    .mid{
+    .countBox{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:12px;
-      padding:12px;
-    }
-
-    .box{
+      grid-template-rows: 1fr auto;
       height:100%;
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+      padding:14px 16px;
+      gap:8px;
     }
-
-    .h{
+    .countTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .countLabel{
+      font-size:14px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--muted);
+    }
+    .openTime{
+      font-size:16px;
+      letter-spacing:.12em;
+      font-weight:700;
+      text-align:right;
+    }
+    .countdown{
+      font-size:44px;
+      font-weight:700;
+      letter-spacing:.12em;
+      text-align:right;
+      color: var(--glow);
+      text-shadow: 0 0 18px var(--glowSoft);
+    }
+    .subnote{
+      color:var(--muted);
+      font-size:13px;
+      letter-spacing:.08em;
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:10px;
-    }
-    .h .label{
-      color:var(--muted);
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-weight:900;
-      font-size:12px;
-    }
-    .h .pill{
-      border:1px solid var(--border);
-      color:var(--accent);
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:900;
-      font-size:12px;
-      box-shadow:0 0 18px rgba(0,0,0,.35);
+      gap:12px;
     }
 
-    .list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:6px;
-    }
-    .item{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:12px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.05);
-    }
-    .item input[type="checkbox"]{
-      transform:scale(1.25);
-      accent-color: var(--accent);
-    }
-    .item input[type="text"]{
-      width:100%;
-      border:none;
-      outline:none;
-      background:transparent;
-      color:var(--text);
-      font-size:16px;
-      font-weight:700;
-    }
-
-    textarea{
-      width:100%;
-      height:100%;
-      min-height:160px;
-      resize:none;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.07);
-      background:rgba(0,0,0,.22);
-      color:var(--text);
-      padding:12px;
-      font-size:14px;
-      line-height:1.35;
-      font-weight:650;
-      outline:none;
-    }
-    textarea:focus{ border-color: var(--border); box-shadow: 0 0 0 2px rgba(0,0,0,.2), 0 0 18px var(--glow); }
-
-    .riskgrid{
+    /* Main grid */
+    .main{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:6px;
+      grid-template-rows: 1fr 230px;
+      gap:14px;
+      min-height:0;
     }
-    .stat{
-      padding:12px;
-      border-radius:12px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.06);
-    }
-    .stat .k{
-      color:var(--muted);
-      font-weight:900;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      font-size:11px;
-    }
-    .stat input{
-      margin-top:6px;
-      width:100%;
-      border:none;
-      outline:none;
-      background:transparent;
-      color:var(--text);
-      font-size:22px;
-      font-weight:950;
-    }
-
-    /* Charts row */
     .charts{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:12px;
-      padding:12px;
+      grid-template-columns: 1.75fr 1fr;
+      gap:14px;
+      min-height:0;
     }
-    .chart{
-      padding:0;
-      display:flex;
-      flex-direction:column;
+    .chartPanel{
+      padding:10px;
+      min-height:0;
     }
-    .chartHead{
-      padding:10px 12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      background:rgba(0,0,0,.18);
-    }
-    .chartHead .tf{
-      font-weight:950;
+    .chartTitle{
+      position:absolute;
+      top:10px; left:14px;
+      font-size:14px;
       letter-spacing:.12em;
       text-transform:uppercase;
-      color:var(--accent);
-      text-shadow: 0 0 16px var(--glow);
+      color:rgba(233,244,255,.7);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      z-index:3;
+      pointer-events:none;
     }
-    .chartBody{
-      flex:1;
+    .tag{
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: rgba(233,244,255,.75);
+      letter-spacing:.12em;
+      font-size:12px;
+    }
+
+    .tvWidget{
+      width:100%;
+      height:100%;
+      min-height:0;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.02) inset, 0 0 0 2px var(--glowSoft) inset;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%), var(--panel2);
+    }
+
+    .rightStack{
+      display:grid;
+      grid-template-rows: 1fr 1fr;
+      gap:14px;
       min-height:0;
     }
 
-    /* Session closed overlay */
-    .closed{
-      position:absolute;
-      inset:0;
-      display:none;
+    /* Bottom info panels */
+    .bottom{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:14px;
+      min-height:0;
+    }
+    .list{
+      padding:14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+    }
+    .sectionTitle{
+      display:flex;
       align-items:center;
-      justify-content:center;
-      background:rgba(0,0,0,.68);
-      backdrop-filter: blur(6px);
-      z-index:5;
-    }
-    .closed .msg{
-      text-align:center;
-      padding:26px 30px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(10,14,20,.78);
-      box-shadow: 0 0 40px rgba(0,0,0,.6);
-    }
-    .closed .msg .big{
-      font-size:44px;
-      font-weight:1000;
-      letter-spacing:.10em;
+      justify-content:space-between;
+      gap:10px;
+      font-size:15px;
+      letter-spacing:.14em;
       text-transform:uppercase;
-      color:var(--muted);
+      color:rgba(233,244,255,.72);
     }
-    .closed .msg .small{
-      margin-top:10px;
+    .pill{
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      color: rgba(233,244,255,.72);
+      font-size:12px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .items{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .item{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .check{
+      width:18px;height:18px;border-radius:6px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.2);
+      box-shadow:0 0 0 2px rgba(255,255,255,.02) inset;
+    }
+    .item span{
+      color:rgba(233,244,255,.80);
+      letter-spacing:.03em;
+      font-size:16px;
+    }
+
+    .rules{
+      font-size:16px;
+      line-height:1.25;
+      color: rgba(233,244,255,.78);
+      letter-spacing:.02em;
+      white-space:pre-line;
+    }
+    .rules small{
       color:var(--muted);
-      font-weight:750;
-      letter-spacing:.08em;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:13px;
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .box{
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      padding:10px 12px;
+    }
+    .box .k{
+      color:var(--muted);
+      letter-spacing:.14em;
       text-transform:uppercase;
       font-size:12px;
     }
+    .box .v{
+      margin-top:6px;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:.06em;
+    }
 
-    /* Make it TV-friendly */
-    @media (max-width: 1100px){
-      .wrap{grid-template-rows: auto auto auto; height:auto; overflow:auto}
+    /* Footer bar */
+    .footer{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+    }
+    .status{
+      width:min(780px, 96%);
+      text-align:center;
+      padding:14px 18px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.02) inset, 0 0 0 2px var(--glowSoft) inset;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-weight:700;
+      color: rgba(233,244,255,.78);
+      position:relative;
+      overflow:hidden;
+    }
+    .status strong{color:var(--text)}
+    .status .sub{
+      display:block;
+      margin-top:4px;
+      font-size:12px;
+      letter-spacing:.18em;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    /* Mamba mode pulse during pre-open */
+    @keyframes pulseRed {
+      0%{ box-shadow: 0 0 0 2px rgba(255,42,42,.18) inset, 0 0 24px rgba(255,42,42,.18), 0 16px 40px rgba(0,0,0,.45); }
+      50%{ box-shadow: 0 0 0 2px rgba(255,42,42,.28) inset, 0 0 34px rgba(255,42,42,.22), 0 16px 40px rgba(0,0,0,.45); }
+      100%{ box-shadow: 0 0 0 2px rgba(255,42,42,.18) inset, 0 0 24px rgba(255,42,42,.18), 0 16px 40px rgba(0,0,0,.45); }
+    }
+
+    .preopenPulse .panel.neon{ animation: pulseRed 1.3s ease-in-out infinite; }
+
+    /* Make everything more “Option B” red when session */
+    .mode-red{
+      --glow: var(--red);
+      --glowSoft: rgba(255,42,42,.18);
+      --rail: rgba(255,42,42,.75);
+      --railSoft: rgba(255,42,42,.14);
+    }
+    .mode-blue{
+      --glow: var(--blue);
+      --glowSoft: rgba(16,215,255,.18);
+      --rail: rgba(16,215,255,.65);
+      --railSoft: rgba(16,215,255,.12);
+    }
+
+    /* Small screens: still usable */
+    @media (max-width:1100px){
       body{overflow:auto}
-      .top,.mid,.charts{grid-template-columns: 1fr}
-      .clock .time{font-size:52px}
+      .wrap{grid-template-rows:auto auto auto}
+      .top{grid-template-columns:1fr}
+      .charts{grid-template-columns:1fr}
+      .bottom{grid-template-columns:1fr}
+      .frame,.railL,.railR{display:none}
     }
   </style>
 </head>
-<body>
-  <div class="wrap">
 
-    <!-- TOP ROW -->
-    <div class="top panel">
-      <div class="brand">
-        <div class="tag">Neon Elite • War Room Tactical</div>
-        <div class="title">MISSION CONTROL</div>
-        <div class="mode">
-          <span class="dot" id="modeDot"></span>
-          <span id="modeText">Morning Mode</span>
-        </div>
-      </div>
+<body class="mode-blue">
+  <div class="frame"></div>
+  <div class="railL"></div>
+  <div class="railR"></div>
 
-      <div class="clock">
-        <div class="time" id="time">--:--</div>
-        <div class="date" id="date">---</div>
-      </div>
-
-      <div class="countdown">
-        <div class="label">Countdown to OPEN</div>
-        <div class="to">07:30 MT</div>
-        <div class="timer" id="cd">--:--:--</div>
-        <div class="hint">Red begins at 07:15 • Session ends 11:00</div>
-      </div>
-    </div>
-
-    <!-- MIDDLE ROW -->
-    <div class="mid">
-      <div class="panel box">
-        <div class="h">
-          <div class="label">Today’s Top 3</div>
-          <div class="pill">LOCK IN</div>
-        </div>
-        <div class="list" id="top3">
-          <label class="item"><input type="checkbox" data-i="0"><input type="text" placeholder="A+ setups only" data-i="0"></label>
-          <label class="item"><input type="checkbox" data-i="1"><input type="text" placeholder="Workout / mobility" data-i="1"></label>
-          <label class="item"><input type="checkbox" data-i="2"><input type="text" placeholder="Instacart / business target" data-i="2"></label>
-        </div>
-      </div>
-
-      <div class="panel box">
-        <div class="h">
-          <div class="label">Rules of Engagement</div>
-          <div class="pill" id="rulePill">A+ ONLY</div>
-        </div>
-        <textarea id="rules" spellcheck="false"></textarea>
-      </div>
-
-      <div class="panel box">
-        <div class="h">
-          <div class="label">Risk & Money Control</div>
-          <div class="pill">NO OVERTRADE</div>
-        </div>
-        <div class="riskgrid">
-          <div class="stat">
-            <div class="k">Daily Max Risk</div>
-            <input id="maxRisk" placeholder="$___" />
+  <div class="wrap" id="root">
+    <!-- TOP -->
+    <div class="top">
+      <div class="panel neon">
+        <div class="panelHeader">
+          <div class="brand">
+            <div class="small">NEON ELITE • WAR ROOM TACTICAL</div>
+            <div class="title">MISSION CONTROL</div>
+            <div class="badge" style="margin-top:8px;">
+              <span class="dot" id="modeDot"></span>
+              <span id="modeText">MORNING MODE</span>
+            </div>
           </div>
-          <div class="stat">
-            <div class="k">Daily Target</div>
-            <input id="dayTarget" placeholder="$___" />
+          <div class="badge" title="Instrument">
+            <span>MNQ1!</span>
           </div>
-          <div class="stat">
-            <div class="k">Weekly Target</div>
-            <input id="weekTarget" placeholder="$____" />
+        </div>
+      </div>
+
+      <div class="panel neon">
+        <div class="clockBox">
+          <div class="clock" id="clock">--:--:--</div>
+          <div class="date" id="date">---</div>
+        </div>
+      </div>
+
+      <div class="panel neon">
+        <div class="countBox">
+          <div class="countTop">
+            <div>
+              <div class="countLabel">Countdown to Open</div>
+              <div class="openTime">07:30 MT</div>
+            </div>
+            <div class="badge" id="musicBadge" title="Music is controlled via Alexa routine">
+              <span class="dot"></span>
+              <span>Music: On</span>
+            </div>
           </div>
-          <div class="stat">
-            <div class="k">Weekly Progress</div>
-            <input id="weekProg" placeholder="$____" />
+          <div class="countdown" id="countdown">00:00:00</div>
+          <div class="subnote">
+            <span id="sessionNote">Red begins at 07:15 • Session ends 11:00</span>
+            <span id="mtStamp">MT</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- CHARTS ROW -->
-    <div class="panel chart">
-      <div class="closed" id="closedOverlay">
-        <div class="msg">
-          <div class="big">SESSION CLOSED</div>
-          <div class="small">Reset • Review • Recovery • No More Hunting</div>
-        </div>
-      </div>
-
+    <!-- MAIN -->
+    <div class="main">
       <div class="charts">
-        <div class="panel chart">
-          <div class="chartHead"><div class="tf">MNQ • 5m</div><div class="tf" style="color:var(--muted); text-shadow:none;">MNQ1!</div></div>
-          <div class="chartBody" id="tv_5m"></div>
+        <!-- LEFT BIG 5M -->
+        <div class="panel neon chartPanel">
+          <div class="chartTitle">
+            <span class="tag">MNQ • 5m</span>
+            <span class="tag">EXECUTION</span>
+          </div>
+          <div class="tvWidget" id="tv_5m"></div>
         </div>
-        <div class="panel chart">
-          <div class="chartHead"><div class="tf">MNQ • 1H</div><div class="tf" style="color:var(--muted); text-shadow:none;">MNQ1!</div></div>
-          <div class="chartBody" id="tv_1h"></div>
+
+        <!-- RIGHT STACK -->
+        <div class="rightStack">
+          <div class="panel neon chartPanel">
+            <div class="chartTitle">
+              <span class="tag">MNQ • 1H</span>
+              <span class="tag">STRUCTURE</span>
+            </div>
+            <div class="tvWidget" id="tv_1h"></div>
+          </div>
+
+          <div class="panel neon chartPanel">
+            <div class="chartTitle">
+              <span class="tag">MNQ • 4H</span>
+              <span class="tag">CONTEXT</span>
+            </div>
+            <div class="tvWidget" id="tv_4h"></div>
+          </div>
         </div>
-        <div class="panel chart">
-          <div class="chartHead"><div class="tf">MNQ • 4H</div><div class="tf" style="color:var(--muted); text-shadow:none;">MNQ1!</div></div>
-          <div class="chartBody" id="tv_4h"></div>
+      </div>
+
+      <!-- Bottom panels row -->
+      <div class="bottom">
+        <!-- Threat as Near -->
+        <div class="panel neon list">
+          <div class="sectionTitle">
+            <span>Threat as Near</span>
+            <span class="pill" id="disciplinePill">LOCKED</span>
+          </div>
+          <div class="items">
+            <label class="item"><div class="check"></div><span>A+ setups only</span></label>
+            <label class="item"><div class="check"></div><span>No overtrade / no revenge</span></label>
+            <label class="item"><div class="check"></div><span>Hydrate + breathe (parasympathetic)</span></label>
+            <label class="item"><div class="check"></div><span>Stop condition respected</span></label>
+          </div>
+        </div>
+
+        <!-- Rules of Engagement / Mamba -->
+        <div class="panel neon list">
+          <div class="sectionTitle">
+            <span>Rules of Engagement</span>
+            <span class="pill" id="mambaPill">MAMBA MODE</span>
+          </div>
+          <div class="rules" id="rules">
+<small>SESSION: 07:30–11:00 MT</small>
+
+• Wait for confirmations (VWAP bias + 9/21 aligned)
+• Pullback + reclaim entries only
+• No chase candles
+• Better to pass than force a trade
+• One good trade > ten average trades
+
+<small>MAMBA</small>
+“Rest at the end, not in the middle.”
+“Job finished? I don’t think so.”
+          </div>
+        </div>
+
+        <!-- Risk & Money Control -->
+        <div class="panel neon list">
+          <div class="sectionTitle">
+            <span>Risk & Money Control</span>
+            <span class="pill" id="riskPill">STAND DOWN</span>
+          </div>
+          <div class="kv">
+            <div class="box">
+              <div class="k">Daily Max Loss</div>
+              <div class="v" id="dailyMax">—</div>
+            </div>
+            <div class="box">
+              <div class="k">Daily Target</div>
+              <div class="v" id="dailyTarget">—</div>
+            </div>
+            <div class="box">
+              <div class="k">Weekly Target</div>
+              <div class="v" id="weeklyTarget">—</div>
+            </div>
+            <div class="box">
+              <div class="k">Position Limits</div>
+              <div class="v" id="posLimits">—</div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="pill" id="phaseTag">PHASE: MORNING</span>
+            <span class="pill">Instrument: MNQ1!</span>
+            <span class="pill">Mode: Option B</span>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="status" id="status">
+        <strong id="statusMain">SESSION CLOSED</strong>
+        <span class="sub" id="statusSub">Reset • Review • Recovery • No more hunting</span>
+      </div>
+    </div>
   </div>
 
-  <!-- TradingView embed -->
+  <!-- TradingView -->
   <script src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
-    // ====== SETTINGS YOU CAN EDIT ======
-    const TZ = "America/Denver";      // Mountain Time
-    const OPEN_HH = 7, OPEN_MM = 30;  // 7:30 MT open
-    const PREOPEN_MIN = 15;           // red starts 15 min before open
-    const CUTOFF_HH = 11, CUTOFF_MM = 0; // 11:00 MT session close
-
-    // TradingView symbol (futures continuous)
-    const SYMBOL = "CME_MINI:MNQ1!"; // you can change if needed
-
-    // ====== UI STATE ======
-    const els = {
-      time: document.getElementById("time"),
-      date: document.getElementById("date"),
-      cd: document.getElementById("cd"),
-      modeText: document.getElementById("modeText"),
-      modeDot: document.getElementById("modeDot"),
-      rulePill: document.getElementById("rulePill"),
-      rules: document.getElementById("rules"),
-      closedOverlay: document.getElementById("closedOverlay"),
-    };
-
-    // ====== LOCAL STORAGE (editable rules + top3 + money) ======
-    const LS_KEY = "mission_control_v1";
-
-    const defaultRules =
-`SESSION: 07:30–11:00 MT
-A+ SETUPS ONLY
-ENTRY: Pullback + Reclaim
-CONFIRM: VWAP + 9/21 aligned
-STOP: Defined before entry
-NO CHASE • NO REVENGE
-HIT TARGET → DONE`;
-
-    function loadState(){
-      const raw = localStorage.getItem(LS_KEY);
-      let st = raw ? JSON.parse(raw) : {};
-      if (!st.rules) st.rules = defaultRules;
-      if (!st.top3) st.top3 = [
-        {text:"A+ setups only", done:false},
-        {text:"Workout / mobility", done:false},
-        {text:"Instacart / business target", done:false},
-      ];
-      if (!st.money) st.money = {maxRisk:"", dayTarget:"", weekTarget:"", weekProg:""};
-      return st;
-    }
-
-    function saveState(st){
-      localStorage.setItem(LS_KEY, JSON.stringify(st));
-    }
-
-    let STATE = loadState();
-
-    function bindEditable(){
-      // Rules
-      els.rules.value = STATE.rules;
-      els.rules.addEventListener("input", () => {
-        STATE.rules = els.rules.value;
-        saveState(STATE);
+    /**********************
+     * TIME (Mountain Time)
+     **********************/
+    function nowInMT(){
+      // Use Intl with America/Denver for Mountain Time
+      const fmt = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Denver',
+        year:'numeric', month:'2-digit', day:'2-digit',
+        hour:'2-digit', minute:'2-digit', second:'2-digit',
+        hour12:false,
+        weekday:'long'
       });
+      const parts = fmt.formatToParts(new Date()).reduce((acc,p)=>{
+        acc[p.type]=p.value; return acc;
+      }, {});
+      // Build a Date-like object components
+      const year = +parts.year;
+      const month = +parts.month;
+      const day = +parts.day;
+      const hour = +parts.hour;
+      const minute = +parts.minute;
+      const second = +parts.second;
+      const weekday = parts.weekday;
 
-      // Money inputs
-      const moneyIds = ["maxRisk","dayTarget","weekTarget","weekProg"];
-      moneyIds.forEach(id=>{
-        const el = document.getElementById(id);
-        el.value = STATE.money[id] || "";
-        el.addEventListener("input", ()=>{
-          STATE.money[id] = el.value;
-          saveState(STATE);
-        });
-      });
-
-      // Top 3
-      const top3 = document.getElementById("top3");
-      top3.querySelectorAll('input[type="text"]').forEach(input=>{
-        const i = Number(input.dataset.i);
-        input.value = STATE.top3[i]?.text ?? "";
-        input.addEventListener("input", ()=>{
-          STATE.top3[i].text = input.value;
-          saveState(STATE);
-        });
-      });
-      top3.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
-        const i = Number(cb.dataset.i);
-        cb.checked = !!STATE.top3[i]?.done;
-        cb.addEventListener("change", ()=>{
-          STATE.top3[i].done = cb.checked;
-          saveState(STATE);
-        });
-      });
+      return {year,month,day,hour,minute,second,weekday};
     }
 
-    // ====== TIME HELPERS (Mountain Time) ======
-    function nowInTZ(){
-      // Use Intl to get parts in desired timezone
-      const dt = new Date();
-      const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: TZ,
-        year:"numeric", month:"2-digit", day:"2-digit",
-        hour:"2-digit", minute:"2-digit", second:"2-digit",
-        hour12:false
-      }).formatToParts(dt).reduce((acc,p)=> (acc[p.type]=p.value, acc), {});
-      // Build a Date-like object with those parts (in local JS it’s "naive", but good enough for diffs)
-      return {
-        y:+parts.year, mo:+parts.month, d:+parts.day,
-        hh:+parts.hour, mm:+parts.minute, ss:+parts.second
-      };
+    function two(n){ return String(n).padStart(2,'0'); }
+
+    function secondsSinceMidnight(t){
+      return t.hour*3600 + t.minute*60 + t.second;
     }
 
-    function asMs(t){
-      // Convert tz parts to a timestamp by creating a Date in UTC with those components,
-      // then comparing in same constructed space. This works for daily scheduling.
-      return Date.UTC(t.y, t.mo-1, t.d, t.hh, t.mm, t.ss || 0);
+    function sec(h,m,s=0){ return h*3600 + m*60 + s; }
+
+    // Phase times (MT)
+    const START_DASH = sec(6,30,0);
+    const PREOPEN = sec(7,15,0);
+    const OPEN = sec(7,30,0);
+    const END = sec(11,0,0);
+
+    function phaseName(ssm){
+      if(ssm < START_DASH) return "OFFLINE";
+      if(ssm < PREOPEN) return "MORNING";
+      if(ssm < OPEN) return "PREOPEN";
+      if(ssm < END) return "SESSION";
+      return "POST";
     }
 
-    function buildTodayAt(hh, mm){
-      const n = nowInTZ();
-      return {y:n.y, mo:n.mo, d:n.d, hh, mm, ss:0};
+    function countdownToOpen(ssm){
+      const remain = Math.max(0, OPEN - ssm);
+      const h = Math.floor(remain/3600);
+      const m = Math.floor((remain%3600)/60);
+      const s = remain%60;
+      return `${two(h)}:${two(m)}:${two(s)}`;
     }
 
-    function pad2(n){ return String(n).padStart(2,"0"); }
+    /**********************
+     * UI MODE SWITCHING
+     **********************/
+    const root = document.body;
+    const modeText = document.getElementById('modeText');
+    const modeDot = document.getElementById('modeDot');
+    const countdownEl = document.getElementById('countdown');
+    const riskPill = document.getElementById('riskPill');
+    const disciplinePill = document.getElementById('disciplinePill');
+    const phaseTag = document.getElementById('phaseTag');
+    const statusMain = document.getElementById('statusMain');
+    const statusSub = document.getElementById('statusSub');
 
-    // ====== MODE LOGIC ======
-    function applyMode(mode){
-      // Modes: MORNING, PREOPEN, SESSION, CLOSED
-      const root = document.documentElement;
+    function applyPhase(phase){
+      // reset classes
+      root.classList.remove('mode-red','mode-blue','preopenPulse');
 
-      if (mode === "PREOPEN"){
-        root.style.setProperty("--accent", "#ff2e2e");
-        root.style.setProperty("--glow", "rgba(255,46,46,.35)");
-        root.style.setProperty("--border", "rgba(255,46,46,.38)");
-        els.modeText.textContent = "Pre-Open Mode";
-        els.rulePill.textContent = "LOCKED";
-        els.rulePill.style.color = "var(--danger)";
-        els.modeDot.style.background = "var(--danger)";
-        els.modeDot.style.boxShadow = "0 0 12px var(--danger)";
-        els.closedOverlay.style.display = "none";
-        return;
+      if(phase === "MORNING"){
+        root.classList.add('mode-blue');
+        modeText.textContent = "MORNING MODE";
+        modeDot.style.background = "var(--blue)";
+        countdownEl.style.color = "var(--blue)";
+        riskPill.textContent = "STAND DOWN";
+        disciplinePill.textContent = "LOCKED";
+        phaseTag.textContent = "PHASE: MORNING";
+        statusMain.textContent = "WARM UP";
+        statusSub.textContent = "Hydrate • Mobility • Review Levels • Calm & Controlled";
       }
-
-      if (mode === "CLOSED"){
-        // calm blue but overlay session closed
-        root.style.setProperty("--accent", "#00b7ff");
-        root.style.setProperty("--glow", "rgba(0,183,255,.26)");
-        root.style.setProperty("--border", "rgba(0,183,255,.25)");
-        els.modeText.textContent = "Post-Session";
-        els.rulePill.textContent = "STAND DOWN";
-        els.rulePill.style.color = "var(--muted)";
-        els.modeDot.style.background = "var(--muted)";
-        els.modeDot.style.boxShadow = "none";
-        els.closedOverlay.style.display = "flex";
-        return;
+      else if(phase === "PREOPEN"){
+        root.classList.add('mode-red','preopenPulse');
+        modeText.textContent = "PRE-OPEN";
+        modeDot.style.background = "var(--red)";
+        countdownEl.style.color = "var(--red)";
+        riskPill.textContent = "ARMED";
+        disciplinePill.textContent = "GAME TIME";
+        phaseTag.textContent = "PHASE: PRE-OPEN";
+        statusMain.textContent = "GAME TIME";
+        statusSub.textContent = "No impulse • Wait for A+ • Execution only";
       }
-
-      if (mode === "SESSION"){
-        root.style.setProperty("--accent", "#00b7ff");
-        root.style.setProperty("--glow", "rgba(0,183,255,.35)");
-        root.style.setProperty("--border", "rgba(0,183,255,.35)");
-        els.modeText.textContent = "Session Mode";
-        els.rulePill.textContent = "EXECUTE";
-        els.rulePill.style.color = "var(--accent)";
-        els.modeDot.style.background = "var(--accent)";
-        els.modeDot.style.boxShadow = "0 0 12px var(--accent)";
-        els.closedOverlay.style.display = "none";
-        return;
+      else if(phase === "SESSION"){
+        root.classList.add('mode-red');
+        modeText.textContent = "MAMBA MODE";
+        modeDot.style.background = "var(--red)";
+        countdownEl.style.color = "var(--red)";
+        riskPill.textContent = "EXECUTE";
+        disciplinePill.textContent = "DISCIPLINE";
+        phaseTag.textContent = "PHASE: SESSION";
+        statusMain.textContent = "EXECUTION WINDOW";
+        statusSub.textContent = "Trade the plan • Respect stops • No overtrade";
       }
-
-      // MORNING
-      root.style.setProperty("--accent", "#00b7ff");
-      root.style.setProperty("--glow", "rgba(0,183,255,.28)");
-      root.style.setProperty("--border", "rgba(0,183,255,.28)");
-      els.modeText.textContent = "Morning Mode";
-      els.rulePill.textContent = "READY";
-      els.rulePill.style.color = "var(--accent)";
-      els.modeDot.style.background = "var(--accent)";
-      els.modeDot.style.boxShadow = "0 0 12px var(--accent)";
-      els.closedOverlay.style.display = "none";
+      else if(phase === "POST"){
+        root.classList.add('mode-blue');
+        modeText.textContent = "POST-SESSION";
+        modeDot.style.background = "var(--blue)";
+        countdownEl.style.color = "var(--blue)";
+        riskPill.textContent = "COOLDOWN";
+        disciplinePill.textContent = "RESET";
+        phaseTag.textContent = "PHASE: POST";
+        statusMain.textContent = "SESSION CLOSED";
+        statusSub.textContent = "Journal • Review • Recovery • No more hunting";
+      }
+      else {
+        root.classList.add('mode-blue');
+        modeText.textContent = "OFFLINE";
+        modeDot.style.background = "var(--blue)";
+        riskPill.textContent = "OFF";
+        disciplinePill.textContent = "SLEEP";
+        phaseTag.textContent = "PHASE: OFFLINE";
+        statusMain.textContent = "STANDBY";
+        statusSub.textContent = "Dashboard wakes at 06:30 MT";
+      }
     }
 
-    function getMode(){
-      const n = nowInTZ();
-      const nowMs = asMs(n);
+    /**********************
+     * CLOCK + DATE
+     **********************/
+    const clockEl = document.getElementById('clock');
+    const dateEl = document.getElementById('date');
 
-      const open = buildTodayAt(OPEN_HH, OPEN_MM);
-      const preopen = buildTodayAt(OPEN_HH, OPEN_MM);
-      // subtract PREOPEN_MIN minutes
-      preopen.mm -= PREOPEN_MIN;
-      if (preopen.mm < 0){ preopen.mm += 60; preopen.hh -= 1; }
+    function renderClock(){
+      const t = nowInMT();
+      // 12-hour display like your mock
+      let hh = t.hour % 12; if(hh===0) hh=12;
+      const ampm = t.hour >= 12 ? "PM" : "AM";
+      clockEl.textContent = `${hh}:${two(t.minute)}:${two(t.second)} ${ampm}`;
 
-      const cutoff = buildTodayAt(CUTOFF_HH, CUTOFF_MM);
-
-      const openMs = asMs(open);
-      const preMs = asMs(preopen);
-      const cutMs = asMs(cutoff);
-
-      if (nowMs >= cutMs) return "CLOSED";
-      if (nowMs >= openMs) return "SESSION";
-      if (nowMs >= preMs) return "PREOPEN";
-      return "MORNING";
+      const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      dateEl.textContent = `${t.weekday.toUpperCase()}, ${monthNames[t.month-1].toUpperCase()} ${t.day}`;
     }
 
-    // ====== CLOCK + COUNTDOWN ======
+    /**********************
+     * COUNTDOWN + PHASE LOOP
+     **********************/
     function tick(){
-      const n = nowInTZ();
+      const t = nowInMT();
+      const ssm = secondsSinceMidnight(t);
+      countdownEl.textContent = countdownToOpen(ssm);
 
-      // time + date
-      const hh12 = ((n.hh + 11) % 12) + 1;
-      const ampm = n.hh >= 12 ? "PM" : "AM";
-      els.time.textContent = `${pad2(hh12)}:${pad2(n.mm)}:${pad2(n.ss)} ${ampm}`;
+      const phase = phaseName(ssm);
+      applyPhase(phase);
 
-      const dateStr = new Intl.DateTimeFormat("en-US", {
-        timeZone: TZ, weekday:"long", month:"long", day:"numeric"
-      }).format(new Date());
-      els.date.textContent = dateStr.toUpperCase();
-
-      // countdown to open
-      const open = buildTodayAt(OPEN_HH, OPEN_MM);
-      const nowMs = asMs(n);
-      let diff = asMs(open) - nowMs;
-
-      if (diff < 0) diff = 0;
-
-      const h = Math.floor(diff / 3600000);
-      diff -= h * 3600000;
-      const m = Math.floor(diff / 60000);
-      diff -= m * 60000;
-      const s = Math.floor(diff / 1000);
-
-      els.cd.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
-
-      // mode update
-      const mode = getMode();
-      applyMode(mode);
+      renderClock();
     }
 
-    // ====== TRADINGVIEW CHARTS ======
-    function buildChart(containerId, interval){
-      return new TradingView.widget({
-        container_id: containerId,
+    /**********************
+     * TRADINGVIEW WIDGETS
+     * NOTE: adding indicators automatically inside embed is limited.
+     * Best workflow: create a TradingView layout with your indicators,
+     * then use "Publish chart" and embed that link. For now we embed
+     * MNQ1! charts on 5m/1H/4H in a clean dark style.
+     **********************/
+    function createTV(containerId, interval){
+      new TradingView.widget({
         autosize: true,
-        symbol: SYMBOL,
+        symbol: "CME_MINI:MNQ1!",
         interval: interval,
-        timezone: TZ,
+        timezone: "America/Denver",
         theme: "dark",
         style: "1",
         locale: "en",
-        allow_symbol_change: false,
-        enable_publishing: false,
         hide_top_toolbar: true,
-        hide_side_toolbar: true,
         hide_legend: true,
-        hide_volume: true,
         withdateranges: false,
-        save_image: false,
-        studies: [],  // keep it clean; indicators via TradingView may be limited in embed
-        overrides: {
-          "paneProperties.background": "#05070a",
-          "paneProperties.vertGridProperties.color": "rgba(255,255,255,0.04)",
-          "paneProperties.horzGridProperties.color": "rgba(255,255,255,0.04)",
-          "scalesProperties.textColor": "rgba(233,238,247,0.65)",
-          "mainSeriesProperties.candleStyle.upColor": "#14f195",
-          "mainSeriesProperties.candleStyle.downColor": "#ff2e2e",
-          "mainSeriesProperties.candleStyle.wickUpColor": "#14f195",
-          "mainSeriesProperties.candleStyle.wickDownColor": "#ff2e2e",
-          "mainSeriesProperties.candleStyle.borderUpColor": "#14f195",
-          "mainSeriesProperties.candleStyle.borderDownColor": "#ff2e2e"
-        }
+        allow_symbol_change: false,
+        details: false,
+        hotlist: false,
+        calendar: false,
+        studies_overrides: {},
+        container_id: containerId
       });
     }
 
-    function initCharts(){
-      buildChart("tv_5m", "5");
-      buildChart("tv_1h", "60");
-      buildChart("tv_4h", "240");
+    function initTV(){
+      createTV("tv_5m", "5");
+      createTV("tv_1h", "60");
+      createTV("tv_4h", "240");
     }
 
-    // ====== INIT ======
-    bindEditable();
-    initCharts();
+    /**********************
+     * START
+     **********************/
     tick();
     setInterval(tick, 1000);
+    initTV();
   </script>
 </body>
 </html>
