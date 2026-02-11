@@ -100,10 +100,10 @@ body{
   margin-top: 4px;
 }
 
-/* GRID */
+/* GRID (Right column widened) */
 .dash-grid{
   display:grid;
-  grid-template-columns: 340px 1fr 460px;
+  grid-template-columns: 320px 1fr 620px; /* ✅ charts wider */
   gap: 12px;
   height: calc(100vh - 70px);
   padding: 12px;
@@ -129,11 +129,16 @@ body{
   overflow: hidden;
 }
 
+/* ✅ CRITICAL: overlays must never block clicks */
+.panel::after{
+  pointer-events: none !important;
+}
+
+/* floating */
 .panel-float{
   transform: translateZ(0);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
-
 .panel-float:hover{
   transform: translateY(-2px);
   border-color: rgba(80,255,240,0.28);
@@ -142,12 +147,11 @@ body{
     inset 0 0 28px rgba(0,255,220,0.08);
 }
 
-/* subtle scanlines */
+/* subtle scanlines (visual only, never blocks clicks) */
 .panel::after{
   content:"";
   position:absolute;
   inset:0;
-  pointer-events:none;
   background: repeating-linear-gradient(
     to bottom,
     rgba(0,255,220,0.04),
@@ -159,6 +163,7 @@ body{
   mix-blend-mode: screen;
 }
 
+/* Titles */
 .panel-title{
   padding: 10px 12px;
   font-weight: 900;
@@ -168,14 +173,12 @@ body{
   border-bottom: 1px solid rgba(80,255,240,0.12);
 }
 
-/* chips */
 .chip-row{
   display:flex;
   flex-wrap: wrap;
   gap: 8px;
   padding: 10px 12px;
 }
-
 .chip{
   padding: 7px 10px;
   border-radius: 999px;
@@ -188,12 +191,10 @@ body{
   cursor: pointer;
   user-select: none;
 }
-
 .chip.active{
   box-shadow: 0 0 18px rgba(0,255,220,0.12);
   border-color: rgba(80,255,240,0.28);
 }
-
 .chip.danger{
   border-color: rgba(255,60,60,0.35);
   box-shadow: 0 0 18px rgba(255,60,60,0.10);
@@ -221,7 +222,6 @@ body{
   font-weight: 800;
 }
 
-/* lists */
 .bullets{
   margin: 0;
   padding: 10px 18px 14px 28px;
@@ -257,11 +257,52 @@ body{
   font-size: 14px;
 }
 
-/* center arc */
+/* center arc panel */
 .arc-panel{
   flex: 1 1 auto;
   min-height: 0;
 }
+
+/* ✅ NEW: mid HUD overlay */
+.mid-hud{
+  position:absolute;
+  top: 56px;
+  left: 14px;
+  right: 14px;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  z-index: 3;
+  pointer-events: none; /* HUD is display-only */
+}
+
+.hudbox{
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(80,255,240,0.18);
+  background: rgba(5,10,16,0.22);
+  box-shadow: inset 0 0 18px rgba(0,255,220,0.06);
+}
+
+.hudbox.danger{
+  border-color: rgba(255,60,60,0.28);
+  box-shadow: inset 0 0 18px rgba(255,60,60,0.08);
+}
+
+.hlabel{
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hval{
+  margin-top: 6px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+/* arc reactor */
 .arc-wrap{
   position: relative;
   height: calc(100% - 44px);
@@ -280,7 +321,7 @@ body{
   filter: drop-shadow(0 0 18px rgba(0,255,220,0.12));
 }
 
-.arc-ring-1{ transform: rotate(0deg); animation: spin 14s linear infinite; }
+.arc-ring-1{ animation: spin 14s linear infinite; }
 .arc-ring-2{ width: 420px; height: 420px; border-style: dashed; opacity: 0.55; animation: spin 11s linear infinite reverse; }
 .arc-ring-3{ width: 320px; height: 320px; opacity: 0.45; animation: spin 18s linear infinite; }
 
@@ -318,15 +359,16 @@ body{
   color: rgba(220,255,250,0.72);
   line-height: 1.55;
 }
-.log-line{
-  margin: 6px 0;
-}
+.log-line{ margin: 6px 0; }
 
-/* RIGHT COLUMN CHART STACK */
+/* RIGHT CHART STACK */
 .right-stack{
   flex: 1 1 auto;
   min-height: 0;
 }
+
+/* IMPORTANT: Don't use scanline overlay on chart stack (iframes) */
+.right-stack::after{ display:none !important; }
 
 .chart-stack{
   height: calc(100% - 44px);
@@ -344,9 +386,14 @@ body{
   background: rgba(5,10,16,0.25);
   box-shadow: inset 0 0 22px rgba(0,255,220,0.06);
   overflow:hidden;
+  position: relative;
+  z-index: 2;
 }
 
-/* TradingView widget tends to inject absolute elements; keep it clean */
+/* IMPORTANT: no overlays on chart panels */
+.chart-panel::after{ display:none !important; }
+
+/* TradingView iframes */
 .chart-panel > div,
 .chart-panel iframe{
   width:100% !important;
@@ -359,5 +406,8 @@ body{
   .dash-grid{
     grid-template-columns: 1fr;
     height: auto;
+  }
+  .mid-hud{
+    grid-template-columns: 1fr 1fr;
   }
 }
