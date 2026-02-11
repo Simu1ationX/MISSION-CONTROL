@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MISSION CONTROL // MAMBA</title>
-
-  <!-- Cache-bust -->
-  <link rel="stylesheet" href="./styles.css?v=FINAL6" />
+  <title>MISSION CONTROL // HOLO</title>
+  <link rel="stylesheet" href="./styles.css?v=HOLO1" />
 </head>
-
 <body>
-  <!-- Top HUD -->
+
   <header class="top-hud">
     <div class="hud-left">
       <div class="hud-title">MISSION CONTROL <span class="pill">MAMBA</span></div>
-      <div class="hud-sub">SYSTEM ONLINE • NO HUNTING • EXECUTE</div>
+      <div class="hud-sub">HOLOGRAPHIC INTERFACE • EXECUTION ONLY</div>
     </div>
 
     <div class="hud-center">
@@ -24,8 +21,8 @@
 
     <div class="hud-right">
       <div class="hud-metric">
-        <div class="metric-label">NY OPEN</div>
-        <div class="metric-value" id="nyOpen">--:--:--</div>
+        <div class="metric-label">SYSTEM</div>
+        <div class="metric-value" id="sysState">ONLINE</div>
       </div>
       <div class="hud-metric">
         <div class="metric-label">THEME</div>
@@ -34,7 +31,6 @@
     </div>
   </header>
 
-  <!-- Main Grid -->
   <div class="dash-grid">
 
     <!-- LEFT -->
@@ -43,23 +39,23 @@
         <div class="panel-title">MISSION CONTROL</div>
 
         <div class="chip-row">
-          <button class="chip active" type="button" id="btnCyan">CYAN</button>
-          <button class="chip" type="button" id="btnPurple">PURPLE</button>
-          <button class="chip danger" type="button" id="btnMamba">MAMBA</button>
+          <button class="chip active" id="btnCyan" type="button">CYAN</button>
+          <button class="chip" id="btnPurple" type="button">PURPLE</button>
+          <button class="chip danger" id="btnMamba" type="button">MAMBA</button>
         </div>
 
         <div class="chip-row">
-          <button class="chip" type="button" id="btnQuote">QUOTE: ON</button>
-          <button class="chip" type="button" id="btnMouth">MOUTH: ON</button>
-          <button class="chip danger" type="button" id="btnFlash">FLASH: ON</button>
-          <button class="chip" type="button" id="btnFull">FULLSCREEN</button>
+          <button class="chip" id="btnQuote" type="button">QUOTE</button>
+          <button class="chip" id="btnMouth" type="button">MOUTH</button>
+          <button class="chip danger" id="btnFlash" type="button">FLASH</button>
+          <button class="chip" id="btnFull" type="button">FULLSCREEN</button>
         </div>
 
         <div class="divider"></div>
 
         <div class="mini-row">
           <div class="mini-label">SYMBOL</div>
-          <div class="mini-value" id="symbolLabel">CME_MINI:MNQ1!</div>
+          <div class="mini-value" id="symbolLabel">MNQ (VISUAL)</div>
         </div>
 
         <div class="mini-row">
@@ -71,181 +67,116 @@
       <section class="panel panel-float">
         <div class="panel-title">DISCIPLINE</div>
         <ul class="bullets">
-          <li>A+ setups only</li>
-          <li>No overtrade / no revenge</li>
-          <li>Hydrate • breathe • calm focus</li>
-          <li>One clean trade > ten average</li>
-          <li>When target hits: DONE</li>
+          <li>A+ only</li>
+          <li>No revenge</li>
+          <li>Session gate</li>
+          <li>One clean trade</li>
+          <li>After target: STOP</li>
         </ul>
       </section>
 
       <section class="panel panel-float">
-        <div class="panel-title">RULES</div>
-        <ul class="bullets">
-          <li>VWAP bias + 9/21 aligned</li>
-          <li>Pullback + reclaim entries only</li>
-          <li>No chase candles</li>
-          <li>Session gate only</li>
-          <li>Hit target = shut it down</li>
-        </ul>
-      </section>
-
-      <section class="panel panel-float">
-        <div class="panel-title">RISK CONTROL</div>
+        <div class="panel-title">RISK</div>
         <div class="risk-grid">
           <div class="risk-card">
-            <div class="risk-label">DAILY MAX LOSS</div>
+            <div class="risk-label">MAX LOSS</div>
             <div class="risk-value">$—</div>
           </div>
           <div class="risk-card">
-            <div class="risk-label">DAILY TARGET</div>
+            <div class="risk-label">TARGET</div>
             <div class="risk-value">$—</div>
           </div>
           <div class="risk-card">
-            <div class="risk-label">WEEKLY LIMIT</div>
-            <div class="risk-value">$—</div>
+            <div class="risk-label">LOSSES</div>
+            <div class="risk-value" id="lossCount">0</div>
           </div>
           <div class="risk-card">
-            <div class="risk-label">POSITION</div>
-            <div class="risk-value">1x</div>
+            <div class="risk-label">STATUS</div>
+            <div class="risk-value" id="fireState">STANDBY</div>
           </div>
         </div>
       </section>
     </aside>
 
-    <!-- MIDDLE -->
+    <!-- CENTER HOLO WALL -->
     <main class="mid-col">
-      <section class="panel panel-float arc-panel">
-        <div class="panel-title">CORE</div>
+      <section class="panel panel-float holo-panel">
+        <div class="panel-title">HOLO WALL</div>
 
-        <div class="mid-hud">
-          <div class="hudbox">
-            <div class="hlabel">BIAS</div>
-            <div class="hval" id="biasVal">NEUTRAL</div>
+        <!-- floating micro panes (like inspo) -->
+        <div class="holo-micros">
+          <div class="micro micro-a">
+            <div class="micro-title">VOL</div>
+            <div class="spark"></div>
           </div>
-          <div class="hudbox">
-            <div class="hlabel">VWAP DIST</div>
-            <div class="hval" id="vwapDist">—</div>
+          <div class="micro micro-b">
+            <div class="micro-title">FLOW</div>
+            <div class="spark"></div>
           </div>
-          <div class="hudbox">
-            <div class="hlabel">9/21 ALIGN</div>
-            <div class="hval" id="emaAlign">—</div>
+          <div class="micro micro-c">
+            <div class="micro-title">RANGE</div>
+            <div class="spark"></div>
           </div>
-          <div class="hudbox danger">
-            <div class="hlabel">STOP IF</div>
-            <div class="hval">2 LOSSES</div>
+          <div class="micro micro-d">
+            <div class="micro-title">HEAT</div>
+            <div class="spark"></div>
           </div>
         </div>
 
-        <!-- Stark/JARVIS core stage -->
-        <div class="core-stage">
-          <div class="core-grid"></div>
-          <div class="core-scan"></div>
+        <!-- core hologram stage -->
+        <div class="holo-stage" aria-hidden="true">
+          <div class="holo-grid"></div>
+          <div class="holo-scan"></div>
 
-          <!-- floating callouts -->
-          <div class="core-callout c1">
-            <div class="clabel">EXECUTE</div>
-            <div class="cval">A+ ONLY</div>
-          </div>
-          <div class="core-callout c2">
-            <div class="clabel">RISK</div>
-            <div class="cval">LOCKED</div>
-          </div>
-          <div class="core-callout c3">
-            <div class="clabel">FOCUS</div>
-            <div class="cval">MAMBA</div>
-          </div>
-
-          <!-- rings -->
-          <div class="jarvis-rings">
+          <div class="rings">
             <div class="ring r1"></div>
             <div class="ring r2"></div>
             <div class="ring r3"></div>
           </div>
 
-          <!-- your purple emblem -->
-          <div class="mamba-emblem" aria-hidden="true">
-            <svg viewBox="0 0 600 600" width="520" height="520">
-              <defs>
-                <radialGradient id="g1" cx="50%" cy="50%" r="60%">
-                  <stop offset="0%" stop-color="rgba(170,120,255,0.95)"/>
-                  <stop offset="45%" stop-color="rgba(120,60,220,0.75)"/>
-                  <stop offset="100%" stop-color="rgba(25,10,45,0.15)"/>
-                </radialGradient>
-                <linearGradient id="g2" x1="0" x2="1">
-                  <stop offset="0%" stop-color="rgba(210,170,255,0.95)"/>
-                  <stop offset="55%" stop-color="rgba(140,80,240,0.80)"/>
-                  <stop offset="100%" stop-color="rgba(60,20,120,0.70)"/>
-                </linearGradient>
-                <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-                  <feGaussianBlur stdDeviation="6" result="b"/>
-                  <feColorMatrix in="b" type="matrix"
-                    values="1 0 0 0 0.55
-                            0 1 0 0 0.15
-                            0 0 1 0 0.95
-                            0 0 0 1 0" result="c"/>
-                  <feMerge>
-                    <feMergeNode in="c"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-
-              <circle cx="300" cy="300" r="180" fill="url(#g1)" opacity="0.45"/>
-              <path filter="url(#glow)"
-                d="M300 95 L390 170 L350 505 L300 540 L250 505 L210 170 Z"
-                fill="url(#g2)" opacity="0.95"/>
-              <path filter="url(#glow)"
-                d="M300 170 L500 250 L430 285 L330 230 Z"
-                fill="url(#g2)" opacity="0.85"/>
-              <path filter="url(#glow)"
-                d="M300 170 L100 250 L170 285 L270 230 Z"
-                fill="url(#glow)" opacity="0.0"/>
-              <path filter="url(#glow)"
-                d="M300 170 L100 250 L170 285 L270 230 Z"
-                fill="url(#g2)" opacity="0.85"/>
-
-              <path
-                d="M330 140
-                   C360 160, 360 185, 335 205
-                   C310 225, 300 250, 320 280
-                   C345 320, 340 350, 310 375
-                   C275 405, 280 435, 315 465"
-                fill="none" stroke="rgba(230,210,255,0.55)" stroke-width="10"
-                stroke-linecap="round" opacity="0.65"/>
-            </svg>
+          <!-- center emblem placeholder (we’ll swap to your final logo art later) -->
+          <div class="core-emblem">
+            <div class="emblem-glow"></div>
+            <div class="emblem-mark">M</div>
           </div>
 
-          <div class="core-status" id="arcText">EXECUTION READY</div>
+          <div class="callout left">
+            <div class="clabel">EXECUTION</div>
+            <div class="cval">WAIT FOR READY</div>
+          </div>
+          <div class="callout right">
+            <div class="clabel">GATE</div>
+            <div class="cval">SESSION ONLY</div>
+          </div>
+
+          <div class="core-status" id="coreStatus">SYSTEM READY</div>
         </div>
       </section>
 
       <section class="panel panel-float">
         <div class="panel-title">SYSTEM LOG</div>
         <div class="log" id="sysLog">
-          <div class="log-line">[OK] Boot complete</div>
-          <div class="log-line">[OK] Input online</div>
-          <div class="log-line">[OK] Charts engine: embed</div>
+          <div class="log-line">[OK] HOLO shell loaded</div>
+          <div class="log-line">[OK] Click-safe layout</div>
+          <div class="log-line">[INFO] Charts not loaded (layout phase)</div>
         </div>
       </section>
     </main>
 
-    <!-- RIGHT -->
+    <!-- RIGHT: CHART STACK SLOTS -->
     <aside class="right-col">
-      <section class="panel panel-float right-stack">
+      <section class="panel panel-float">
         <div class="panel-title">MARKET VISION</div>
-
         <div class="chart-stack">
-          <div class="chart-panel"><div class="tv-embed" id="tv_embed_1"></div></div>
-          <div class="chart-panel"><div class="tv-embed" id="tv_embed_2"></div></div>
-          <div class="chart-panel"><div class="tv-embed" id="tv_embed_3"></div></div>
+          <div class="chart-slot">CHART SLOT 1</div>
+          <div class="chart-slot">CHART SLOT 2</div>
+          <div class="chart-slot">CHART SLOT 3</div>
         </div>
       </section>
     </aside>
 
   </div>
 
-  <!-- Cache-bust -->
-  <script src="./app.js?v=FINAL6"></script>
+  <script src="./app.js?v=HOLO1"></script>
 </body>
 </html>
