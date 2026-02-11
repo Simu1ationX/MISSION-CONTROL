@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MISSION CONTROL // MAMBA</title>
 
-  <!-- Cache-bust so GitHub Pages doesn’t serve old files -->
-  <link rel="stylesheet" href="./styles.css?v=FINAL5" />
+  <!-- Cache-bust -->
+  <link rel="stylesheet" href="./styles.css?v=FINAL6" />
 </head>
 
 <body>
@@ -37,15 +37,15 @@
   <!-- Main Grid -->
   <div class="dash-grid">
 
-    <!-- LEFT COLUMN -->
+    <!-- LEFT -->
     <aside class="left-col">
       <section class="panel panel-float">
         <div class="panel-title">MISSION CONTROL</div>
 
         <div class="chip-row">
-          <button class="chip active" type="button">CYAN</button>
-          <button class="chip" type="button">PURPLE</button>
-          <button class="chip danger" type="button">MAMBA</button>
+          <button class="chip active" type="button" id="btnCyan">CYAN</button>
+          <button class="chip" type="button" id="btnPurple">PURPLE</button>
+          <button class="chip danger" type="button" id="btnMamba">MAMBA</button>
         </div>
 
         <div class="chip-row">
@@ -113,12 +113,11 @@
       </section>
     </aside>
 
-    <!-- MIDDLE COLUMN -->
+    <!-- MIDDLE -->
     <main class="mid-col">
       <section class="panel panel-float arc-panel">
         <div class="panel-title">CORE</div>
 
-        <!-- Stark HUD (center useful) -->
         <div class="mid-hud">
           <div class="hudbox">
             <div class="hlabel">BIAS</div>
@@ -138,15 +137,33 @@
           </div>
         </div>
 
-        <!-- Center: Purple Mamba emblem + Stark rings -->
+        <!-- Stark/JARVIS core stage -->
         <div class="core-stage">
+          <div class="core-grid"></div>
+          <div class="core-scan"></div>
+
+          <!-- floating callouts -->
+          <div class="core-callout c1">
+            <div class="clabel">EXECUTE</div>
+            <div class="cval">A+ ONLY</div>
+          </div>
+          <div class="core-callout c2">
+            <div class="clabel">RISK</div>
+            <div class="cval">LOCKED</div>
+          </div>
+          <div class="core-callout c3">
+            <div class="clabel">FOCUS</div>
+            <div class="cval">MAMBA</div>
+          </div>
+
+          <!-- rings -->
           <div class="jarvis-rings">
             <div class="ring r1"></div>
             <div class="ring r2"></div>
             <div class="ring r3"></div>
           </div>
 
-          <!-- Inline SVG emblem (purple) -->
+          <!-- your purple emblem -->
           <div class="mamba-emblem" aria-hidden="true">
             <svg viewBox="0 0 600 600" width="520" height="520">
               <defs>
@@ -174,29 +191,20 @@
                 </filter>
               </defs>
 
-              <!-- soft core -->
               <circle cx="300" cy="300" r="180" fill="url(#g1)" opacity="0.45"/>
-
-              <!-- emblem (stylized “Mamba spear”) -->
               <path filter="url(#glow)"
-                d="M300 95
-                   L390 170
-                   L350 505
-                   L300 540
-                   L250 505
-                   L210 170
-                   Z"
+                d="M300 95 L390 170 L350 505 L300 540 L250 505 L210 170 Z"
                 fill="url(#g2)" opacity="0.95"/>
-
-              <!-- wings -->
               <path filter="url(#glow)"
                 d="M300 170 L500 250 L430 285 L330 230 Z"
                 fill="url(#g2)" opacity="0.85"/>
               <path filter="url(#glow)"
                 d="M300 170 L100 250 L170 285 L270 230 Z"
+                fill="url(#glow)" opacity="0.0"/>
+              <path filter="url(#glow)"
+                d="M300 170 L100 250 L170 285 L270 230 Z"
                 fill="url(#g2)" opacity="0.85"/>
 
-              <!-- snake hint line -->
               <path
                 d="M330 140
                    C360 160, 360 185, 335 205
@@ -208,7 +216,7 @@
             </svg>
           </div>
 
-          <div class="core-status" id="arcText">INITIALIZING • EXECUTION READY</div>
+          <div class="core-status" id="arcText">EXECUTION READY</div>
         </div>
       </section>
 
@@ -217,30 +225,27 @@
         <div class="log" id="sysLog">
           <div class="log-line">[OK] Boot complete</div>
           <div class="log-line">[OK] Input online</div>
-          <div class="log-line">[OK] Charts: MNQ locked</div>
+          <div class="log-line">[OK] Charts engine: embed</div>
         </div>
       </section>
     </main>
 
-    <!-- RIGHT COLUMN -->
+    <!-- RIGHT -->
     <aside class="right-col">
       <section class="panel panel-float right-stack">
         <div class="panel-title">MARKET VISION</div>
 
         <div class="chart-stack">
-          <div class="chart-panel" id="tv_right_1"></div>
-          <div class="chart-panel" id="tv_right_2"></div>
-          <div class="chart-panel" id="tv_right_3"></div>
+          <div class="chart-panel"><div class="tv-embed" id="tv_embed_1"></div></div>
+          <div class="chart-panel"><div class="tv-embed" id="tv_embed_2"></div></div>
+          <div class="chart-panel"><div class="tv-embed" id="tv_embed_3"></div></div>
         </div>
       </section>
     </aside>
 
   </div>
 
-  <!-- TradingView EXACTLY ONCE -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
-
-  <!-- Cache-bust JS too -->
-  <script src="./app.js?v=FINAL5"></script>
+  <!-- Cache-bust -->
+  <script src="./app.js?v=FINAL6"></script>
 </body>
 </html>
