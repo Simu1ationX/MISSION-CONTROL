@@ -37,20 +37,21 @@
 
     <!-- LEFT COLUMN -->
     <aside class="left-col">
+
       <section class="panel panel-float">
         <div class="panel-title">MISSION CONTROL</div>
 
         <div class="chip-row">
-          <button class="chip active">CYAN</button>
-          <button class="chip">PURPLE</button>
-          <button class="chip danger">MAMBA</button>
+          <button class="chip active" type="button">CYAN</button>
+          <button class="chip" type="button">PURPLE</button>
+          <button class="chip danger" type="button">MAMBA</button>
         </div>
 
         <div class="chip-row">
-          <button class="chip">QUOTE: ON</button>
-          <button class="chip">MOUTH: ON</button>
-          <button class="chip danger">FLASH: ON</button>
-          <button class="chip">FULLSCREEN</button>
+          <button class="chip" type="button">QUOTE: ON</button>
+          <button class="chip" type="button">MOUTH: ON</button>
+          <button class="chip danger" type="button">FLASH: ON</button>
+          <button class="chip" type="button">FULLSCREEN</button>
         </div>
 
         <div class="divider"></div>
@@ -109,32 +110,55 @@
           </div>
         </div>
       </section>
+
     </aside>
 
     <!-- MIDDLE COLUMN -->
     <main class="mid-col">
+
       <section class="panel panel-float arc-panel">
         <div class="panel-title">ARC CORE</div>
 
-        <!-- Arc Reactor Placeholder (swap with your real animation if you have one) -->
+        <!-- NEW: Stark HUD overlay (useful center content) -->
+        <div class="mid-hud">
+          <div class="hudbox">
+            <div class="hlabel">BIAS</div>
+            <div class="hval" id="biasVal">NEUTRAL</div>
+          </div>
+          <div class="hudbox">
+            <div class="hlabel">VWAP DIST</div>
+            <div class="hval" id="vwapDist">—</div>
+          </div>
+          <div class="hudbox">
+            <div class="hlabel">9/21 ALIGN</div>
+            <div class="hval" id="emaAlign">—</div>
+          </div>
+          <div class="hudbox danger">
+            <div class="hlabel">STOP IF</div>
+            <div class="hval">2 LOSSES</div>
+          </div>
+        </div>
+
+        <!-- Arc Reactor -->
         <div class="arc-wrap" aria-hidden="true">
           <div class="arc-ring arc-ring-1"></div>
           <div class="arc-ring arc-ring-2"></div>
           <div class="arc-ring arc-ring-3"></div>
           <div class="arc-center"></div>
-          <div class="arc-text">INITIALIZING • EXECUTION READY</div>
+          <div class="arc-text" id="arcText">INITIALIZING • EXECUTION READY</div>
         </div>
       </section>
 
       <section class="panel panel-float">
         <div class="panel-title">SYSTEM LOG</div>
-        <div class="log">
+        <div class="log" id="sysLog">
           <div class="log-line">[OK] Visual HUD loaded</div>
           <div class="log-line">[OK] Right-side chart stack ready</div>
           <div class="log-line">[OK] Symbol locked: CME_MINI:MNQ1!</div>
           <div class="log-line">[INFO] Mamba protocol standing by</div>
         </div>
       </section>
+
     </main>
 
     <!-- RIGHT COLUMN: 3 STACKED CHARTS -->
@@ -152,7 +176,7 @@
 
   </div>
 
-  <!-- TradingView (required once) -->
+  <!-- IMPORTANT: tv.js exactly ONCE -->
   <script src="https://s3.tradingview.com/tv.js"></script>
   <script src="./app.js"></script>
 </body>
