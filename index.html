@@ -3,853 +3,987 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MISSION CONTROL — BLACK MAMBA WAR ROOM</title>
+  <title>MISSION CONTROL X — STARK / MAMBA</title>
 
   <!-- FONT -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#050608;
-      --panel:#0b1017;
-      --panel2:#070b10;
-      --text:#e6f1ff;
-      --muted:#9fb3c8;
+      --bg:#05070a;
+      --glass: rgba(14,18,26,.55);
+      --glass2: rgba(10,14,20,.42);
+      --line: rgba(255,255,255,.07);
+      --line2: rgba(255,255,255,.04);
+      --text:#eaf2ff;
+      --muted:#9bb0c8;
 
-      /* Accents */
-      --blue:#00d0ff;
-      --blue2:#00a8ff;
-      --blueGlow:rgba(0,208,255,.55);
+      /* STARK CYAN */
+      --accent:#00e6ff;
+      --accent2:#00a6ff;
+      --glow: rgba(0,230,255,.55);
 
-      --red:#ff2a2a;
+      /* MAMBA RED */
+      --red:#ff2b2b;
       --red2:#ff0000;
-      --redGlow:rgba(255,42,42,.60);
+      --redglow: rgba(255,43,43,.65);
 
-      --purple:#b100ff;
-      --purple2:#7a00ff;
-      --purpleGlow:rgba(177,0,255,.55);
+      /* PURPLE OPTION */
+      --purple:#8a35ff;
+      --purple2:#4f1bff;
+      --purpleGlow: rgba(138,53,255,.55);
 
-      /* Runtime (changes by theme) */
-      --accent:var(--blue);
-      --accent2:var(--blue2);
-      --glow:var(--blueGlow);
-
-      --radius:18px;
+      --radius:16px;
       --radius2:14px;
-      --stroke:2px;
+      --stroke: 1px;
 
-      --shadow:0 0 18px var(--glow), 0 0 55px rgba(0,0,0,.55);
-      --shadowSoft:0 0 10px rgba(255,255,255,.05), 0 16px 50px rgba(0,0,0,.65);
-
-      --grainOpacity:.08;
-      --wmOpacity:.10;
+      --shadow: 0 0 18px rgba(0,230,255,.10), 0 0 40px rgba(0,230,255,.06);
+      --shadowHard: 0 0 22px rgba(0,230,255,.18), 0 0 55px rgba(0,230,255,.08);
+      --shadowRed: 0 0 26px rgba(255,43,43,.22), 0 0 70px rgba(255,43,43,.10);
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
+    html,body{height:100%; width:100%}
     body{
       margin:0;
+      background: radial-gradient(1400px 900px at 50% 30%, rgba(0,230,255,.08), transparent 58%),
+                  radial-gradient(900px 650px at 20% 85%, rgba(0,230,255,.06), transparent 62%),
+                  radial-gradient(900px 650px at 85% 80%, rgba(0,230,255,.05), transparent 62%),
+                  var(--bg);
       color:var(--text);
       font-family:"Orbitron", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      overflow-x:hidden;
-
-      background:
-        radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.10), transparent 58%),
-        radial-gradient(900px 600px at 10% 85%, rgba(177,0,255,.06), transparent 62%),
-        linear-gradient(180deg, #040507, #07080c 45%, #040507);
-    }
-
-    /* ===== THEMES ===== */
-    body.theme-blue{
-      --accent:var(--blue);
-      --accent2:var(--blue2);
-      --glow:var(--blueGlow);
-      background:
-        radial-gradient(1200px 700px at 50% 15%, rgba(0,208,255,.10), transparent 58%),
-        radial-gradient(900px 600px at 10% 85%, rgba(0,208,255,.06), transparent 62%),
-        linear-gradient(180deg, #040507, #07080c 45%, #040507);
-    }
-    body.theme-purple{
-      --accent:var(--purple);
-      --accent2:var(--purple2);
-      --glow:var(--purpleGlow);
-      background:
-        radial-gradient(1200px 700px at 50% 15%, rgba(177,0,255,.14), transparent 58%),
-        radial-gradient(900px 600px at 10% 85%, rgba(177,0,255,.08), transparent 62%),
-        linear-gradient(180deg, #040507, #07080c 45%, #040507);
-    }
-    body.theme-mamba{
-      --accent:var(--red);
-      --accent2:var(--red2);
-      --glow:var(--redGlow);
-      background:
-        radial-gradient(1200px 700px at 50% 15%, rgba(255,42,42,.16), transparent 58%),
-        radial-gradient(900px 600px at 10% 85%, rgba(177,0,255,.08), transparent 62%),
-        radial-gradient(1000px 700px at 90% 70%, rgba(255,0,0,.07), transparent 65%),
-        linear-gradient(180deg, #000, #05050a 45%, #000);
-    }
-
-    /* ===== WAR ROOM BREATH PULSE ===== */
-    body.theme-mamba .panel{
-      animation: breathe 4.8s ease-in-out infinite;
-    }
-    @keyframes breathe{
-      0%,100%{filter: drop-shadow(0 0 0 rgba(0,0,0,0));}
-      50%{filter: drop-shadow(0 0 10px rgba(255,42,42,.10));}
-    }
-
-    /* ===== WRAP / FRAME ===== */
-    .wrap{max-width: 1680px; margin: 18px auto 28px; padding: 0 18px;}
-    .frame{
-      border: var(--stroke) solid rgba(255,255,255,.08);
-      border-radius: 24px;
-      padding: 14px;
-      position: relative;
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
-      box-shadow: var(--shadowSoft);
       overflow:hidden;
-    }
-    .frame::before{
-      content:"";
-      position:absolute;
-      inset:10px;
-      border-radius: 18px;
-      border: var(--stroke) solid rgba(255,255,255,.04);
-      pointer-events:none;
+      user-select:none;
     }
 
-    /* subtle grain */
-    .frame::after{
-      content:"";
+    /* ===== Mode system ===== */
+    body.mode-stark{
+      --accent:#00e6ff;
+      --accent2:#00a6ff;
+      --glow: rgba(0,230,255,.55);
+      --shadow: 0 0 18px rgba(0,230,255,.10), 0 0 40px rgba(0,230,255,.06);
+      --shadowHard: 0 0 22px rgba(0,230,255,.18), 0 0 55px rgba(0,230,255,.08);
+      background: radial-gradient(1400px 900px at 50% 30%, rgba(0,230,255,.08), transparent 58%),
+                  radial-gradient(900px 650px at 20% 85%, rgba(0,230,255,.06), transparent 62%),
+                  radial-gradient(900px 650px at 85% 80%, rgba(0,230,255,.05), transparent 62%),
+                  var(--bg);
+    }
+    body.mode-purple{
+      --accent: var(--purple);
+      --accent2: var(--purple2);
+      --glow: var(--purpleGlow);
+      --shadow: 0 0 18px rgba(138,53,255,.10), 0 0 40px rgba(138,53,255,.06);
+      --shadowHard: 0 0 22px rgba(138,53,255,.18), 0 0 55px rgba(138,53,255,.08);
+      background: radial-gradient(1400px 900px at 50% 30%, rgba(138,53,255,.09), transparent 58%),
+                  radial-gradient(900px 650px at 20% 85%, rgba(138,53,255,.06), transparent 62%),
+                  radial-gradient(900px 650px at 85% 80%, rgba(138,53,255,.05), transparent 62%),
+                  #04030a;
+    }
+    body.mode-mamba{
+      --accent: var(--red);
+      --accent2: var(--red2);
+      --glow: var(--redglow);
+      --shadow: var(--shadowRed);
+      --shadowHard: 0 0 30px rgba(255,43,43,.22), 0 0 85px rgba(255,43,43,.10);
+      background: radial-gradient(1400px 900px at 50% 30%, rgba(255,43,43,.12), transparent 58%),
+                  radial-gradient(900px 650px at 20% 85%, rgba(255,43,43,.08), transparent 62%),
+                  radial-gradient(900px 650px at 85% 80%, rgba(255,43,43,.06), transparent 62%),
+                  #000;
+    }
+
+    /* ===== Ambient layers: grid + scanlines + noise ===== */
+    .ambient{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .grid{
+      position:absolute; inset:-2px;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity:.12;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,.6));
+      transform: perspective(1000px) rotateX(18deg) translateY(-60px) scale(1.15);
+      transform-origin: 50% 0%;
+      animation: gridDrift 14s linear infinite;
+    }
+    @keyframes gridDrift{
+      0%{ background-position: 0 0, 0 0; }
+      100%{ background-position: 240px 0, 0 240px; }
+    }
+
+    .scanlines{
       position:absolute; inset:0;
-      pointer-events:none;
-      opacity:var(--grainOpacity);
-      background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 3px,
+        rgba(0,0,0,.20) 4px
+      );
+      opacity:.12;
       mix-blend-mode: overlay;
+      animation: scanMove 5.5s linear infinite;
+    }
+    @keyframes scanMove{
+      0%{ transform: translateY(0); }
+      100%{ transform: translateY(28px); }
     }
 
-    /* Neon side bars */
-    .neon-bar{
-      position:absolute;
-      top: 110px;
-      bottom: 140px;
-      width: 6px;
-      background: linear-gradient(180deg, transparent, var(--accent), transparent);
-      filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 22px rgba(255,255,255,.12));
-      opacity:.95;
+    .noise{
+      position:absolute; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      opacity:.08;
+      mix-blend-mode: overlay;
+      animation: noiseF 1.4s steps(2) infinite;
     }
-    .neon-bar.left{left: 12px}
-    .neon-bar.right{right: 12px}
-
-    /* ===== MOTIVATION WATERMARK (giant faint) ===== */
-    .watermark{
-      position:absolute;
-      inset:0;
-      display:none;
-      pointer-events:none;
-      opacity: var(--wmOpacity);
-      background-repeat:no-repeat;
-      background-position: 50% 55%;
-      background-size: min(900px, 72vw);
-      filter: drop-shadow(0 0 30px rgba(0,0,0,.35));
-      mix-blend-mode: screen;
+    @keyframes noiseF{
+      0%{ transform: translate(0,0); }
+      20%{ transform: translate(-8px,6px); }
+      40%{ transform: translate(10px,-6px); }
+      60%{ transform: translate(-6px,-10px); }
+      80%{ transform: translate(8px,10px); }
+      100%{ transform: translate(0,0); }
     }
-    .watermark.on{display:block}
 
-    /* ===== PANELS ===== */
+    /* ===== Fullscreen / shell ===== */
+    .shell{
+      position:relative;
+      z-index:1;
+      width:100vw;
+      height:100vh;
+      padding: 14px;
+    }
+
+    /* ===== HUD layout (TV-first) ===== */
+    .hud{
+      width:100%;
+      height:100%;
+      display:grid;
+      grid-template-columns: 24% 52% 24%;
+      grid-template-rows: 18% 56% 26%;
+      gap: 12px;
+    }
+
     .panel{
-      background: linear-gradient(180deg, rgba(12,16,22,.82), rgba(7,10,14,.78));
+      position:relative;
       border-radius: var(--radius);
-      border: var(--stroke) solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(12,16,22,.62), rgba(8,10,14,.40));
+      border: var(--stroke) solid var(--line);
       box-shadow: var(--shadow);
-      position: relative;
       overflow:hidden;
+      backdrop-filter: blur(10px);
     }
-    .panel::after{
+    .panel::before{
       content:"";
-      position:absolute;
-      inset:-2px;
+      position:absolute; inset:-2px;
       border-radius: inherit;
       border: 1px solid rgba(255,255,255,.05);
       pointer-events:none;
     }
-
-    /* ===== HEADER GRID ===== */
-    .top{
-      display:grid;
-      grid-template-columns: 360px 1fr 420px;
-      gap: 12px;
-      align-items: stretch;
-      margin-bottom: 12px;
+    .panel::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(700px 160px at 15% 12%, rgba(255,255,255,.05), transparent 65%),
+        radial-gradient(900px 220px at 85% 18%, rgba(255,255,255,.04), transparent 70%);
+      pointer-events:none;
+      opacity:.8;
     }
 
-    .panel-head{padding: 14px 16px;}
-    .title-small{
-      font-size: 11px; letter-spacing: 2.5px;
-      color: rgba(255,255,255,.70);
-      text-transform: uppercase;
+    .panel .bar{
+      position:absolute;
+      inset:0;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+      pointer-events:none;
     }
-    .title{
-      margin-top: 6px;
-      font-size: 22px;
-      letter-spacing: 1.2px;
-      font-weight: 800;
-    }
-    .subtitle{
-      margin-top: 8px;
-      display:flex; gap:10px; align-items:center;
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 1.2px;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:99px;
-      background: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
-    }
-    .chip{
-      margin-left:auto;
-      padding:6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.25);
-      font-size: 11px;
-      letter-spacing: 1.2px;
-      color: rgba(255,255,255,.82);
-      display:flex; gap:8px; align-items:center;
-    }
-    .chip b{color: var(--accent)}
 
-    .btn{
-      cursor:pointer;
-      user-select:none;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.28);
-      color: rgba(255,255,255,.86);
-      font-family: inherit;
-      font-size: 11px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:8px;
-      min-width: 118px;
-    }
-    .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.18)}
-    .btn:active{transform: translateY(0px)}
-    .btn.red{border-color: rgba(255,42,42,.40); box-shadow: 0 0 14px rgba(255,42,42,.10)}
-    .btn.purple{border-color: rgba(177,0,255,.40); box-shadow: 0 0 14px rgba(177,0,255,.10)}
-    .btn.blue{border-color: rgba(0,208,255,.40); box-shadow: 0 0 14px rgba(0,208,255,.10)}
-
-    .clock{
+    .titleRow{
       display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-      padding: 10px 10px;
-      min-height: 110px;
-    }
-    .clock .time{
-      font-size: 52px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-shadow: 0 0 18px rgba(255,255,255,.10);
-    }
-    .clock .date{
-      margin-top: 8px;
-      font-size: 12px;
-      letter-spacing: 2.2px;
-      color: rgba(255,255,255,.75);
-      text-transform: uppercase;
-    }
-    .mamba-quote{
-      margin-top: 10px;
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-transform: uppercase;
-      text-shadow: 0 0 18px var(--glow);
-    }
-
-    .rightTop{
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      padding: 12px 12px;
-      min-height: 110px;
       gap:10px;
-    }
-    .row{display:flex; gap:10px; align-items:center; justify-content:space-between;}
-    .countLabel{font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.72);}
-    .openTime{font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,.82);}
-    .countdown{
-      display:flex;
-      align-items:baseline;
-      justify-content:flex-end;
-      gap:10px;
-      padding-bottom: 6px;
-    }
-    .countdown .digits{
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-shadow: 0 0 18px var(--glow);
-    }
-    .countdown small{
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: rgba(255,255,255,.65);
-      text-transform: uppercase;
-    }
-    .hint{font-size: 10px; letter-spacing: 1.6px; color: rgba(255,255,255,.55);}
-
-    .pulse{animation: pulse 1s infinite;}
-    @keyframes pulse{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
-
-    /* ===== TAGS ===== */
-    .panel-titlebar{
-      display:flex;
-      justify-content:space-between;
       align-items:center;
       padding: 10px 12px;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      background: linear-gradient(180deg, rgba(0,0,0,.34), rgba(0,0,0,.06));
+      border-bottom: 1px solid var(--line2);
+      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.06));
     }
-    .panel-titlebar .left{display:flex; gap:10px; align-items:center;}
     .tag{
+      font-size: 10px;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
       padding: 4px 8px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.10);
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.85);
-      background: rgba(0,0,0,.22);
-      white-space:nowrap;
+      color: rgba(255,255,255,.82);
+      background: rgba(0,0,0,.18);
     }
-    .tag.accent{border-color: color-mix(in oklab, var(--accent) 45%, transparent); color: color-mix(in oklab, var(--accent) 85%, white); box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 20%, transparent);}
-    .tag.red{border-color: rgba(255,42,42,.40); color: rgba(255,42,42,.95); box-shadow: 0 0 12px rgba(255,42,42,.18);}
-    .tag.purple{border-color: rgba(177,0,255,.40); color: rgba(177,0,255,.95); box-shadow: 0 0 12px rgba(177,0,255,.18);}
-
-    /* ===== MAIN GRID ===== */
-    .main{
-      display:grid;
-      grid-template-columns: 2.15fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .stack{display:grid; grid-template-rows: 1fr 1fr; gap: 12px;}
-
-    .tvWrap{padding:0; overflow:hidden;}
-    .tv{width:100%; height: 560px; background: rgba(0,0,0,.25);}
-    .tv.small{height: 270px;}
-
-    .tv iframe{
-      width:100%; height:100%;
-      border:0;
-      display:block;
-      background: rgba(0,0,0,.25);
+    .tag.accent{
+      border-color: rgba(255,255,255,.14);
+      color: var(--accent);
+      box-shadow: 0 0 16px rgba(255,255,255,.06), 0 0 18px var(--glow);
     }
 
-    /* ===== BOTTOM ===== */
-    .bottom{
-      display:grid;
-      grid-template-columns: 1.05fr 1.35fr 1.6fr;
-      gap: 12px;
-      margin-bottom: 12px;
+    .small{
+      font-size:11px;
+      letter-spacing:2px;
+      color: rgba(255,255,255,.70);
+      text-transform:uppercase;
     }
-    .list{padding: 12px 14px 14px;}
-    .list .item{
-      display:flex; align-items:center; gap: 10px;
-      padding: 10px 10px;
+    .big{
+      font-size: 18px;
+      letter-spacing: 2px;
+      font-weight: 800;
+    }
+    .muted{ color: var(--muted); }
+
+    .btnRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding: 10px 12px 12px;
+    }
+    .btn{
+      cursor:pointer;
+      padding: 8px 10px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.06);
-      background: rgba(0,0,0,.20);
-      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color: rgba(255,255,255,.86);
+      font-family: inherit;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
     }
-    .cb{
-      width: 14px; height: 14px;
-      border-radius: 4px;
-      border: 1px solid rgba(255,255,255,.20);
-      background: rgba(255,255,255,.05);
-      box-shadow: inset 0 0 0 2px rgba(0,0,0,.25);
-      flex: 0 0 auto;
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 0 18px rgba(255,255,255,.04), 0 0 22px var(--glow);
     }
-    .item span{font-size: 12px; letter-spacing: 1.2px; color: rgba(255,255,255,.88);}
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.red:hover{ box-shadow: 0 0 24px rgba(255,43,43,.10), 0 0 30px var(--redglow); }
+    .btn.full{ width:100%; justify-content:center; }
 
-    .rules{padding: 12px 14px 14px;}
-    .rules ul{
-      margin: 10px 0 0;
-      padding: 0 0 0 18px;
-      color: rgba(255,255,255,.84);
+    /* ===== Positions in grid ===== */
+    #leftTop{ grid-column: 1; grid-row: 1; }
+    #centerTop{ grid-column: 2; grid-row: 1; }
+    #rightTop{ grid-column: 3; grid-row: 1; }
+
+    #leftMid{ grid-column: 1; grid-row: 2; }
+    #centerMid{ grid-column: 2; grid-row: 2; }
+    #rightMid{ grid-column: 3; grid-row: 2; }
+
+    #bottom{ grid-column: 1 / 4; grid-row: 3; display:grid; grid-template-columns: 1.15fr 1.4fr 1.25fr 1.2fr; gap: 12px; background: none; border: none; box-shadow:none; }
+
+    /* ===== Center Core HUD (Stark ring) ===== */
+    .coreWrap{
+      position:absolute;
+      inset: 0;
+      pointer-events:none;
+      opacity:.95;
+      mix-blend-mode: screen;
+    }
+
+    .core{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      width: min(64vh, 64vw);
+      height: min(64vh, 64vw);
+      transform: translate(-50%,-50%);
+      filter: drop-shadow(0 0 20px rgba(255,255,255,.08)) drop-shadow(0 0 35px var(--glow));
+      opacity:.85;
+    }
+    .ring{
+      position:absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .ring.r1{ border-color: rgba(255,255,255,.12); animation: spin 26s linear infinite; }
+    .ring.r2{ inset: 7%; border-color: rgba(255,255,255,.09); animation: spinR 18s linear infinite; }
+    .ring.r3{ inset: 15%; border-color: rgba(255,255,255,.07); animation: spin 12s linear infinite; }
+    .ring.r4{ inset: 23%; border-color: rgba(255,255,255,.06); animation: spinR 9s linear infinite; }
+    .ringGlow{
+      position:absolute; inset: 10%;
+      border-radius:50%;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.06), transparent 62%);
+      animation: breathe 4.2s ease-in-out infinite;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+    @keyframes spinR{ to{ transform: rotate(-360deg); } }
+    @keyframes breathe{ 0%,100%{ opacity:.55 } 50%{ opacity:1 } }
+
+    .ticks{
+      position:absolute;
+      inset: -2%;
+      border-radius: 50%;
+      background:
+        conic-gradient(from 0deg,
+          rgba(255,255,255,.0) 0deg,
+          rgba(255,255,255,.14) 2deg,
+          rgba(255,255,255,.0) 4deg,
+          rgba(255,255,255,.0) 8deg);
+      -webkit-mask: radial-gradient(circle, transparent 63%, #000 64%);
+      mask: radial-gradient(circle, transparent 63%, #000 64%);
+      opacity:.55;
+      animation: spin 22s linear infinite;
+    }
+
+    /* ===== Center Top clock / status ===== */
+    .clockBox{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      height:100%;
+      padding: 10px 12px;
+    }
+    .time{
+      font-size: 44px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-shadow: 0 0 25px rgba(255,255,255,.08);
+    }
+    .date{
+      margin-top: 8px;
       font-size: 12px;
-      letter-spacing: 1.1px;
-      line-height: 1.45;
+      letter-spacing: 2.2px;
+      color: rgba(255,255,255,.72);
+      text-transform: uppercase;
     }
-    .rules li{margin: 6px 0}
-    .rules .headerLine{display:flex; gap: 10px; align-items:center; justify-content:space-between;}
+    .quote{
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: 2.2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(255,255,255,.08);
+    }
 
-    .risk{padding: 12px 14px 14px;}
-    .riskGrid{
+    /* ===== Countdown ===== */
+    .countWrap{ padding: 10px 12px 12px; }
+    .countDigits{
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-shadow: 0 0 25px var(--glow);
+      text-align:right;
+    }
+    .countSmall{
+      margin-top: 8px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.66);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .pulse{
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse{
+      0%{opacity:1}
+      50%{opacity:.55}
+      100%{opacity:1}
+    }
+
+    /* ===== Iframe charts ===== */
+    .frameWrap{
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+    iframe.chart{
+      width:100%;
+      height:100%;
+      border:0;
+      border-radius: var(--radius);
+      background: rgba(0,0,0,.35);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+
+    /* ===== Bottom multi-panels ===== */
+    .bpanel{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(12,16,22,.62), rgba(8,10,14,.40));
+      border: var(--stroke) solid var(--line);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      position:relative;
+    }
+    .bpanel .content{ padding: 10px 12px 12px; }
+    ul.clean{
+      margin: 8px 0 0;
+      padding: 0 0 0 16px;
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      color: rgba(255,255,255,.82);
+      line-height: 1.5;
+    }
+    ul.clean li{ margin: 6px 0; }
+
+    .statGrid{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
-    .card{
+    .stat{
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.06);
-      background: rgba(0,0,0,.20);
-      padding: 10px 10px 12px;
-      min-height: 74px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(0,0,0,.18);
+      padding: 10px;
     }
-    .card .k{font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.62);}
-    .card .v{margin-top: 8px; font-size: 14px; letter-spacing: 1.6px; color: rgba(255,255,255,.90);}
-    .card .v b{color: var(--accent)}
+    .k{ font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.60); }
+    .v{ margin-top: 8px; font-size: 14px; letter-spacing: 1.4px; color: rgba(255,255,255,.88); }
+    .v b{ color: var(--accent); }
 
-    /* ===== FOOTER STATUS ===== */
-    .status{display:flex; justify-content:center; align-items:center; gap: 14px; padding: 16px;}
-    .statusBox{
-      min-width: 420px;
-      text-align:center;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.28);
-      box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 0 25px rgba(0,0,0,.35);
-    }
-    .statusBox .big{font-size: 18px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,.92);}
-    .statusBox .small{margin-top: 8px; font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,.62); text-transform: uppercase;}
-
-    /* ===== MUSIC DOCK ===== */
-    .musicDock{margin-top: 10px; display:none;}
-    .musicDock.on{display:block}
-    .musicDock iframe{
-      width:100%;
-      height: 92px;
-      border: 0;
-      border-radius: 14px;
-      background: rgba(0,0,0,.25);
-      box-shadow: var(--shadow);
-    }
-
-    /* ===== CORNER LOGO (small) ===== */
-    .cornerLogo{
+    /* ===== Motivation system (3 modes) ===== */
+    .motivation{
       position:absolute;
-      left: 22px;
-      bottom: 18px;
-      width: 92px;
-      height: 92px;
-      opacity:.95;
-      pointer-events:none;
-      display:none;
-      filter: drop-shadow(0 0 16px rgba(0,0,0,.35)) drop-shadow(0 0 18px var(--glow));
-    }
-    .cornerLogo.on{display:block}
-
-    /* ===== SPLASH (center) ===== */
-    .splash{
-      position:fixed;
       inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background: radial-gradient(900px 600px at 50% 50%, rgba(255,42,42,.12), rgba(0,0,0,.88));
-      z-index: 9999;
       pointer-events:none;
       opacity:0;
       transition: opacity .25s ease;
     }
-    .splash.on{display:flex; opacity:1;}
-    .splashCard{
-      width: min(820px, 92vw);
-      padding: 22px 22px 18px;
-      border-radius: 22px;
-      border: 2px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.35);
-      box-shadow: 0 0 30px rgba(0,0,0,.6), 0 0 45px var(--glow);
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+    .motivation.on{ opacity: 1; }
+    /* Mode 1: watermark */
+    .motivation.watermark{
+      opacity:.14;
+      mix-blend-mode: screen;
+      filter: grayscale(.2) contrast(1.05) saturate(1.2);
+      background-size: cover;
+      background-position: center;
     }
-    .splashCard::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(700px 320px at 50% 10%, rgba(255,42,42,.18), transparent 60%);
-      opacity:.9;
+    /* Mode 2: corner badge */
+    .motivationBadge{
+      position:absolute;
+      right: 14px;
+      bottom: 14px;
+      width: 128px;
+      height: 128px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background-size: cover;
+      background-position:center;
+      filter: contrast(1.08) saturate(1.2);
+      box-shadow: 0 0 25px rgba(255,255,255,.08), 0 0 35px var(--glow);
+      opacity:0;
+      transition: opacity .25s ease;
       pointer-events:none;
+      z-index:5;
     }
-    .splashImg{
-      width: 240px;
-      height:auto;
-      display:block;
-      margin: 0 auto 14px;
-      filter: drop-shadow(0 0 20px rgba(0,0,0,.5)) drop-shadow(0 0 22px var(--glow));
-      position:relative;
-      z-index:1;
+    .motivationBadge.on{ opacity: .88; }
+
+    /* Mode 3: full overlay (during boot / mamba) */
+    .motivationOverlay{
+      position:fixed;
+      inset:0;
+      background-size: cover;
+      background-position:center;
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .35s ease;
+      z-index: 50;
+      filter: contrast(1.1) saturate(1.2);
     }
-    .splashTitle{
-      position:relative;
-      z-index:1;
-      font-size: 18px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-    }
-    .splashSub{
-      position:relative;
-      z-index:1;
-      margin-top:10px;
-      font-size: 12px;
-      letter-spacing: 2.2px;
-      color: rgba(255,255,255,.75);
-      text-transform: uppercase;
+    .motivationOverlay.on{
+      opacity: .30;
     }
 
-    /* ===== TV / Mobile ===== */
-    @media (max-width: 1200px){
-      .top{grid-template-columns: 1fr}
-      .main{grid-template-columns: 1fr}
-      .stack{grid-template-rows:auto}
-      .bottom{grid-template-columns: 1fr}
-      .tv{height: 460px}
-      .tv.small{height: 240px}
-      .neon-bar{display:none}
-      .cornerLogo{display:none !important;}
-    }
-
-    /* ===== ENTER OVERLAY (for fullscreen + autoplay limitations) ===== */
-    .enterOverlay{
+    /* ===== BOOT overlay ===== */
+    .boot{
       position:fixed; inset:0;
-      z-index: 10000;
+      z-index:100;
+      background: radial-gradient(1200px 900px at 50% 35%, rgba(0,230,255,.10), transparent 58%),
+                  linear-gradient(180deg, rgba(0,0,0,.88), rgba(0,0,0,.96));
       display:flex;
       align-items:center;
       justify-content:center;
-      background: radial-gradient(900px 600px at 50% 45%, rgba(255,42,42,.10), rgba(0,0,0,.92));
+      padding: 18px;
     }
-    .enterCard{
-      width:min(780px, 92vw);
-      padding: 20px;
-      border-radius: 22px;
-      border: 2px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.35);
-      box-shadow: 0 0 30px rgba(0,0,0,.6), 0 0 55px var(--glow);
-      text-align:center;
+    .bootCard{
+      width: min(980px, 92vw);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(10,12,16,.65);
+      box-shadow: 0 0 30px rgba(255,255,255,.06), 0 0 60px rgba(0,230,255,.08);
+      overflow:hidden;
     }
-    .enterTitle{
-      font-size: 18px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-    }
-    .enterSub{
-      margin-top:10px;
-      font-size: 12px;
-      letter-spacing: 2.2px;
-      color: rgba(255,255,255,.75);
-      text-transform: uppercase;
-      line-height:1.5;
-    }
-    .enterButtons{
-      margin-top:16px;
+    .bootTop{
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
       display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:center;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .bootTitle{
+      font-weight:800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .bootSub{
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,.70);
+      text-transform: uppercase;
+    }
+    .bootBody{
+      padding: 16px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .terminal{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.35);
+      padding: 12px 12px 14px;
+      height: 260px;
+      overflow:hidden;
+      position:relative;
+    }
+    .termLine{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      letter-spacing: .2px;
+      color: rgba(240,250,255,.82);
+      line-height: 1.45;
+      white-space: pre;
+    }
+    .caret{
+      display:inline-block;
+      width: 10px;
+      height: 14px;
+      background: var(--accent);
+      margin-left: 6px;
+      animation: blink .9s step-start infinite;
+      box-shadow: 0 0 18px var(--glow);
+    }
+    @keyframes blink{ 50%{ opacity:0 } }
+
+    .bootActions{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(0,0,0,.25);
+      padding: 12px;
+    }
+    .bootActions .btn{ width:100%; margin-top: 10px; }
+
+    /* ===== MAMBA RED FLASH TRANSITION ===== */
+    .flash{
+      position:fixed; inset:0;
+      z-index:90;
+      pointer-events:none;
+      opacity:0;
+      background:
+        radial-gradient(900px 520px at 50% 40%, rgba(255,43,43,.45), transparent 60%),
+        linear-gradient(180deg, rgba(255,0,0,.30), rgba(0,0,0,.0));
+      mix-blend-mode: screen;
+    }
+    .flash.go{
+      animation: flashBang .55s ease-out forwards;
+    }
+    @keyframes flashBang{
+      0%{ opacity: 0 }
+      10%{ opacity: 1 }
+      35%{ opacity: .65 }
+      100%{ opacity: 0 }
+    }
+
+    /* ===== Responsive fallback ===== */
+    @media (max-width: 1200px){
+      .hud{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+      #bottom{ grid-template-columns: 1fr; }
+      body{ overflow:auto; }
     }
   </style>
 </head>
 
-<body class="theme-mamba">
-  <!-- ENTER OVERLAY (needed for fullscreen + any auto-launch in browsers) -->
-  <div class="enterOverlay" id="enterOverlay">
-    <div class="enterCard">
-      <div class="enterTitle">ENTER BLACK MAMBA WAR ROOM</div>
-      <div class="enterSub">
-        Tap <b>ARM</b> to auto-fullscreen (browser rules require a click).<br>
-        If you’re logged into TradingView in this browser, charts load clean with your session.
-      </div>
-      <div class="enterButtons">
-        <button class="btn red" id="enterBtn">ARM + FULLSCREEN</button>
-        <button class="btn" id="skipBtn">SKIP</button>
-      </div>
-    </div>
+<body class="mode-stark">
+  <!-- Motivation overlay (Mode 3) -->
+  <div class="motivationOverlay" id="motivationOverlay"></div>
+
+  <!-- Red flash -->
+  <div class="flash" id="flash"></div>
+
+  <!-- Ambient HUD layers -->
+  <div class="ambient">
+    <div class="grid"></div>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
   </div>
 
-  <!-- MAMBA SPLASH -->
-  <div class="splash" id="mambaSplash" aria-hidden="true">
-    <div class="splashCard">
-      <img class="splashImg" id="splashImg" alt="Mamba" />
-      <div class="splashTitle">BLACK MAMBA — LOCK IN</div>
-      <div class="splashSub" id="splashLine">DISCIPLINE. CLARITY. EXECUTION.</div>
-    </div>
-  </div>
+  <!-- BOOT SCREEN -->
+  <div class="boot" id="boot">
+    <div class="bootCard">
+      <div class="bootTop">
+        <div>
+          <div class="bootTitle">MISSION CONTROL X</div>
+          <div class="bootSub">STARK LABS INTERFACE • MAMBA MENTALITY • TV MODE</div>
+        </div>
+        <div class="tag accent" id="bootStatus">STANDBY</div>
+      </div>
 
-  <div class="wrap">
-    <div class="frame" id="frame">
-      <div class="neon-bar left"></div>
-      <div class="neon-bar right"></div>
-
-      <!-- Watermark + Corner logo (motivational image options) -->
-      <div class="watermark on" id="wm"></div>
-      <img class="cornerLogo on" id="cornerLogo" alt="Mamba Logo"/>
-
-      <!-- TOP -->
-      <div class="top">
-        <div class="panel">
-          <div class="panel-head">
-            <div class="title-small">NEON ELITE • BLACK MAMBA WAR ROOM</div>
-            <div class="title">MISSION CONTROL</div>
-            <div class="subtitle">
-              <span class="dot" id="statusDot"></span>
-              <span id="modeLabel">STANDBY</span>
-              <span class="chip"><span>SYMBOL</span> <b id="symLabel">CME_MINI:MNQ1!</b></span>
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-              <button class="btn red" id="mambaToggle">MAMBA</button>
-              <button class="btn purple" id="purpleToggle">PURPLE</button>
-              <button class="btn blue" id="musicToggle">MUSIC: OFF</button>
-              <button class="btn" id="quotesToggle">QUOTES: ON</button>
-              <button class="btn" id="fullscreenBtn">FULLSCREEN</button>
-              <button class="btn" id="settingsBtn">SETTINGS</button>
-            </div>
-          </div>
+      <div class="bootBody">
+        <div class="terminal">
+          <div class="termLine" id="term"></div>
+          <div class="termLine"><span style="color:var(--accent)">SYS&gt;</span> <span id="termCmd">initializing</span><span class="caret"></span></div>
         </div>
 
-        <div class="panel clock">
+        <div class="bootActions">
+          <div class="small">SYSTEM OPTIONS</div>
+          <button class="btn" id="bootTheme">THEME: STARK (CYAN)</button>
+          <button class="btn" id="bootMotivation">MOTIVATION: OFF</button>
+          <button class="btn red" id="bootArm">ARM + FULLSCREEN</button>
+          <button class="btn" id="bootSkip">SKIP BOOT</button>
+          <div style="margin-top:10px" class="bootSub">
+            Fullscreen requires a click. After arming, it stays locked-in.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN SHELL -->
+  <div class="shell">
+    <div class="hud">
+
+      <!-- LEFT TOP -->
+      <div class="panel" id="leftTop">
+        <div class="titleRow">
+          <span class="tag accent">NEON ELITE</span>
+          <span class="tag">WAR ROOM</span>
+          <span class="tag" id="modeTag">STARK</span>
+        </div>
+        <div style="padding:10px 12px 0;">
+          <div class="big">MISSION CONTROL</div>
+          <div class="small muted" style="margin-top:6px;">SYMBOL • <span id="symLabel"></span></div>
+        </div>
+        <div class="btnRow">
+          <button class="btn red" id="mambaBtn">MAMBA MODE</button>
+          <button class="btn" id="themeBtn">PURPLE</button>
+          <button class="btn" id="quotesBtn">QUOTES: ON</button>
+          <button class="btn" id="motBtn">MOTIVATION: OFF</button>
+          <button class="btn" id="fullBtn">FULLSCREEN</button>
+        </div>
+      </div>
+
+      <!-- CENTER TOP -->
+      <div class="panel" id="centerTop">
+        <div class="clockBox">
           <div class="time" id="nowTime">--:--:--</div>
           <div class="date" id="nowDate">---</div>
-          <div class="mamba-quote" id="quoteLine">THE JOB'S NOT FINISHED.</div>
+          <div class="quote" id="quoteLine">THE JOB'S NOT FINISHED.</div>
         </div>
+      </div>
 
-        <div class="panel rightTop">
-          <div class="row">
-            <div>
-              <div class="countLabel">COUNTDOWN TO OPEN</div>
-              <div class="openTime" id="openTimeLabel">07:30 MT</div>
-            </div>
-            <div class="tag accent" id="sessionTag">STANDBY</div>
-          </div>
-
-          <div class="countdown">
-            <div><small id="countLabelSmall">OPENS IN</small></div>
-            <div class="digits" id="countdownDigits">00:00:00</div>
-          </div>
-
-          <div class="hint" id="hintLine">Red at 07:15 • Execute 07:30–10:30 MT</div>
-
-          <div class="musicDock" id="musicDock">
-            <iframe
-              id="spotifyFrame"
-              src="PLAYLIST_URL"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              title="Spotify Player"
-            ></iframe>
+      <!-- RIGHT TOP -->
+      <div class="panel" id="rightTop">
+        <div class="titleRow">
+          <span class="tag">COUNTDOWN</span>
+          <span class="tag accent" id="sessionTag">STANDBY</span>
+        </div>
+        <div class="countWrap">
+          <div class="countDigits" id="countdownDigits">00:00:00</div>
+          <div class="countSmall">
+            <span id="countLabelSmall">OPENS IN</span>
+            <span class="muted" id="gateLine">RED @ 07:15 • LIVE 07:30–10:30 MT</span>
           </div>
         </div>
       </div>
 
-      <!-- MAIN (Charts) -->
-      <div class="main">
-        <!-- LEFT BIG (5m) -->
-        <div class="panel tvWrap">
-          <div class="panel-titlebar">
-            <div class="left">
-              <div class="tag" id="leftTag">MNQ • 5m</div>
-              <div class="tag accent" id="leftTag2">EXECUTION</div>
-            </div>
-            <div class="tag accent" id="focusTag">FOCUS</div>
-          </div>
-          <div id="tv_5m" class="tv">
-            <iframe id="if_5m" title="MNQ 5m"></iframe>
-          </div>
+      <!-- LEFT MID (Data / Notes) -->
+      <div class="panel" id="leftMid">
+        <div class="titleRow">
+          <span class="tag">THREAT AS NEAR</span>
+          <span class="tag accent">LOCK-IN</span>
         </div>
-
-        <!-- RIGHT STACK (1H + 4H) -->
-        <div class="stack">
-          <div class="panel tvWrap">
-            <div class="panel-titlebar">
-              <div class="left">
-                <div class="tag" id="rtTag">MNQ • 1H</div>
-                <div class="tag" id="rtTag2">STRUCTURE</div>
-              </div>
-              <div class="tag accent" id="rtBadge">ALIGN</div>
-            </div>
-            <div id="tv_1h" class="tv small">
-              <iframe id="if_1h" title="MNQ 1h"></iframe>
-            </div>
-          </div>
-
-          <div class="panel tvWrap">
-            <div class="panel-titlebar">
-              <div class="left">
-                <div class="tag" id="rbTag">MNQ • 4H</div>
-                <div class="tag" id="rbTag2">CONTEXT</div>
-              </div>
-              <div class="tag accent" id="rbBadge">BIAS</div>
-            </div>
-            <div id="tv_4h" class="tv small">
-              <iframe id="if_4h" title="MNQ 4h"></iframe>
-            </div>
-          </div>
+        <div style="padding: 10px 12px 12px;">
+          <ul class="clean">
+            <li>A+ setups only</li>
+            <li>No overtrade / no revenge</li>
+            <li>Hydrate • breathe • calm focus</li>
+            <li>One clean trade &gt; ten average</li>
+            <li>When target hits: DONE</li>
+          </ul>
         </div>
       </div>
 
-      <!-- BOTTOM -->
-      <div class="bottom">
-        <div class="panel">
-          <div class="panel-titlebar">
-            <div class="left"><div class="tag">THREAT IS NEAR</div></div>
-            <div class="tag accent" id="threatBadge">LOCK-IN</div>
-          </div>
-          <div class="list">
-            <div class="item"><div class="cb"></div><span>A+ setups only</span></div>
-            <div class="item"><div class="cb"></div><span>No overtrade / no revenge</span></div>
-            <div class="item"><div class="cb"></div><span>Hydrate • breathe (parasympathetic)</span></div>
+      <!-- CENTER MID (Execution) -->
+      <div class="panel" id="centerMid">
+        <div class="titleRow">
+          <span class="tag">EXECUTION</span>
+          <span class="tag accent" id="execTag">5m</span>
+          <span class="tag" style="margin-left:auto" id="execState">FOCUS</span>
+        </div>
+
+        <!-- Stark Core HUD behind chart -->
+        <div class="coreWrap">
+          <div class="core">
+            <div class="ticks"></div>
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+            <div class="ringGlow"></div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-titlebar">
-            <div class="left"><div class="tag">RULES OF ENGAGEMENT</div></div>
-            <div class="tag accent" id="rulesBadge">MAMBA</div>
+        <!-- Motivation watermark (Mode 1) -->
+        <div class="motivation watermark" id="motivationWatermark"></div>
+
+        <!-- Iframe chart -->
+        <div class="frameWrap" style="height: calc(100% - 0px);">
+          <iframe class="chart" id="chart5m" loading="lazy" allow="clipboard-write; fullscreen"></iframe>
+        </div>
+
+        <!-- Motivation badge (Mode 2) -->
+        <div class="motivationBadge" id="motivationBadge"></div>
+      </div>
+
+      <!-- RIGHT MID (Structure + Context stacked) -->
+      <div class="panel" id="rightMid">
+        <div class="titleRow">
+          <span class="tag">STRUCTURE</span>
+          <span class="tag accent">1H</span>
+          <span class="tag" style="margin-left:auto">ALIGN</span>
+        </div>
+        <div style="position:relative; height: calc(50% - 6px); padding: 10px 10px 6px;">
+          <iframe class="chart" id="chart1h" loading="lazy" allow="clipboard-write; fullscreen" style="border-radius:14px;"></iframe>
+        </div>
+
+        <div class="titleRow" style="border-top:1px solid var(--line2);">
+          <span class="tag">CONTEXT</span>
+          <span class="tag accent">4H</span>
+          <span class="tag" style="margin-left:auto">BIAS</span>
+        </div>
+        <div style="position:relative; height: calc(50% - 6px); padding: 10px 10px 10px;">
+          <iframe class="chart" id="chart4h" loading="lazy" allow="clipboard-write; fullscreen" style="border-radius:14px;"></iframe>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div id="bottom">
+
+        <div class="bpanel">
+          <div class="titleRow">
+            <span class="tag">RULES</span>
+            <span class="tag accent" id="ruleState">STANDBY</span>
           </div>
-          <div class="rules">
-            <div class="headerLine">
-              <div class="title-small">SESSION: 07:30–10:30 MT</div>
-              <div class="tag accent" id="ruleState">STANDBY</div>
-            </div>
-            <ul id="rulesList">
-              <li>Wait for confirmations (VWAP bias + 9/21 aligned)</li>
+          <div class="content">
+            <ul class="clean" id="rulesList">
+              <li>Wait confirmations (VWAP bias + 9/21 aligned)</li>
               <li>Pullback + reclaim entries only</li>
               <li>No chase candles</li>
-              <li>One good trade &gt; ten average trades</li>
-              <li>When daily target is hit: DONE</li>
+              <li>Session gate only</li>
+              <li>Hit target = shut it down</li>
             </ul>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-titlebar">
-            <div class="left"><div class="tag">RISK & MONEY CONTROL</div></div>
-            <div class="tag accent" id="riskBadge">NO OVERTRADE</div>
+        <div class="bpanel">
+          <div class="titleRow">
+            <span class="tag">RISK</span>
+            <span class="tag accent">CONTROL</span>
           </div>
-          <div class="risk">
-            <div class="riskGrid">
-              <div class="card">
+          <div class="content">
+            <div class="statGrid">
+              <div class="stat">
                 <div class="k">Daily max loss</div>
                 <div class="v">$ <b id="dailyMaxLoss">TBD</b></div>
               </div>
-              <div class="card">
+              <div class="stat">
                 <div class="k">Daily target</div>
                 <div class="v">$ <b id="dailyTarget">TBD</b></div>
               </div>
-              <div class="card">
+              <div class="stat">
                 <div class="k">Weekly target</div>
                 <div class="v">$ <b id="weeklyTarget">TBD</b></div>
               </div>
-              <div class="card">
+              <div class="stat">
                 <div class="k">Position limits</div>
                 <div class="v"><b id="posLimits">TBD</b></div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-              <div class="tag" id="buildTag">MODEL: SNIPER v3</div>
-              <div class="tag" id="gateTag">GATE: 07:30–10:30</div>
-              <div class="tag" id="brokerTag">INSTRUMENT: CME_MINI:MNQ1!</div>
-              <div class="tag accent" id="openTvBtn" style="cursor:pointer;">OPEN TRADINGVIEW</div>
+        <div class="bpanel">
+          <div class="titleRow">
+            <span class="tag">SYSTEM</span>
+            <span class="tag accent" id="sysBadge">ONLINE</span>
+          </div>
+          <div class="content">
+            <div class="small muted">MODEL</div>
+            <div style="margin-top:6px; font-size:14px; letter-spacing:1.6px;">
+              SNIPER v3 • VWAP + 9/21
+            </div>
+            <div style="margin-top:10px;" class="small muted">GATE</div>
+            <div style="margin-top:6px; font-size:12px; letter-spacing:1.6px;">
+              07:30–10:30 MT • Pre-open red @ 07:15
+            </div>
+            <div style="margin-top:10px;" class="small muted">STATUS</div>
+            <div style="margin-top:6px; font-size:12px; letter-spacing:1.6px;" id="statusLine">
+              Standby: structure • prep • calm
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- STATUS -->
-      <div class="status">
-        <div class="statusBox">
-          <div class="big" id="statusBig">STANDBY</div>
-          <div class="small" id="statusSmall">Red at 07:15 • Execute 07:30–10:30 • Clean reps only</div>
+        <div class="bpanel">
+          <div class="titleRow">
+            <span class="tag">MOTIVATION</span>
+            <span class="tag accent" id="motState">OFF</span>
+          </div>
+          <div class="content">
+            <div class="small muted">3 MODES</div>
+            <ul class="clean" style="margin-top:8px;">
+              <li>Watermark behind execution</li>
+              <li>Corner badge icon</li>
+              <li>Full overlay during boot / mamba</li>
+            </ul>
+            <div class="small muted" style="margin-top:10px;">ADD IMAGE</div>
+            <div style="margin-top:6px; font-size:11px; letter-spacing:1.2px; color:rgba(255,255,255,.72);">
+              Upload your image to: <b>assets/motivation.jpg</b>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
 
   <script>
     /* =========================
-      CONFIG — EDIT THESE
+      CONFIG — YOU EDIT THIS
     ========================== */
     const CONFIG = {
-      // Futures symbol (use CME_MINI prefix so it never defaults to Apple)
-      symbol: "CME_MINI:MNQ1!",
       timezone: "America/Denver", // MT
-
-      openHour: 7,
-      openMinute: 30,
+      openHour: 7, openMinute: 30,
+      sessionEndHour: 10, sessionEndMinute: 30,
       preopenMinutes: 15,
-      sessionEndHour: 10,
-      sessionEndMinute: 30,
 
-      // If you want charts to open a saved TradingView layout instead of generic chart:
-      // Put a full chart URL here (from TradingView Share -> Copy link).
-      // Leave blank to use symbol+interval URLs.
-      savedLayoutUrl5m: "",
-      savedLayoutUrl1h: "",
-      savedLayoutUrl4h: "",
+      // Your symbol label (display only)
+      symbolLabel: "MNQ1!",
 
-      // Motivation image (put this file in your repo, e.g. /assets/mamba.png)
-      // 1) Watermark (giant background)
-      // 2) Corner logo (small)
-      // 3) Splash (center when Mamba arms)
-      motivationImageUrl: "assets/mamba.png",
+      // IFRAME CHART URLS (BEST PRACTICE)
+      // You can use TradingView chart URLs or your saved layout URLs.
+      // IMPORTANT: you must be logged into TradingView in this browser.
+      chart5mUrl: "https://www.tradingview.com/chart/?symbol=CME_MINI%3AMNQ1!&interval=5",
+      chart1hUrl: "https://www.tradingview.com/chart/?symbol=CME_MINI%3AMNQ1!&interval=60",
+      chart4hUrl: "https://www.tradingview.com/chart/?symbol=CME_MINI%3AMNQ1!&interval=240",
 
-      // Spotify embed (optional)
-      spotifyEmbedUrl: "PLAYLIST_URL",
+      // Motivation image path (put file in repo)
+      motivationImageUrl: "assets/motivation.jpg",
 
-      // Quotes (AGGRESSIVE MAMBA)
+      // Quotes (more + better)
       quotes: [
         "THE JOB'S NOT FINISHED.",
-        "LOCK IN. NO NOISE.",
+        "LOCK IN.",
         "DISCIPLINE OVER EMOTION.",
+        "CONTROL THE PROCESS.",
+        "ONE GOOD TRADE.",
         "DON'T CHASE. LET IT COME.",
-        "ONE GOOD TRADE. DONE.",
-        "EXECUTE THE PLAN. NOTHING ELSE.",
+        "NOISE OFF. READ STRUCTURE.",
+        "PATIENT. PRECISE. DEADLY.",
+        "YOU DON'T RISE TO GOALS — YOU FALL TO SYSTEMS.",
         "CALM MIND. SHARP EDGE.",
-        "RISK FIRST. PROFITS FOLLOW.",
-        "NO REVENGE. NO HUNTING.",
-        "WAIT FOR CONFIRMATION.",
-        "YOU DON'T NEED MORE TRADES — YOU NEED BETTER TRADES.",
-        "SNIPER ENTRY. CLEAN EXIT.",
-        "BREATHE. SEE IT. TAKE IT.",
-        "IF IT'S NOT A+, IT'S A NO.",
-        "CONTROL OR BE CONTROLLED."
+        "A+ OR NOTHING.",
+        "EXECUTE. THEN EXIT."
       ],
+      quoteEveryMs: 9000,
 
-      quoteRotateMs: 6500, // more frequent
-
-      // Fullscreen behavior:
-      // Browsers require a user gesture. We handle that with the ENTER overlay button.
-      autoEnterFullscreenOnArm: true,
-
-      // Optional: open TradingView in a new tab after arming (may be blocked unless user gesture).
-      autoOpenTradingViewTabOnArm: false,
-
-      // Theme auto by session time (you can still lock manually with MAMBA button)
-      autoThemeBySession: true
+      // Boot lines
+      bootLines: [
+        "[MCX] initializing core modules…",
+        "[HUD] grid overlay online",
+        "[SYS] time sync: MT",
+        "[CHART] linking execution frames",
+        "[RISK] gates armed",
+        "[QUOTE] mamba feed loaded",
+        "[READY] awaiting user arm"
+      ]
     };
 
     /* =========================
-      HELPERS
+      DOM
     ========================== */
     const $ = (id)=>document.getElementById(id);
-    const two = (n)=>String(n).padStart(2,"0");
 
+    const el = {
+      boot: $("boot"),
+      term: $("term"),
+      termCmd: $("termCmd"),
+      bootStatus: $("bootStatus"),
+      bootTheme: $("bootTheme"),
+      bootMotivation: $("bootMotivation"),
+      bootArm: $("bootArm"),
+      bootSkip: $("bootSkip"),
+      flash: $("flash"),
+
+      modeTag: $("modeTag"),
+      sessionTag: $("sessionTag"),
+      ruleState: $("ruleState"),
+      countdownDigits: $("countdownDigits"),
+      countLabelSmall: $("countLabelSmall"),
+      gateLine: $("gateLine"),
+      nowTime: $("nowTime"),
+      nowDate: $("nowDate"),
+      quoteLine: $("quoteLine"),
+
+      symLabel: $("symLabel"),
+
+      mambaBtn: $("mambaBtn"),
+      themeBtn: $("themeBtn"),
+      quotesBtn: $("quotesBtn"),
+      motBtn: $("motBtn"),
+      fullBtn: $("fullBtn"),
+
+      chart5m: $("chart5m"),
+      chart1h: $("chart1h"),
+      chart4h: $("chart4h"),
+
+      motWatermark: $("motivationWatermark"),
+      motBadge: $("motivationBadge"),
+      motOverlay: $("motivationOverlay"),
+      motState: $("motState"),
+
+      statusLine: $("statusLine"),
+      execState: $("execState"),
+      sysBadge: $("sysBadge")
+    };
+
+    /* =========================
+      STATE
+    ========================== */
+    let quoteOn = true;
+    let quoteIdx = 0;
+
+    let motivationOn = false;
+    // 3 modes can be combined; default show watermark + badge when ON
+    let motModeWatermark = true;
+    let motModeBadge = true;
+    let motModeOverlay = true;
+
+    // theme cycle: stark -> purple -> mamba (manual)
+    let theme = "stark"; // stark | purple | mamba
+
+    function two(n){ return String(n).padStart(2,"0"); }
     function formatHMS(ms){
       const s = Math.max(0, Math.floor(ms/1000));
       const hh = Math.floor(s/3600);
@@ -879,11 +1013,12 @@
 
     function mtDateObjectForToday(h, m, s=0){
       const now = new Date();
-      const parts = new Intl.DateTimeFormat("en-CA", { timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit" })
-        .formatToParts(now).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
-      const y = parts.year, mo = parts.month, d = parts.day;
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit"
+      }).formatToParts(now).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
+      const y = +parts.year, mo = +parts.month, d = +parts.day;
 
-      const guessUtc = new Date(Date.UTC(+y, +mo-1, +d, h, m, s));
+      const guessUtc = new Date(Date.UTC(y, mo-1, d, h, m, s));
       const mtDisplayed = new Intl.DateTimeFormat("en-US", {
         timeZone: CONFIG.timezone,
         hour12:false,
@@ -901,16 +1036,59 @@
       const preopen = new Date(open.getTime() - CONFIG.preopenMinutes*60*1000);
       const end = mtDateObjectForToday(CONFIG.sessionEndHour, CONFIG.sessionEndMinute, 0);
 
-      if(now < preopen) return {mode:"standby", theme:"theme-blue", label:"STANDBY", tag:"STANDBY", statusBig:"STANDBY"};
-      if(now >= preopen && now < open) return {mode:"armed", theme:"theme-mamba", label:"ARMED", tag:"ARMED", statusBig:"ARMED"};
-      if(now >= open && now < end) return {mode:"live", theme:"theme-mamba", label:"LIVE", tag:"EXECUTE", statusBig:"SESSION LIVE"};
-      return {mode:"post", theme:"theme-blue", label:"POST", tag:"CLOSED", statusBig:"SESSION CLOSED"};
+      if(now < preopen) return {phase:"standby", mode:"stark", label:"STANDBY"};
+      if(now >= preopen && now < open) return {phase:"armed", mode:"stark", label:"ARMED"};
+      if(now >= open && now < end) return {phase:"live", mode:"mamba", label:"LIVE"};
+      return {phase:"post", mode:"stark", label:"POST"};
+    }
+
+    function setTheme(next){
+      theme = next;
+      document.body.classList.remove("mode-stark","mode-purple","mode-mamba");
+      document.body.classList.add(`mode-${theme}`);
+      el.modeTag.textContent = theme.toUpperCase();
+      if(theme === "stark") el.themeBtn.textContent = "PURPLE";
+      if(theme === "purple") el.themeBtn.textContent = "STARK";
+      if(theme === "mamba") el.themeBtn.textContent = "STARK";
+    }
+
+    function redFlash(){
+      el.flash.classList.remove("go");
+      void el.flash.offsetWidth;
+      el.flash.classList.add("go");
+    }
+
+    function enterFullscreen(){
+      const root = document.documentElement;
+      const req = root.requestFullscreen || root.webkitRequestFullscreen || root.msRequestFullscreen;
+      if(req) req.call(root);
+    }
+
+    function toggleMotivation(){
+      motivationOn = !motivationOn;
+      el.motBtn.textContent = `MOTIVATION: ${motivationOn ? "ON" : "OFF"}`;
+      el.bootMotivation.textContent = `MOTIVATION: ${motivationOn ? "ON" : "OFF"}`;
+      el.motState.textContent = motivationOn ? "ON" : "OFF";
+
+      // Modes always available; when ON show watermark+badge; overlay is used during boot/mamba
+      el.motWatermark.style.backgroundImage = `url('${CONFIG.motivationImageUrl}')`;
+      el.motBadge.style.backgroundImage = `url('${CONFIG.motivationImageUrl}')`;
+      el.motOverlay.style.backgroundImage = `url('${CONFIG.motivationImageUrl}')`;
+
+      el.motWatermark.classList.toggle("on", motivationOn && motModeWatermark);
+      el.motBadge.classList.toggle("on", motivationOn && motModeBadge);
+    }
+
+    function rotateQuote(){
+      if(!quoteOn) return;
+      quoteIdx = (quoteIdx + 1) % CONFIG.quotes.length;
+      el.quoteLine.textContent = CONFIG.quotes[quoteIdx];
     }
 
     function updateClockAndCountdown(){
       const parts = mtNowParts();
-      $("nowTime").textContent = `${parts.hour}:${parts.minute}:${parts.second} ${parts.dayPeriod}`;
-      $("nowDate").textContent = `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year}`;
+      el.nowTime.textContent = `${parts.hour}:${parts.minute}:${parts.second} ${parts.dayPeriod}`;
+      el.nowDate.textContent = `${parts.weekday}, ${parts.month} ${parts.day}, ${parts.year}`;
 
       const now = new Date();
       const open = mtDateObjectForToday(CONFIG.openHour, CONFIG.openMinute, 0);
@@ -918,310 +1096,177 @@
 
       if(now >= open){
         const tomorrow = new Date(now.getTime() + 24*3600*1000);
-        const tParts = new Intl.DateTimeFormat("en-CA", { timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit" })
-          .formatToParts(tomorrow).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
+        const tParts = new Intl.DateTimeFormat("en-CA", {
+          timeZone: CONFIG.timezone, year:"numeric", month:"2-digit", day:"2-digit"
+        }).formatToParts(tomorrow).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
         const y = +tParts.year, mo = +tParts.month, d = +tParts.day;
 
         const guess = new Date(Date.UTC(y, mo-1, d, CONFIG.openHour, CONFIG.openMinute, 0));
-        const mtDisp = new Intl.DateTimeFormat("en-US", { timeZone: CONFIG.timezone, hour12:false, hour:"2-digit", minute:"2-digit", second:"2-digit" })
-          .formatToParts(guess).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
+        const mtDisp = new Intl.DateTimeFormat("en-US", {
+          timeZone: CONFIG.timezone, hour12:false, hour:"2-digit", minute:"2-digit", second:"2-digit"
+        }).formatToParts(guess).reduce((a,p)=>{ if(p.type!=="literal") a[p.type]=p.value; return a; }, {});
         const deltaSec = (+mtDisp.hour - CONFIG.openHour)*3600 + (+mtDisp.minute - CONFIG.openMinute)*60 + (+mtDisp.second - 0);
         target = new Date(guess.getTime() - deltaSec*1000);
       }
 
       const ms = target.getTime() - now.getTime();
-      $("countdownDigits").textContent = formatHMS(ms);
+      el.countdownDigits.textContent = formatHMS(ms);
 
       const preopenMs = CONFIG.preopenMinutes*60*1000;
-      if(ms > 0 && ms <= preopenMs) $("countdownDigits").classList.add("pulse");
-      else $("countdownDigits").classList.remove("pulse");
-    }
-
-    /* =========================
-      THEMES + MANUAL OVERRIDE
-    ========================== */
-    let manualLockedTheme = false;
-    let currentTheme = "theme-mamba";
-
-    function setTheme(theme){
-      document.body.classList.remove("theme-blue","theme-purple","theme-mamba");
-      document.body.classList.add(theme);
-      currentTheme = theme;
-
-      // dot follows accent
-      const acc = getComputedStyle(document.body).getPropertyValue("--accent").trim();
-      $("statusDot").style.background = acc;
-      $("statusDot").style.boxShadow = `0 0 12px ${acc}`;
-
-      // tags accent class stays, but looks changes with theme vars
-    }
-
-    function applyAutoTheme(){
-      if(!CONFIG.autoThemeBySession || manualLockedTheme) return;
-      const st = computeSessionState();
-      setTheme(st.theme);
-      $("modeLabel").textContent = st.label;
-      $("sessionTag").textContent = st.tag;
-      $("ruleState").textContent = st.tag;
-      $("statusBig").textContent = st.statusBig;
-
-      if(st.mode === "live"){
-        $("statusSmall").textContent = "BLACK MAMBA: execute clean • no hunting • protect the account";
-        $("countLabelSmall").textContent = "MARKET OPEN";
-      } else if(st.mode === "armed"){
-        $("statusSmall").textContent = "ARMED: breathe • hydrate • wait for A+ • no impulse";
-        $("countLabelSmall").textContent = "OPENS IN";
-      } else if(st.mode === "post"){
-        $("statusSmall").textContent = "POST: review • recover • no more trades";
-        $("countLabelSmall").textContent = "NEXT OPEN";
+      if(ms > 0 && ms <= preopenMs){
+        el.countdownDigits.classList.add("pulse");
       } else {
-        $("statusSmall").textContent = "Standby: structure • prep • calm";
-        $("countLabelSmall").textContent = "OPENS IN";
+        el.countdownDigits.classList.remove("pulse");
       }
     }
 
-    /* =========================
-      QUOTES
-    ========================== */
-    let quoteOn = true;
-    let quoteIdx = 0;
+    function applyAutoSessionMode(){
+      const st = computeSessionState();
 
-    function rotateQuote(){
-      if(!quoteOn) return;
-      quoteIdx = (quoteIdx + 1) % CONFIG.quotes.length;
-      $("quoteLine").textContent = CONFIG.quotes[quoteIdx];
-    }
+      el.sessionTag.textContent = st.label;
+      el.ruleState.textContent = st.label;
 
-    /* =========================
-      MUSIC
-    ========================== */
-    let musicOn = false;
-    function setMusic(on){
-      musicOn = on;
-      $("musicDock").classList.toggle("on", musicOn);
-      $("musicToggle").textContent = `MUSIC: ${musicOn ? "ON" : "OFF"}`;
-      if(CONFIG.spotifyEmbedUrl && CONFIG.spotifyEmbedUrl !== "PLAYLIST_URL"){
-        $("spotifyFrame").src = CONFIG.spotifyEmbedUrl;
+      if(st.phase === "live"){
+        el.countLabelSmall.textContent = "MARKET OPEN";
+        el.statusLine.textContent = "MAMBA: execute clean • no noise • follow system";
+        el.execState.textContent = "KILL MODE";
+      } else if(st.phase === "armed"){
+        el.countLabelSmall.textContent = "OPENS IN";
+        el.statusLine.textContent = "ARMED: breathe • hydrate • wait for A+";
+        el.execState.textContent = "PREP";
+      } else if(st.phase === "post"){
+        el.countLabelSmall.textContent = "NEXT OPEN";
+        el.statusLine.textContent = "POST: review • recover • no more hunting";
+        el.execState.textContent = "REVIEW";
+      } else {
+        el.countLabelSmall.textContent = "OPENS IN";
+        el.statusLine.textContent = "STANDBY: structure • prep • calm";
+        el.execState.textContent = "FOCUS";
       }
-    }
 
-    /* =========================
-      FULLSCREEN
-    ========================== */
-    async function enterFullscreen(){
-      const el = document.documentElement;
-      try{
-        if(el.requestFullscreen) await el.requestFullscreen();
-        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      }catch(e){}
-    }
-    async function exitFullscreen(){
-      try{
-        if(document.exitFullscreen) await document.exitFullscreen();
-        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-      }catch(e){}
-    }
-    function isFullscreen(){
-      return !!(document.fullscreenElement || document.webkitFullscreenElement);
-    }
-
-    /* =========================
-      TRADINGVIEW EMBED (IFRAME)
-      This avoids the widget popups + symbol blocks.
-    ========================== */
-    function tvChartUrl(symbol, interval){
-      // Full TradingView chart page (uses your login session in this browser)
-      // interval: 5, 60, 240
-      const base = "https://www.tradingview.com/chart/";
-      const params = new URLSearchParams();
-      params.set("symbol", symbol);      // supports CME_MINI:MNQ1!
-      params.set("interval", String(interval));
-      // lightweight params that generally work:
-      params.set("theme", "dark");
-      params.set("hideideas", "1");
-      return `${base}?${params.toString()}`;
+      // Auto to mamba during live unless user forced purple/stark
+      // We won't auto-switch theme if user manually selected purple.
+      if(st.phase === "live" && theme !== "purple"){
+        if(theme !== "mamba"){
+          redFlash();
+          setTheme("mamba");
+          if(motivationOn && motModeOverlay){
+            el.motOverlay.classList.add("on");
+            setTimeout(()=>el.motOverlay.classList.remove("on"), 900);
+          }
+        }
+      }
     }
 
     function mountCharts(){
-      const sym = CONFIG.symbol;
-
-      const url5 = CONFIG.savedLayoutUrl5m?.trim() ? CONFIG.savedLayoutUrl5m.trim() : tvChartUrl(sym, 5);
-      const url1 = CONFIG.savedLayoutUrl1h?.trim() ? CONFIG.savedLayoutUrl1h.trim() : tvChartUrl(sym, 60);
-      const url4 = CONFIG.savedLayoutUrl4h?.trim() ? CONFIG.savedLayoutUrl4h.trim() : tvChartUrl(sym, 240);
-
-      $("if_5m").src = url5;
-      $("if_1h").src = url1;
-      $("if_4h").src = url4;
+      // NOTE: TradingView may block iframes in some scenarios.
+      // This is still the cleanest if it works for your setup + login.
+      // If blocked, we’ll switch to TradingView widget or embed-ready URLs.
+      el.chart5m.src = CONFIG.chart5mUrl;
+      el.chart1h.src = CONFIG.chart1hUrl;
+      el.chart4h.src = CONFIG.chart4hUrl;
     }
 
     /* =========================
-      MOTIVATION IMAGE (ALL 3)
+      BOOT SEQUENCE
     ========================== */
-    function applyMotivationImage(){
-      const url = CONFIG.motivationImageUrl?.trim();
-      if(!url) return;
-      $("wm").style.backgroundImage = `url('${url}')`;
-      $("cornerLogo").src = url;
-      $("splashImg").src = url;
-      $("cornerLogo").classList.add("on");
-      $("wm").classList.add("on");
-    }
+    async function runBoot(){
+      el.term.textContent = "";
+      el.termCmd.textContent = "initializing";
+      el.bootStatus.textContent = "BOOTING";
+      if(motivationOn && motModeOverlay){
+        el.motOverlay.style.backgroundImage = `url('${CONFIG.motivationImageUrl}')`;
+        el.motOverlay.classList.add("on");
+      }
 
-    function showMambaSplash(line){
-      $("splashLine").textContent = line || "DISCIPLINE. CLARITY. EXECUTION.";
-      $("mambaSplash").classList.add("on");
-      setTimeout(()=> $("mambaSplash").classList.remove("on"), 1200);
-    }
-
-    /* =========================
-      OPEN TRADINGVIEW BUTTON
-    ========================== */
-    function openTradingViewNewTab(){
-      const url = tvChartUrl(CONFIG.symbol, 5);
-      window.open(url, "_blank", "noopener");
-    }
-
-    /* =========================
-      MAMBA / PURPLE BUTTONS
-    ========================== */
-    function toggleMambaLock(){
-      manualLockedTheme = !manualLockedTheme;
-      if(manualLockedTheme){
-        setTheme("theme-mamba");
-        $("mambaToggle").textContent = "MAMBA: LOCKED";
-        $("sessionTag").textContent = "LOCKED";
-        $("ruleState").textContent = "LOCKED";
-        $("modeLabel").textContent = "MANUAL MAMBA";
-        $("statusBig").textContent = "BLACK MAMBA";
-        $("statusSmall").textContent = "MANUAL OVERRIDE: lock in • follow rules • no noise";
-        showMambaSplash("LOCK IN. NO NOISE.");
-      } else {
-        $("mambaToggle").textContent = "MAMBA";
-        applyAutoTheme();
+      for(let i=0;i<CONFIG.bootLines.length;i++){
+        await new Promise(r=>setTimeout(r, 260 + Math.random()*220));
+        el.term.textContent += CONFIG.bootLines[i] + "\n";
+        el.termCmd.textContent = (i < CONFIG.bootLines.length-1) ? "loading" : "ready";
+      }
+      el.bootStatus.textContent = "READY";
+      if(motivationOn && motModeOverlay){
+        setTimeout(()=>el.motOverlay.classList.remove("on"), 500);
       }
     }
 
-    function togglePurpleTheme(){
-      manualLockedTheme = true;
-      setTheme("theme-purple");
-      $("modeLabel").textContent = "PURPLE MODE";
-      $("sessionTag").textContent = "FOCUS";
-      $("ruleState").textContent = "FOCUS";
-      $("statusBig").textContent = "FOCUS";
-      $("statusSmall").textContent = "PURPLE: calm focus • sharp execution • no distraction";
-      showMambaSplash("CALM MIND. SHARP EDGE.");
-      $("mambaToggle").textContent = "MAMBA";
-    }
-
-    /* =========================
-      SETTINGS (simple inline)
-    ========================== */
-    let settingsOpen = false;
-    function toggleSettings(){
-      settingsOpen = !settingsOpen;
-      if(!settingsOpen){
-        alert("Settings panel v2 coming next. For now, edit CONFIG at top of this file (symbol, spotify, image, saved layouts).");
-      } else {
-        alert("Edit CONFIG at top of file:\n- symbol\n- motivationImageUrl\n- spotifyEmbedUrl\n- savedLayoutUrl5m/1h/4h\n\nThen push to GitHub Pages.");
-      }
-      settingsOpen = false;
-    }
-
-    /* =========================
-      ENTER OVERLAY (ARM)
-    ========================== */
-    async function armWarRoom(){
-      $("enterOverlay").style.display = "none";
-
-      // fullscreen
-      if(CONFIG.autoEnterFullscreenOnArm) await enterFullscreen();
-
-      // optionally open TV in a tab (user gesture makes it more likely to work)
-      if(CONFIG.autoOpenTradingViewTabOnArm) openTradingViewNewTab();
-
-      // quick splash
-      showMambaSplash("DISCIPLINE OVER EMOTION.");
+    function closeBoot(){
+      el.boot.style.display = "none";
     }
 
     /* =========================
       INIT
     ========================== */
-    $("symLabel").textContent = CONFIG.symbol;
-    $("brokerTag").textContent = `INSTRUMENT: ${CONFIG.symbol}`;
-
-    applyMotivationImage();
+    el.symLabel.textContent = CONFIG.symbolLabel;
+    setTheme("stark");
     mountCharts();
 
     // Buttons
-    $("mambaToggle").addEventListener("click", toggleMambaLock);
-    $("purpleToggle").addEventListener("click", togglePurpleTheme);
-    $("musicToggle").addEventListener("click", ()=>setMusic(!musicOn));
-    $("quotesToggle").addEventListener("click", ()=>{
+    el.fullBtn.addEventListener("click", enterFullscreen);
+
+    el.themeBtn.addEventListener("click", ()=>{
+      if(theme === "stark") setTheme("purple");
+      else setTheme("stark");
+    });
+
+    el.mambaBtn.addEventListener("click", ()=>{
+      // Force mamba with full aggressive red flash
+      redFlash();
+      setTheme("mamba");
+      el.sessionTag.textContent = "LIVE";
+      el.ruleState.textContent = "EXECUTE";
+      el.execState.textContent = "KILL MODE";
+      el.statusLine.textContent = "MAMBA: execute clean • no noise • follow system";
+
+      if(motivationOn && motModeOverlay){
+        el.motOverlay.classList.add("on");
+        setTimeout(()=>el.motOverlay.classList.remove("on"), 900);
+      }
+    });
+
+    el.quotesBtn.addEventListener("click", ()=>{
       quoteOn = !quoteOn;
-      $("quotesToggle").textContent = `QUOTES: ${quoteOn ? "ON" : "OFF"}`;
-      $("quoteLine").style.display = quoteOn ? "block" : "none";
+      el.quotesBtn.textContent = `QUOTES: ${quoteOn ? "ON" : "OFF"}`;
+      el.quoteLine.style.display = quoteOn ? "block" : "none";
     });
-    $("fullscreenBtn").addEventListener("click", async ()=>{
-      if(isFullscreen()) await exitFullscreen();
-      else await enterFullscreen();
+
+    el.motBtn.addEventListener("click", toggleMotivation);
+
+    // Boot buttons
+    el.bootTheme.addEventListener("click", ()=>{
+      if(theme === "stark") setTheme("purple");
+      else setTheme("stark");
+      el.bootTheme.textContent = `THEME: ${theme.toUpperCase()}`;
     });
-    $("settingsBtn").addEventListener("click", toggleSettings);
-    $("openTvBtn").addEventListener("click", openTradingViewNewTab);
 
-    // Enter overlay
-    $("enterBtn").addEventListener("click", armWarRoom);
-    $("skipBtn").addEventListener("click", ()=>{ $("enterOverlay").style.display="none"; });
+    el.bootMotivation.addEventListener("click", ()=>{
+      toggleMotivation();
+    });
 
-    // Tick
+    el.bootArm.addEventListener("click", async ()=>{
+      // Show a mini overlay, fullscreen, then close boot.
+      redFlash();
+      enterFullscreen();
+      await new Promise(r=>setTimeout(r, 350));
+      closeBoot();
+    });
+
+    el.bootSkip.addEventListener("click", ()=>{
+      closeBoot();
+    });
+
+    // Boot run
+    runBoot();
+
+    // Tick loops
     function tick(){
       updateClockAndCountdown();
-      applyAutoTheme();
+      applyAutoSessionMode();
     }
     tick();
     setInterval(tick, 1000);
-    setInterval(rotateQuote, CONFIG.quoteRotateMs);
-
-    // If Spotify URL was set
-    if(CONFIG.spotifyEmbedUrl && CONFIG.spotifyEmbedUrl !== "PLAYLIST_URL"){
-      $("spotifyFrame").src = CONFIG.spotifyEmbedUrl;
-    }
+    setInterval(rotateQuote, CONFIG.quoteEveryMs);
   </script>
 
-  <!--
-    =========================
-    SETUP (DO THIS ONCE)
-    =========================
-
-    ✅ 1) FIX THE SYMBOL POPUPS
-       We switched to TradingView chart pages in iframes (not widgets).
-       Log into TradingView in the SAME browser on your TV/PC.
-
-    ✅ 2) MOTIVATION IMAGE (ALL 3)
-       Put your image in your repo:
-         /assets/mamba.png
-       Then keep:
-         motivationImageUrl: "assets/mamba.png"
-
-       - Watermark: ON (giant faint background)
-       - Corner logo: ON (bottom-left)
-       - Splash: ON (center burst when Mamba locks / Purple)
-
-    ✅ 3) AUTO FULLSCREEN
-       Browsers REQUIRE a click to enter fullscreen.
-       That’s why the "ENTER BLACK MAMBA WAR ROOM" overlay exists.
-       Tap ARM once on your TV remote = fullscreen.
-
-    ✅ 4) YOUR EXACT INDICATORS / LAYOUTS
-       If you want your saved TradingView layout (perfect):
-       - open chart
-       - Share -> Copy link
-       - paste into:
-           savedLayoutUrl5m / 1h / 4h
-
-    ✅ 5) SPOTIFY
-       Replace spotifyEmbedUrl with your embed link:
-         https://open.spotify.com/embed/playlist/...
-
-  -->
 </body>
 </html>
