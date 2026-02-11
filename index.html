@@ -1,1173 +1,159 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MISSION CONTROL // BLACK MAMBA WAR ROOM</title>
-
-  <!-- TradingView Widget (safe embed) -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
-
-  <style>
-    :root{
-      --bg0:#05080d;
-      --bg1:#07121a;
-      --glass:rgba(8,18,28,.62);
-      --line:rgba(0,255,255,.35);
-      --glow:rgba(0,255,255,.35);
-      --text:#d9fbff;
-      --muted:rgba(217,251,255,.68);
-      --accent:#00f2ff;
-      --accent2:#00c2ff;
-      --danger:#ff1f1f;
-      --purple:#a855f7;
-
-      --r:14px;
-      --gap:10px;
-
-      /* “curved/CRT vibe” */
-      --vignette: radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,.0) 35%, rgba(0,0,0,.55) 100%);
-      --scanline: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.03),
-        rgba(255,255,255,.03) 1px,
-        rgba(0,0,0,0) 3px,
-        rgba(0,0,0,0) 6px
-      );
-    }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; width:100%; margin:0; background:var(--bg0); color:var(--text); overflow:hidden; }
-    body{
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Orbitron", Arial;
-      letter-spacing:.3px;
-    }
-
-    /* FULLSCREEN WALL */
-    .wall{
-      height:100vh; width:100vw;
-      display:grid;
-      grid-template-columns: 22% 56% 22%;
-      grid-template-rows: 14% 66% 20%;
-      gap:var(--gap);
-      padding:var(--gap);
-      position:relative;
-      transform-origin:center;
-    }
-
-    /* Curved/CRT overlay */
-    .crt{
-      pointer-events:none;
-      position:fixed; inset:0;
-      background:
-        var(--vignette),
-        var(--scanline);
-      mix-blend-mode:screen;
-      opacity:.35;
-    }
-
-    /* Subtle barrel distortion (works well on TV) */
-    .barrel{
-      position:fixed; inset:-2%;
-      pointer-events:none;
-      border-radius:32px;
-      filter: blur(.4px);
-      transform: perspective(1200px) rotateX(.35deg);
-      opacity:.12;
-      background: radial-gradient(60% 50% at 50% 50%, rgba(0,242,255,.35), rgba(0,0,0,0) 70%);
-    }
-
-    /* PANEL */
-    .panel{
-      background:var(--glass);
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      box-shadow:
-        0 0 24px rgba(0,0,0,.55),
-        0 0 28px var(--glow);
-      backdrop-filter: blur(10px);
-      position:relative;
-      overflow:hidden;
-    }
-
-    /* edge tracers */
-    .panel::before{
-      content:"";
-      position:absolute; inset:0;
-      border-radius:var(--r);
-      padding:1px;
-      background:
-        linear-gradient(90deg, transparent, rgba(0,242,255,.55), transparent);
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity:.22;
-      animation: trace 4.2s linear infinite;
-      pointer-events:none;
-    }
-    @keyframes trace{
-      0%{ transform: translateX(-60%); }
-      100%{ transform: translateX(60%); }
-    }
-
-    .panelHeader{
-      position:absolute; left:10px; right:10px; top:8px;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-      font-size:12px;
-      text-transform:uppercase;
-      color:var(--muted);
-      pointer-events:none;
-      z-index:2;
-    }
-    .tags{ display:flex; gap:8px; flex-wrap:wrap; }
-    .tag{
-      border:1px solid rgba(0,242,255,.35);
-      color:rgba(0,242,255,.9);
-      padding:3px 8px;
-      border-radius:999px;
-      font-weight:650;
-      font-size:11px;
-      letter-spacing:.8px;
-      background:rgba(0,0,0,.18);
-      box-shadow:0 0 14px rgba(0,242,255,.18);
-    }
-    .tag.muted{ color:rgba(217,251,255,.75); border-color:rgba(217,251,255,.18); box-shadow:none; }
-    .tag.danger{ color:#ffe9e9; border-color:rgba(255,31,31,.5); box-shadow:0 0 18px rgba(255,31,31,.25); }
-
-    /* TOP STRIP */
-    .top{
-      grid-column:1 / span 3;
-      display:grid;
-      grid-template-columns: 22% 56% 22%;
-      gap:var(--gap);
-    }
-    .topLeft, .topMid, .topRight{ height:100%; }
-
-    .topLeft .content, .topMid .content, .topRight .content{
-      height:100%;
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:10px;
-    }
-
-    .topTitle{
-      font-size:18px;
-      font-weight:800;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      color:rgba(217,251,255,.92);
-    }
-
-    .btnRow{ display:flex; gap:8px; flex-wrap:wrap; }
-    .btn{
-      cursor:pointer;
-      border:1px solid rgba(0,242,255,.35);
-      background:rgba(0,0,0,.22);
-      color:rgba(0,242,255,.95);
-      padding:7px 10px;
-      border-radius:10px;
-      font-weight:700;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      font-size:12px;
-      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
-      user-select:none;
-    }
-    .btn:hover{ box-shadow:0 0 18px rgba(0,242,255,.22); transform: translateY(-1px); }
-    .btn:active{ transform: translateY(1px); }
-    .btn.secondary{ border-color:rgba(217,251,255,.16); color:rgba(217,251,255,.8); }
-    .btn.danger{ border-color:rgba(255,31,31,.55); color:#ffdede; }
-    .btn.purple{ border-color:rgba(168,85,247,.55); color:#f1e7ff; }
-
-    .centerClock{
-      text-align:center;
-      font-weight:900;
-      font-size: clamp(22px, 3.2vw, 54px);
-      letter-spacing:3px;
-      text-transform:uppercase;
-      line-height:1.0;
-    }
-    .subline{
-      text-align:center;
-      color:rgba(0,242,255,.85);
-      font-weight:800;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      font-size: clamp(10px, 1.05vw, 16px);
-      margin-top:4px;
-    }
-    .dateLine{
-      text-align:center;
-      color:rgba(217,251,255,.72);
-      font-weight:650;
-      letter-spacing:1.2px;
-      font-size: clamp(10px, .95vw, 14px);
-      text-transform:uppercase;
-    }
-
-    .countdownBig{
-      font-weight:900;
-      font-size: clamp(22px, 2.6vw, 44px);
-      color:rgba(0,242,255,.95);
-      letter-spacing:2px;
-      text-align:right;
-      text-transform:uppercase;
-    }
-    .countdownSmall{
-      color:rgba(217,251,255,.72);
-      text-align:right;
-      font-weight:650;
-      letter-spacing:1px;
-      font-size: clamp(10px, .95vw, 13px);
-      text-transform:uppercase;
-    }
-
-    /* MIDDLE ROW */
-    .left{ grid-column:1; grid-row:2; display:flex; flex-direction:column; gap:var(--gap); }
-    .middle{ grid-column:2; grid-row:2; }
-    .right{ grid-column:3; grid-row:2; display:grid; grid-template-rows: 50% 50%; gap:var(--gap); }
-
-    /* BOTTOM ROW */
-    .bottom{
-      grid-column:1 / span 3;
-      grid-row:3;
-      display:grid;
-      grid-template-columns: 22% 22% 34% 22%;
-      gap:var(--gap);
-    }
-
-    .pad{ padding:14px; }
-    .titleSmall{
-      text-transform:uppercase;
-      letter-spacing:2px;
-      font-weight:900;
-      color:rgba(217,251,255,.9);
-      font-size:12px;
-      margin-bottom:8px;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px;
-    }
-    .mono{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      letter-spacing:.3px;
-    }
-    ul{ margin:0; padding-left:16px; }
-    li{ margin:6px 0; color:rgba(217,251,255,.84); font-size: clamp(11px, .95vw, 14px); }
-
-    /* Trading containers */
-    .tvWrap{
-      position:absolute; inset:34px 10px 10px 10px;
-      border-radius:12px;
-      overflow:hidden;
-      border:1px solid rgba(217,251,255,.12);
-      background: rgba(0,0,0,.22);
-    }
-    .tv{ height:100%; width:100%; }
-
-    /* EXECUTION core overlay circle */
-    .coreOverlay{
-      pointer-events:none;
-      position:absolute; inset:34px 10px 10px 10px;
-      display:flex; align-items:center; justify-content:center;
-    }
-    .coreCircle{
-      width:min(70vh, 70%);
-      aspect-ratio:1/1;
-      border-radius:50%;
-      border:2px solid rgba(0,242,255,.8);
-      box-shadow: 0 0 70px rgba(0,242,255,.45);
-      position:relative;
-      background: radial-gradient(circle at 50% 50%, rgba(0,242,255,.25), rgba(0,0,0,0) 60%);
-    }
-    .coreCircle::before{
-      content:"";
-      position:absolute; inset:8%;
-      border-radius:50%;
-      border:2px dashed rgba(0,242,255,.35);
-      animation: spin 28s linear infinite;
-    }
-    .coreCircle::after{
-      content:"";
-      position:absolute; inset:0;
-      border-radius:50%;
-      background: conic-gradient(from 0deg, rgba(0,242,255,.0), rgba(0,242,255,.18), rgba(0,242,255,.0));
-      animation: spin 6s linear infinite;
-      mix-blend-mode:screen;
-    }
-    @keyframes spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
-
-    /* MOTIVATION IMAGE (optional) */
-    .motivationImg{
-      position:absolute; inset:0;
-      background-position:center;
-      background-size:cover;
-      opacity:.0;
-      filter:saturate(1.1) contrast(1.08);
-      transition: opacity .35s ease;
-      mix-blend-mode:screen;
-    }
-    .motivationImg.on{ opacity:.12; }
-    .motivationGradient{
-      position:absolute; inset:0;
-      background: radial-gradient(70% 70% at 70% 20%, rgba(0,242,255,.18), rgba(0,0,0,0) 60%),
-                  radial-gradient(70% 70% at 20% 80%, rgba(0,0,0,.0), rgba(0,0,0,.55) 75%);
-      pointer-events:none;
-    }
-
-    /* COMBAT RED FLASH */
-    .flash{
-      position:fixed; inset:0;
-      background: radial-gradient(80% 80% at 50% 50%, rgba(255,31,31,.45), rgba(0,0,0,0) 65%);
-      opacity:0;
-      pointer-events:none;
-      z-index:9998;
-    }
-    .flash.on{ animation: flash 420ms ease-out 1; }
-    @keyframes flash{
-      0%{ opacity:0; }
-      20%{ opacity:1; }
-      100%{ opacity:0; }
-    }
-
-    /* BOOT OVERLAY (clickable always) */
-    .boot{
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      z-index:9999;
-      background: radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,.25), rgba(0,0,0,.86));
-    }
-    .boot.hidden{ display:none; }
-
-    .bootCard{
-      width:min(900px, 92vw);
-      border-radius:18px;
-      border:1px solid rgba(0,242,255,.25);
-      background: rgba(10,16,22,.75);
-      box-shadow: 0 0 50px rgba(0,242,255,.18), 0 0 120px rgba(0,0,0,.65);
-      padding:18px 18px 14px;
-      position:relative;
-    }
-    .bootTop{
-      display:flex; justify-content:space-between; align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .bootTitle{
-      font-weight:900; letter-spacing:2px; text-transform:uppercase;
-      display:flex; flex-direction:column; gap:2px;
-    }
-    .bootTitle small{ color:rgba(217,251,255,.6); font-weight:700; letter-spacing:1px; }
-    .bootPill{
-      border:1px solid rgba(0,242,255,.35);
-      padding:6px 10px; border-radius:999px;
-      font-weight:900; letter-spacing:1px; text-transform:uppercase;
-      color:rgba(0,242,255,.9);
-      background: rgba(0,0,0,.25);
-    }
-    .bootGrid{
-      display:grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap:12px;
-      margin-top:10px;
-    }
-    .bootLog{
-      border:1px solid rgba(217,251,255,.12);
-      border-radius:12px;
-      padding:12px;
-      height:240px;
-      overflow:hidden;
-      background: rgba(0,0,0,.22);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      color:rgba(0,242,255,.85);
-      font-size:13px;
-      line-height:1.5;
-    }
-    .bootOpts{
-      border:1px solid rgba(217,251,255,.12);
-      border-radius:12px;
-      padding:12px;
-      background: rgba(0,0,0,.18);
-    }
-    .bootRow{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:10px 0;
-      border-bottom:1px solid rgba(217,251,255,.08);
-      color:rgba(217,251,255,.78);
-      text-transform:uppercase;
-      letter-spacing:1px;
-      font-size:12px;
-    }
-    .bootRow:last-child{ border-bottom:none; }
-    .bootHint{
-      margin-top:10px;
-      color:rgba(217,251,255,.55);
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-    }
-    .bootActions{
-      display:flex; gap:10px; flex-wrap:wrap;
-      margin-top:12px;
-      justify-content:flex-end;
-    }
-
-    /* THEMES */
-    body.purple{
-      --line: rgba(168,85,247,.40);
-      --glow: rgba(168,85,247,.40);
-      --accent: #a855f7;
-      --accent2:#c084fc;
-    }
-    body.redmode{
-      --line: rgba(255,31,31,.40);
-      --glow: rgba(255,31,31,.38);
-      --accent: #ff1f1f;
-      --accent2:#ff6b6b;
-      --glass: rgba(28,8,8,.62);
-      --bg0:#140000;
-      --bg1:#1b0000;
-    }
-    body.purple .tag{ border-color:rgba(168,85,247,.45); color:rgba(200,170,255,.95); box-shadow:0 0 14px rgba(168,85,247,.18); }
-    body.redmode .tag{ border-color:rgba(255,31,31,.55); color:#ffe2e2; box-shadow:0 0 18px rgba(255,31,31,.22); }
-    body.redmode .subline{ color:rgba(255,200,200,.9); }
-
-    /* SMALL FIX FOR “LOOKS SMALL” */
-    /* Scale to fill ultrawide TVs if browser is zoomed out */
-    @media (min-width: 2400px){
-      .wall{ padding:12px; gap:12px; }
-    }
-
-    /* Prevent any overlay from blocking clicks */
-    .panel *{ pointer-events:auto; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MISSION CONTROL // MAMBA</title>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 
-<body class="">
-  <div class="flash" id="flash"></div>
-
-  <!-- BOOT OVERLAY (never traps input; always has skip) -->
-  <div class="boot" id="boot">
-    <div class="bootCard">
-      <div class="bootTop">
-        <div class="bootTitle">
-          <div>MISSION CONTROL X</div>
-          <small>STARK LABS INTERFACE • MAMBA MENTALITY • WALL MODE</small>
-        </div>
-        <div class="bootPill" id="bootState">BOOTING</div>
-      </div>
-
-      <div class="bootGrid">
-        <div class="bootLog" id="bootLog"></div>
-
-        <div class="bootOpts">
-          <div class="bootRow"><span>Theme</span><strong id="optTheme">CYAN</strong></div>
-          <div class="bootRow"><span>Motivation Overlay</span><strong id="optMotiv">ON</strong></div>
-          <div class="bootRow"><span>Combat Flash</span><strong id="optFlash">ON</strong></div>
-          <div class="bootRow"><span>Fullscreen</span><strong id="optFS">ARM</strong></div>
-
-          <div class="bootHint">Fullscreen requires a click (browser rule). After ARM, it stays locked-in.</div>
-
-          <div class="bootActions">
-            <button class="btn secondary" id="skipBoot">SKIP BOOT</button>
-            <button class="btn" id="armFS">ARM FULLSCREEN</button>
-            <button class="btn danger" id="combatNow">COMBAT FLASH</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- WALL -->
-  <div class="wall" id="wall">
-
-    <!-- TOP STRIP -->
-    <div class="top">
-      <!-- LEFT TOP -->
-      <div class="panel topLeft">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">NEON ELITE</span>
-            <span class="tag muted">WAR ROOM</span>
-            <span class="tag muted">STARK</span>
-          </div>
-          <div class="tags">
-            <span class="tag" id="linkOk">LINK: OK</span>
-          </div>
-        </div>
-
-        <div class="content">
-          <div class="topTitle">MISSION CONTROL</div>
-          <div class="btnRow">
-            <button class="btn secondary" id="btnCyan">CYAN</button>
-            <button class="btn purple" id="btnPurple">PURPLE</button>
-            <button class="btn danger" id="btnRed">MAMBA</button>
-          </div>
-
-          <div class="btnRow">
-            <button class="btn" id="btnQuotes">QUOTES: ON</button>
-            <button class="btn" id="btnMotiv">MOTIV: ON</button>
-            <button class="btn" id="btnFlash">FLASH: ON</button>
-            <button class="btn" id="btnFull">FULLSCREEN</button>
-          </div>
-
-          <div class="btnRow" style="margin-top:2px;">
-            <button class="btn secondary" id="btnSymbol">SYMBOL: <span id="symLabel" class="mono">CME_MINI:MNQ1!</span></button>
-            <button class="btn secondary" id="btnIntervals">EXEC: <span id="intLabel" class="mono">5</span>m</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- MID TOP -->
-      <div class="panel topMid">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">SYSTEM CLOCK</span>
-            <span class="tag" id="onlineTag">ONLINE</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted">LOCK IN</span>
-          </div>
-        </div>
-        <div class="content">
-          <div class="centerClock mono" id="clock">00:00:00</div>
-          <div class="dateLine" id="dateLine">WEDNESDAY, FEBRUARY 11, 2026</div>
-          <div class="subline" id="mantra">DISCIPLINE OVER EMOTION.</div>
-        </div>
-      </div>
-
-      <!-- RIGHT TOP -->
-      <div class="panel topRight">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">COUNTDOWN</span>
-            <span class="tag" id="modeTag">STANDBY</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted">07:30 MT</span>
-          </div>
-        </div>
-        <div class="content" style="align-items:flex-end;">
-          <div class="countdownSmall">OPENS IN</div>
-          <div class="countdownBig mono" id="countdown">00:00:00</div>
-          <div class="countdownSmall" id="sessionLine">RED @ 07:15 • LIVE 07:30–10:30 MT</div>
-        </div>
-      </div>
+<body>
+  <!-- Top HUD -->
+  <header class="top-hud">
+    <div class="hud-left">
+      <div class="hud-title">MISSION CONTROL <span class="pill">MAMBA</span></div>
+      <div class="hud-sub">SYSTEM ONLINE • NO HUNTING • EXECUTE</div>
     </div>
 
-    <!-- LEFT COLUMN (DISCIPLINE / RULES) -->
-    <div class="left">
-      <div class="panel" style="flex:1;">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">THREAT AS NEAR</span>
-            <span class="tag" id="lockTag">LOCK-IN</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted" id="disciplineTag">DISCIPLINE</span>
-          </div>
-        </div>
-        <div class="pad">
-          <div class="titleSmall">NON-NEGOTIABLES <span class="tag muted" style="pointer-events:none">A+</span></div>
-          <ul>
-            <li>A+ setups only</li>
-            <li>No overtrade / no revenge</li>
-            <li>Hydrate • breathe • calm focus</li>
-            <li>One clean trade &gt; ten average</li>
-            <li>When target hits: <b>DONE</b></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel" style="height:38%;">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">RULES</span>
-            <span class="tag" id="sessionGateTag">07:30–10:30</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted">SNIPER V3</span>
-          </div>
-        </div>
-        <div class="pad">
-          <ul>
-            <li>Wait confirmations (VWAP bias + 9/21 aligned)</li>
-            <li>Pullback + reclaim entries only</li>
-            <li>No chase candles</li>
-            <li>Session gate only</li>
-            <li>Hit target = shut it down</li>
-          </ul>
-        </div>
-      </div>
+    <div class="hud-center">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="date" id="date">---</div>
     </div>
 
-    <!-- MIDDLE (EXECUTION) -->
-    <div class="panel middle">
-      <div class="panelHeader">
-        <div class="tags">
-          <span class="tag muted">EXECUTION</span>
-          <span class="tag" id="execTag">5M</span>
-          <span class="tag muted" id="execSymTag">CME_MINI:MNQ1!</span>
-        </div>
-        <div class="tags">
-          <span class="tag muted">FOCUS</span>
-        </div>
+    <div class="hud-right">
+      <div class="hud-metric">
+        <div class="metric-label">NY OPEN</div>
+        <div class="metric-value" id="nyOpen">--:--:--</div>
       </div>
-
-      <div class="tvWrap">
-        <div id="tvExecution" class="tv"></div>
-      </div>
-
-      <!-- Stark circle overlay -->
-      <div class="coreOverlay">
-        <div class="coreCircle"></div>
+      <div class="hud-metric">
+        <div class="metric-label">SESSION</div>
+        <div class="metric-value" id="sessionState">STANDBY</div>
       </div>
     </div>
+  </header>
 
-    <!-- RIGHT (STRUCTURE / CONTEXT) -->
-    <div class="right">
-      <div class="panel">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">STRUCTURE</span>
-            <span class="tag" id="strTag">1H</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted">ALIGN</span>
-          </div>
-        </div>
-        <div class="tvWrap">
-          <div id="tvStructure" class="tv"></div>
-        </div>
-      </div>
+  <!-- Main Grid -->
+  <div class="dash-grid">
 
-      <div class="panel">
-        <div class="panelHeader">
-          <div class="tags">
-            <span class="tag muted">CONTEXT</span>
-            <span class="tag" id="ctxTag">4H</span>
-          </div>
-          <div class="tags">
-            <span class="tag muted">BIAS</span>
-          </div>
-        </div>
-        <div class="tvWrap">
-          <div id="tvContext" class="tv"></div>
-        </div>
-      </div>
-    </div>
+    <!-- LEFT COLUMN -->
+    <aside class="left-col">
+      <section class="panel panel-float">
+        <div class="panel-title">MISSION CONTROL</div>
 
-    <!-- BOTTOM ROW -->
-    <div class="bottom">
-      <div class="panel">
-        <div class="panelHeader">
-          <div class="tags"><span class="tag muted">RISK</span><span class="tag" id="riskTag">CONTROL</span></div>
-          <div class="tags"><span class="tag muted">NO OVERTRADE</span></div>
+        <div class="chip-row">
+          <button class="chip active">CYAN</button>
+          <button class="chip">PURPLE</button>
+          <button class="chip danger">MAMBA</button>
         </div>
-        <div class="pad">
-          <div class="titleSmall">DAILY LIMITS <span class="tag muted">TBD</span></div>
-          <div class="mono" style="font-size:12px; color:rgba(217,251,255,.78); line-height:1.7;">
-            DAILY MAX LOSS: <b>$ TBD</b><br/>
-            DAILY TARGET: <b>$ TBD</b><br/>
-            WEEKLY TARGET: <b>$ TBD</b><br/>
-            POSITION LIMITS: <b>TBD</b>
-          </div>
-        </div>
-      </div>
 
-      <div class="panel">
-        <div class="panelHeader">
-          <div class="tags"><span class="tag muted">SESSION</span><span class="tag" id="stateTag">STANDBY</span></div>
-          <div class="tags"><span class="tag muted">GATE</span></div>
+        <div class="chip-row">
+          <button class="chip">QUOTE: ON</button>
+          <button class="chip">MOUTH: ON</button>
+          <button class="chip danger">FLASH: ON</button>
+          <button class="chip">FULLSCREEN</button>
         </div>
-        <div class="pad">
-          <div class="titleSmall">STATUS <span class="tag muted" id="sysOnline">ONLINE</span></div>
-          <div class="mono" style="font-size:12px; color:rgba(217,251,255,.78); line-height:1.7;">
-            MODEL: <b>SNIPER V3 • VWAP • 9/21</b><br/>
-            GATE: <b>07:30–10:30 MT</b><br/>
-            RED: <b>07:15 MT</b><br/>
-            MODE: <b id="modeText">STANDBY</b>
-          </div>
-        </div>
-      </div>
 
-      <div class="panel" id="motPanel">
-        <div class="motivationImg" id="motImg"></div>
-        <div class="motivationGradient"></div>
+        <div class="divider"></div>
 
-        <div class="panelHeader">
-          <div class="tags"><span class="tag muted">MOTIVATION</span><span class="tag" id="motModeTag">3 MODES</span></div>
-          <div class="tags"><span class="tag muted">MAMBA</span></div>
+        <div class="mini-row">
+          <div class="mini-label">SYMBOL</div>
+          <div class="mini-value">CME_MINI:MNQ1!</div>
         </div>
-        <div class="pad" style="position:relative; z-index:2;">
-          <div class="titleSmall">LOCK-IN LINES <span class="tag muted" id="qTag">ON</span></div>
-          <div id="quoteBox" class="mono" style="font-size:14px; line-height:1.7; color:rgba(217,251,255,.82);">
-            DISCIPLINE OVER EMOTION.
-          </div>
-          <div class="mono" style="margin-top:10px; font-size:12px; color:rgba(217,251,255,.65);">
-            <b>Image:</b> put your file at <span class="mono">assets/motivation.jpg</span> (optional)
-          </div>
 
-          <div class="btnRow" style="margin-top:10px;">
-            <button class="btn secondary" id="imgMode1">WATERMARK</button>
-            <button class="btn secondary" id="imgMode2">FULL OVERLAY</button>
-            <button class="btn secondary" id="imgMode3">BOOT INTRO</button>
-          </div>
+        <div class="mini-row">
+          <div class="mini-label">MODE</div>
+          <div class="mini-value">DISCIPLINE</div>
         </div>
-      </div>
+      </section>
 
-      <div class="panel">
-        <div class="panelHeader">
-          <div class="tags"><span class="tag muted">COMMANDS</span><span class="tag muted">HOTKEYS</span></div>
-          <div class="tags"><span class="tag muted">STARK</span></div>
-        </div>
-        <div class="pad">
-          <div class="mono" style="font-size:12px; line-height:1.75; color:rgba(217,251,255,.78);">
-            <b>F</b> = fullscreen<br/>
-            <b>P</b> = purple mode<br/>
-            <b>R</b> = mamba red mode + flash<br/>
-            <b>C</b> = cyan mode<br/>
-            <b>Q</b> = quotes on/off<br/>
-            <b>M</b> = motivation overlay on/off
+      <section class="panel panel-float">
+        <div class="panel-title">DISCIPLINE</div>
+        <ul class="bullets">
+          <li>A+ setups only</li>
+          <li>No overtrade / no revenge</li>
+          <li>Hydrate • breathe • calm focus</li>
+          <li>One clean trade > ten average</li>
+          <li>When target hits: DONE</li>
+        </ul>
+      </section>
+
+      <section class="panel panel-float">
+        <div class="panel-title">RULES</div>
+        <ul class="bullets">
+          <li>VWAP bias + 9/21 aligned</li>
+          <li>Pullback + reclaim entries only</li>
+          <li>No chase candles</li>
+          <li>Session gate only</li>
+          <li>Hit target = shut it down</li>
+        </ul>
+      </section>
+
+      <section class="panel panel-float">
+        <div class="panel-title">RISK CONTROL</div>
+        <div class="risk-grid">
+          <div class="risk-card">
+            <div class="risk-label">DAILY MAX LOSS</div>
+            <div class="risk-value">$—</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-label">DAILY TARGET</div>
+            <div class="risk-value">$—</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-label">WEEKLY LIMIT</div>
+            <div class="risk-value">$—</div>
+          </div>
+          <div class="risk-card">
+            <div class="risk-label">POSITION</div>
+            <div class="risk-value">1x</div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </aside>
+
+    <!-- MIDDLE COLUMN -->
+    <main class="mid-col">
+      <section class="panel panel-float arc-panel">
+        <div class="panel-title">ARC CORE</div>
+
+        <!-- Arc Reactor Placeholder (swap with your real animation if you have one) -->
+        <div class="arc-wrap" aria-hidden="true">
+          <div class="arc-ring arc-ring-1"></div>
+          <div class="arc-ring arc-ring-2"></div>
+          <div class="arc-ring arc-ring-3"></div>
+          <div class="arc-center"></div>
+          <div class="arc-text">INITIALIZING • EXECUTION READY</div>
+        </div>
+      </section>
+
+      <section class="panel panel-float">
+        <div class="panel-title">SYSTEM LOG</div>
+        <div class="log">
+          <div class="log-line">[OK] Visual HUD loaded</div>
+          <div class="log-line">[OK] Right-side chart stack ready</div>
+          <div class="log-line">[OK] Symbol locked: CME_MINI:MNQ1!</div>
+          <div class="log-line">[INFO] Mamba protocol standing by</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHT COLUMN: 3 STACKED CHARTS -->
+    <aside class="right-col">
+      <section class="panel panel-float right-stack">
+        <div class="panel-title">MARKET VISION</div>
+
+        <div class="chart-stack">
+          <div class="chart-panel" id="tv_right_1"></div>
+          <div class="chart-panel" id="tv_right_2"></div>
+          <div class="chart-panel" id="tv_right_3"></div>
+        </div>
+      </section>
+    </aside>
 
   </div>
 
-  <div class="crt"></div>
-  <div class="barrel"></div>
-
-  <script>
-    /***********************
-     * CONFIG + PERSISTENCE
-     ***********************/
-    const qs = new URLSearchParams(location.search);
-
-    // Default symbol set to MNQ (avoid Apple)
-    const DEFAULT_SYMBOL = "CME_MINI:MNQ1!";
-    const DEFAULT_EXEC_INT = "5";
-    const DEFAULT_STR_INT  = "60";
-    const DEFAULT_CTX_INT  = "240";
-
-    function lsGet(k, fallback){ try{ return localStorage.getItem(k) ?? fallback; }catch{ return fallback; } }
-    function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch{} }
-
-    let symbol   = qs.get("symbol")   || lsGet("mc_symbol", DEFAULT_SYMBOL);
-    let execInt  = qs.get("exec")     || lsGet("mc_execInt", DEFAULT_EXEC_INT);
-    let strInt   = qs.get("str")      || lsGet("mc_strInt",  DEFAULT_STR_INT);
-    let ctxInt   = qs.get("ctx")      || lsGet("mc_ctxInt",  DEFAULT_CTX_INT);
-
-    let quotesOn = (lsGet("mc_quotesOn","1") === "1");
-    let motivOn  = (lsGet("mc_motivOn","1")  === "1");
-    let flashOn  = (lsGet("mc_flashOn","1")  === "1");
-    let theme    = lsGet("mc_theme","cyan"); // cyan | purple | red
-
-    // Motivation image modes: 1 watermark, 2 overlay, 3 boot intro
-    let imgMode  = parseInt(lsGet("mc_imgMode","1"),10);
-
-    // apply initial theme
-    function applyTheme(t){
-      document.body.classList.remove("purple","redmode");
-      if(t === "purple") document.body.classList.add("purple");
-      if(t === "red") document.body.classList.add("redmode");
-      theme = t;
-      lsSet("mc_theme", t);
-      updateTags();
-    }
-
-    function updateTags(){
-      document.getElementById("symLabel").textContent = symbol;
-      document.getElementById("execSymTag").textContent = symbol;
-      document.getElementById("intLabel").textContent = execInt;
-      document.getElementById("execTag").textContent = execInt + "M";
-      document.getElementById("strTag").textContent = (strInt==="60" ? "1H" : (strInt==="240" ? "4H" : strInt+""));
-      document.getElementById("ctxTag").textContent = (ctxInt==="240" ? "4H" : (ctxInt==="60" ? "1H" : ctxInt+""));
-      document.getElementById("qTag").textContent = quotesOn ? "ON" : "OFF";
-      document.getElementById("btnQuotes").textContent = "QUOTES: " + (quotesOn ? "ON" : "OFF");
-      document.getElementById("btnMotiv").textContent  = "MOTIV: " + (motivOn ? "ON" : "OFF");
-      document.getElementById("btnFlash").textContent  = "FLASH: " + (flashOn ? "ON" : "OFF");
-      document.getElementById("optTheme").textContent  = (theme==="cyan" ? "CYAN" : theme.toUpperCase());
-      document.getElementById("optMotiv").textContent  = motivOn ? "ON" : "OFF";
-      document.getElementById("optFlash").textContent  = flashOn ? "ON" : "OFF";
-      document.getElementById("motModeTag").textContent = ["WATERMARK","OVERLAY","BOOT INTRO"][Math.max(0,Math.min(2,imgMode-1))];
-    }
-
-    applyTheme(theme);
-    updateTags();
-
-    /***********************
-     * CLOCK + DATE + MANTRA
-     ***********************/
-    const mantraLines = [
-      "DISCIPLINE OVER EMOTION.",
-      "ONE GOOD TRADE.",
-      "NO HUNTING.",
-      "DON'T CHASE. LET IT COME.",
-      "READ STRUCTURE. EXECUTE CLEAN.",
-      "CONTROL FIRST. PROFITS FOLLOW."
-    ];
-
-    function updateClock(){
-      const now = new Date();
-      const t = now.toLocaleTimeString([], {hour12:false});
-      const d = now.toLocaleDateString([], {weekday:"long", year:"numeric", month:"long", day:"numeric"}).toUpperCase();
-      document.getElementById("clock").textContent = t;
-      document.getElementById("dateLine").textContent = d;
-    }
-    setInterval(updateClock, 250);
-    updateClock();
-
-    let mantraIdx = 0;
-    function rotateMantra(){
-      const el = document.getElementById("mantra");
-      el.textContent = mantraLines[mantraIdx % mantraLines.length];
-      mantraIdx++;
-    }
-    setInterval(rotateMantra, 7000);
-    rotateMantra();
-
-    /***********************
-     * SESSION COUNTDOWN (MT)
-     ***********************/
-    // 07:30 open, 07:15 red, 10:30 gate end
-    function getMountainNow(){
-      // Use Intl to format time in America/Denver and reconstruct a Date in local
-      const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone:"America/Denver",
-        year:"numeric", month:"2-digit", day:"2-digit",
-        hour:"2-digit", minute:"2-digit", second:"2-digit",
-        hour12:false
-      }).formatToParts(new Date()).reduce((a,p)=>{ a[p.type]=p.value; return a; }, {});
-      const iso = `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`;
-      return new Date(iso);
-    }
-
-    function setHM(date, h, m, s=0){
-      const d = new Date(date);
-      d.setHours(h,m,s,0);
-      return d;
-    }
-
-    function fmtHMS(ms){
-      ms = Math.max(0, ms);
-      const s = Math.floor(ms/1000);
-      const hh = String(Math.floor(s/3600)).padStart(2,"0");
-      const mm = String(Math.floor((s%3600)/60)).padStart(2,"0");
-      const ss = String(s%60).padStart(2,"0");
-      return `${hh}:${mm}:${ss}`;
-    }
-
-    function updateSession(){
-      const now = getMountainNow();
-      const open = setHM(now, 7, 30, 0);
-      const red  = setHM(now, 7, 15, 0);
-      const end  = setHM(now, 10, 30, 0);
-
-      let mode = "STANDBY";
-      if(now >= red && now < open) mode = "RED";
-      if(now >= open && now < end) mode = "LIVE";
-      if(now >= end) mode = "CLOSED";
-
-      document.getElementById("modeTag").textContent = mode;
-      document.getElementById("modeText").textContent = mode;
-      document.getElementById("stateTag").textContent = mode;
-
-      let target = open;
-      if(mode === "LIVE") target = end;
-      if(mode === "CLOSED"){
-        // next day open
-        const next = new Date(open.getTime() + 24*3600*1000);
-        target = next;
-      }
-      const ms = target - now;
-      const label = (mode==="LIVE") ? "ENDS IN" : "OPENS IN";
-      document.querySelector(".countdownSmall").textContent = label;
-      document.getElementById("countdown").textContent = fmtHMS(ms);
-
-      // Auto-combat red flash entering RED (once per day)
-      const todayKey = `mc_redFlash_${now.toISOString().slice(0,10)}`;
-      if(mode === "RED" && flashOn && lsGet(todayKey,"0")!=="1"){
-        triggerFlash();
-        lsSet(todayKey,"1");
-      }
-
-      // Update lock tag color feel
-      const lock = document.getElementById("lockTag");
-      lock.textContent = (mode==="LIVE" ? "LOCKED" : "LOCK-IN");
-      lock.classList.toggle("danger", mode==="RED");
-    }
-    setInterval(updateSession, 250);
-    updateSession();
-
-    /***********************
-     * QUOTES (original “mamba” lines)
-     ***********************/
-    const quotes = [
-      "LOCK IN. DO THE WORK. NO NOISE.",
-      "ONE GOOD TRADE. EXECUTE IT PERFECTLY.",
-      "WAIT FOR YOUR A+. PATIENCE IS POWER.",
-      "CONTROL RISK LIKE IT'S YOUR JOB — BECAUSE IT IS.",
-      "DISCIPLINE WINS WHEN MOTIVATION DIES.",
-      "NO CHASE. NO HOPE. JUST PROCESS.",
-      "STRUCTURE FIRST. ENTRY SECOND. EGO NEVER.",
-      "IF IT'S NOT CLEAN — IT'S NOT YOU."
-    ];
-    let qIndex = 0;
-    function updateQuote(){
-      const box = document.getElementById("quoteBox");
-      if(!quotesOn){ box.textContent = "QUOTES OFF. LOCK IN ANYWAY."; return; }
-      box.textContent = quotes[qIndex % quotes.length];
-      qIndex++;
-    }
-    setInterval(updateQuote, 6500);
-    updateQuote();
-
-    /***********************
-     * MOTIVATION IMAGE MODES
-     ***********************/
-    const motImg = document.getElementById("motImg");
-    // You can add your own image at assets/motivation.jpg in the repo
-    motImg.style.backgroundImage = `url("assets/motivation.jpg")`;
-
-    function applyMotivation(){
-      // mode 1 watermark: low opacity
-      // mode 2 overlay: higher opacity
-      // mode 3: boot intro uses image inside boot only (we keep panel watermark light)
-      motImg.classList.toggle("on", motivOn);
-      if(!motivOn){ motImg.style.opacity = 0; return; }
-
-      if(imgMode === 1) motImg.style.opacity = 0.12;
-      if(imgMode === 2) motImg.style.opacity = 0.22;
-      if(imgMode === 3) motImg.style.opacity = 0.10;
-    }
-    applyMotivation();
-
-    /***********************
-     * COMBAT FLASH
-     ***********************/
-    function triggerFlash(){
-      const f = document.getElementById("flash");
-      f.classList.remove("on");
-      // restart animation
-      void f.offsetWidth;
-      f.classList.add("on");
-    }
-
-    /***********************
-     * FULLSCREEN (browser requires user gesture)
-     ***********************/
-    async function goFullscreen(){
-      try{
-        await document.documentElement.requestFullscreen({ navigationUI:"hide" });
-      }catch(e){
-        // ignore
-      }
-    }
-
-    /***********************
-     * TRADINGVIEW WIDGETS
-     * Using tv.js widget (more stable than srcdoc)
-     ***********************/
-    let tvExec, tvStr, tvCtx;
-
-    function clearTV(){
-      // TradingView widgets inject iframes; easiest is to clear containers then rebuild
-      document.getElementById("tvExecution").innerHTML = "";
-      document.getElementById("tvStructure").innerHTML = "";
-      document.getElementById("tvContext").innerHTML = "";
-    }
-
-    function buildTV(){
-      clearTV();
-      updateTags();
-
-      // EXECUTION (big)
-      tvExec = new TradingView.widget({
-        autosize: true,
-        symbol: symbol,
-        interval: execInt,
-        timezone: "America/Denver",
-        theme: "dark",
-        style: "1",
-        locale: "en",
-        hide_side_toolbar: true,
-        allow_symbol_change: false,
-        calendar: false,
-        studies: [],
-        support_host: "https://www.tradingview.com",
-        container_id: "tvExecution"
-      });
-
-      // STRUCTURE (top right)
-      tvStr = new TradingView.widget({
-        autosize: true,
-        symbol: symbol,
-        interval: strInt,
-        timezone: "America/Denver",
-        theme: "dark",
-        style: "1",
-        locale: "en",
-        hide_side_toolbar: true,
-        allow_symbol_change: false,
-        calendar: false,
-        container_id: "tvStructure"
-      });
-
-      // CONTEXT (bottom right)
-      tvCtx = new TradingView.widget({
-        autosize: true,
-        symbol: symbol,
-        interval: ctxInt,
-        timezone: "America/Denver",
-        theme: "dark",
-        style: "1",
-        locale: "en",
-        hide_side_toolbar: true,
-        allow_symbol_change: false,
-        calendar: false,
-        container_id: "tvContext"
-      });
-    }
-
-    /***********************
-     * BOOT SEQUENCE (never blocks forever)
-     ***********************/
-    const boot = document.getElementById("boot");
-    const bootLog = document.getElementById("bootLog");
-    const bootState = document.getElementById("bootState");
-
-    function logLine(text){
-      const line = document.createElement("div");
-      line.textContent = text;
-      bootLog.appendChild(line);
-      // keep last ~14 lines visible
-      while(bootLog.children.length > 14) bootLog.removeChild(bootLog.firstChild);
-    }
-
-    function hideBoot(){
-      boot.classList.add("hidden");
-    }
-
-    // Always auto-finish boot even if something fails
-    function runBoot(){
-      bootLog.innerHTML = "";
-      bootState.textContent = "BOOTING";
-      updateTags();
-
-      const steps = [
-        () => logLine("SYS> initializing"),
-        () => logLine("SYS> loading interface modules"),
-        () => logLine("SYS> configuring wall grid"),
-        () => logLine("SYS> linking market feeds"),
-        () => logLine("SYS> spinning execution core"),
-        () => logLine("SYS> embedding TradingView widgets"),
-        () => logLine("SYS> lock-in complete")
-      ];
-
-      let i = 0;
-      const tick = () => {
-        try{
-          if(i < steps.length){
-            steps[i]();
-            i++;
-            setTimeout(tick, 260);
-          } else {
-            bootState.textContent = "ONLINE";
-            // build widgets right at the end so the boot never “stuck”
-            buildTV();
-            // if imgMode 3, do a quick intro flash vibe
-            if(imgMode === 3 && motivOn){
-              triggerFlash();
-            }
-            setTimeout(hideBoot, 380);
-          }
-        }catch(e){
-          // fail-safe: never trap
-          bootState.textContent = "ONLINE";
-          try{ buildTV(); }catch{}
-          setTimeout(hideBoot, 150);
-        }
-      };
-
-      // start
-      setTimeout(tick, 250);
-
-      // hard fail-safe to prevent “stuck on booting”
-      setTimeout(() => { if(!boot.classList.contains("hidden")) hideBoot(); }, 4500);
-    }
-
-    /***********************
-     * BUTTONS + HOTKEYS
-     ***********************/
-    // theme buttons
-    document.getElementById("btnCyan").onclick   = () => applyTheme("cyan");
-    document.getElementById("btnPurple").onclick = () => applyTheme("purple");
-    document.getElementById("btnRed").onclick    = () => { applyTheme("red"); if(flashOn) triggerFlash(); };
-
-    // toggles
-    document.getElementById("btnQuotes").onclick = () => { quotesOn = !quotesOn; lsSet("mc_quotesOn", quotesOn?"1":"0"); updateTags(); updateQuote(); };
-    document.getElementById("btnMotiv").onclick  = () => { motivOn = !motivOn;  lsSet("mc_motivOn", motivOn?"1":"0");  updateTags(); applyMotivation(); };
-    document.getElementById("btnFlash").onclick  = () => { flashOn = !flashOn;  lsSet("mc_flashOn", flashOn?"1":"0");  updateTags(); };
-    document.getElementById("btnFull").onclick   = () => goFullscreen();
-
-    // symbol changer
-    document.getElementById("btnSymbol").onclick = () => {
-      const s = prompt("Enter symbol (example: CME_MINI:MNQ1!)", symbol);
-      if(!s) return;
-      symbol = s.trim();
-      lsSet("mc_symbol", symbol);
-      updateTags();
-      buildTV();
-    };
-
-    // interval cycle for execution
-    const execCycle = ["1","3","5","15"];
-    document.getElementById("btnIntervals").onclick = () => {
-      const idx = execCycle.indexOf(execInt);
-      execInt = execCycle[(idx+1+execCycle.length)%execCycle.length];
-      lsSet("mc_execInt", execInt);
-      updateTags();
-      buildTV();
-    };
-
-    // motivation image modes
-    document.getElementById("imgMode1").onclick = () => { imgMode=1; lsSet("mc_imgMode","1"); updateTags(); applyMotivation(); };
-    document.getElementById("imgMode2").onclick = () => { imgMode=2; lsSet("mc_imgMode","2"); updateTags(); applyMotivation(); };
-    document.getElementById("imgMode3").onclick = () => { imgMode=3; lsSet("mc_imgMode","3"); updateTags(); applyMotivation(); };
-
-    // boot actions
-    document.getElementById("skipBoot").onclick = () => hideBoot();
-    document.getElementById("armFS").onclick = async () => {
-      document.getElementById("optFS").textContent = "ARMED";
-      await goFullscreen();
-    };
-    document.getElementById("combatNow").onclick = () => { if(flashOn) triggerFlash(); applyTheme("red"); };
-
-    // HOTKEYS
-    document.addEventListener("keydown", (e) => {
-      const k = e.key.toLowerCase();
-      if(k === "f") goFullscreen();
-      if(k === "p") applyTheme("purple");
-      if(k === "r"){ applyTheme("red"); if(flashOn) triggerFlash(); }
-      if(k === "c") applyTheme("cyan");
-      if(k === "q"){ quotesOn = !quotesOn; lsSet("mc_quotesOn", quotesOn?"1":"0"); updateTags(); updateQuote(); }
-      if(k === "m"){ motivOn = !motivOn; lsSet("mc_motivOn", motivOn?"1":"0"); updateTags(); applyMotivation(); }
-    });
-
-    /***********************
-     * FINAL FIXES:
-     * - Never stuck on boot overlay
-     * - Always rebuild widgets cleanly
-     * - Default symbol MNQ1! (no Apple)
-     ***********************/
-    // Start boot sequence immediately
-    runBoot();
-  </script>
+  <!-- TradingView (required once) -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
